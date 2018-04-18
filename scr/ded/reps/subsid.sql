@@ -1,0 +1,1 @@
+update cla_param_tbl set name = 'Субсид╕╖' where id = 207;

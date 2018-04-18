@@ -1,0 +1,313 @@
+// Borland C++ Builder
+// Copyright (c) 1995, 1999 by Borland International
+// All rights reserved
+
+// (DO NOT EDIT: machine generated header) 'ZTransact.pas' rev: 5.00
+
+#ifndef ZTransactHPP
+#define ZTransactHPP
+
+#pragma delphiheader begin
+#pragma option push -w-
+#pragma option push -Vx
+#include <ZSqlScanner.hpp>	// Pascal unit
+#include <ZSqlTypes.hpp>	// Pascal unit
+#include <ZDirSql.hpp>	// Pascal unit
+#include <ZConnect.hpp>	// Pascal unit
+#include <ZToken.hpp>	// Pascal unit
+#include <Classes.hpp>	// Pascal unit
+#include <Db.hpp>	// Pascal unit
+#include <SysUtils.hpp>	// Pascal unit
+#include <ExtCtrls.hpp>	// Pascal unit
+#include <SysInit.hpp>	// Pascal unit
+#include <System.hpp>	// Pascal unit
+
+//-- user supplied -----------------------------------------------------------
+
+namespace Ztransact
+{
+//-- type declarations -------------------------------------------------------
+#pragma option push -b-
+enum TZTransactOption { toHourGlass };
+#pragma option pop
+
+typedef Set<TZTransactOption, toHourGlass, toHourGlass>  TZTransactOptions;
+
+typedef void __fastcall (__closure *TOnBeforeBatchExec)(System::TObject* Sender, AnsiString &Sql);
+
+typedef void __fastcall (__closure *TOnAfterbatchExec)(System::TObject* Sender, int &Res);
+
+typedef void __fastcall (__closure *TOnBatchError)(System::TObject* Sender, const Sysutils::Exception* 
+	E, bool &Stop);
+
+class DELPHICLASS TZTransact;
+class DELPHICLASS TZMonitor;
+class PASCALIMPLEMENTATION TZTransact : public Classes::TComponent 
+{
+	typedef Classes::TComponent inherited;
+	
+protected:
+	bool FConnected;
+	bool FAutoCommit;
+	bool FAutoRecovery;
+	Classes::TList* FNotifies;
+	TZTransactOptions FOptions;
+	Zconnect::TZDatabase* FDatabase;
+	Zsqltypes::TDatabaseType FDatabaseType;
+	Zdirsql::TDirTransact* FHandle;
+	Zdirsql::TDirQuery* FQuery;
+	Classes::TNotifyEvent FOnDataChange;
+	Classes::TNotifyEvent FOnApplyUpdates;
+	Classes::TNotifyEvent FOnCommit;
+	Classes::TNotifyEvent FOnRollback;
+	Classes::TNotifyEvent FOnBeforeConnect;
+	Classes::TNotifyEvent FOnAfterConnect;
+	Classes::TNotifyEvent FOnBeforeDisconnect;
+	Classes::TNotifyEvent FOnAfterDisconnect;
+	int FVersion;
+	int FBatchCurPos;
+	int FBatchCurLen;
+	int FBatchCurrentLine;
+	TOnBeforeBatchExec FOnBeforeBatchExec;
+	TOnAfterbatchExec FOnAfterBatchExec;
+	TOnBatchError FOnBatchError;
+	void __fastcall SetConnected(bool Value);
+	void __fastcall SetDatabase(Zconnect::TZDatabase* Value);
+	bool __fastcall GetTransactSafe(void);
+	void __fastcall SetTransactSafe(bool Value);
+	System::TObject* __fastcall GetNotifies(int Index);
+	int __fastcall GetNotifyCount(void);
+	virtual void __fastcall Loaded(void);
+	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation
+		);
+	void __fastcall DoDataChange(AnsiString Sql);
+	void __fastcall DoCommit(void);
+	void __fastcall DoRollback(void);
+	__property bool AutoRecovery = {read=FAutoRecovery, write=FAutoRecovery, nodefault};
+	__property Zsqltypes::TDatabaseType DatabaseType = {read=FDatabaseType, nodefault};
+	__property bool TransactSafe = {read=GetTransactSafe, write=SetTransactSafe, nodefault};
+	
+public:
+	__fastcall virtual TZTransact(Classes::TComponent* AOwner);
+	__fastcall virtual ~TZTransact(void);
+	virtual void __fastcall Connect(void);
+	virtual void __fastcall Disconnect(void);
+	virtual int __fastcall ExecSql(WideString Sql);
+	virtual int __fastcall ExecSqlParams(WideString Sql, const System::TVarRec * Params, int ParamCount
+		);
+	int __fastcall BatchExecSql(WideString Sql);
+	virtual WideString __fastcall ExecFunc(WideString Func);
+	virtual void __fastcall Commit(void);
+	virtual void __fastcall Rollback(void);
+	virtual void __fastcall Recovery(bool Force);
+	void __fastcall DoApplyUpdates(void);
+	void __fastcall StartTransaction(void);
+	virtual void __fastcall AddMonitor(TZMonitor* Monitor) = 0 ;
+	virtual void __fastcall DeleteMonitor(TZMonitor* Monitor) = 0 ;
+	void __fastcall AddNotify(System::TObject* Notify);
+	void __fastcall RemoveNotify(System::TObject* Notify);
+	void __fastcall CloseNotifies(void);
+	__property Zconnect::TZDatabase* Database = {read=FDatabase, write=SetDatabase};
+	__property bool Connected = {read=FConnected, write=SetConnected, nodefault};
+	__property Zdirsql::TDirTransact* Handle = {read=FHandle};
+	__property Zdirsql::TDirQuery* QueryHandle = {read=FQuery};
+	__property System::TObject* Notifies[int Index] = {read=GetNotifies};
+	__property int NotifyCount = {read=GetNotifyCount, nodefault};
+	
+__published:
+	__property TZTransactOptions Options = {read=FOptions, write=FOptions, nodefault};
+	__property bool AutoCommit = {read=FAutoCommit, write=FAutoCommit, nodefault};
+	__property int Version = {read=FVersion, nodefault};
+	__property int BatchCurPos = {read=FBatchCurPos, nodefault};
+	__property int BatchCurLen = {read=FBatchCurLen, nodefault};
+	__property int BatchCurrentLine = {read=FBatchCurrentLine, nodefault};
+	__property Classes::TNotifyEvent OnBeforeConnect = {read=FOnBeforeConnect, write=FOnBeforeConnect};
+		
+	__property Classes::TNotifyEvent OnAfterConnect = {read=FOnAfterConnect, write=FOnAfterConnect};
+	__property Classes::TNotifyEvent OnBeforeDisconnect = {read=FOnBeforeDisconnect, write=FOnBeforeDisconnect
+		};
+	__property Classes::TNotifyEvent OnAfterDisconnect = {read=FOnAfterDisconnect, write=FOnAfterDisconnect
+		};
+	__property TOnBeforeBatchExec OnBeforeBatchExec = {read=FOnBeforeBatchExec, write=FOnBeforeBatchExec
+		};
+	__property TOnAfterbatchExec OnAfterBatchExec = {read=FOnAfterBatchExec, write=FOnAfterBatchExec};
+	__property TOnBatchError OnBatchError = {read=FOnBatchError, write=FOnBatchError};
+	__property Classes::TNotifyEvent OnDataChange = {read=FOnDataChange, write=FOnDataChange};
+	__property Classes::TNotifyEvent OnApplyUpdates = {read=FOnApplyUpdates, write=FOnApplyUpdates};
+	__property Classes::TNotifyEvent OnCommit = {read=FOnCommit, write=FOnCommit};
+	__property Classes::TNotifyEvent OnRollback = {read=FOnRollback, write=FOnRollback};
+};
+
+
+typedef void __fastcall (__closure *TMonitorEvent)(AnsiString Sql, AnsiString Result);
+
+class PASCALIMPLEMENTATION TZMonitor : public Classes::TComponent 
+{
+	typedef Classes::TComponent inherited;
+	
+private:
+	TZTransact* FTransact;
+	TMonitorEvent FMonitorEvent;
+	void __fastcall SetTransact(const TZTransact* Value);
+	
+protected:
+	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation
+		);
+	
+public:
+	__fastcall virtual ~TZMonitor(void);
+	
+__published:
+	__property TZTransact* Transaction = {read=FTransact, write=SetTransact};
+	__property TMonitorEvent OnMonitorEvent = {read=FMonitorEvent, write=FMonitorEvent};
+public:
+	#pragma option push -w-inl
+	/* TComponent.Create */ inline __fastcall virtual TZMonitor(Classes::TComponent* AOwner) : Classes::TComponent(
+		AOwner) { }
+	#pragma option pop
+	
+};
+
+
+class DELPHICLASS TZMonitorList;
+class PASCALIMPLEMENTATION TZMonitorList : public Classes::TList 
+{
+	typedef Classes::TList inherited;
+	
+private:
+	TZMonitor* __fastcall GetMonitor(int Index);
+	
+public:
+	void __fastcall AddMonitor(TZMonitor* Value);
+	void __fastcall DeleteMonitor(TZMonitor* Value);
+	void __fastcall InvokeEvent(WideString Sql, WideString Result, bool Error);
+	__property TZMonitor* Monitors[int Index] = {read=GetMonitor};
+public:
+	#pragma option push -w-inl
+	/* TList.Destroy */ inline __fastcall virtual ~TZMonitorList(void) { }
+	#pragma option pop
+	
+public:
+	#pragma option push -w-inl
+	/* TObject.Create */ inline __fastcall TZMonitorList(void) : Classes::TList() { }
+	#pragma option pop
+	
+};
+
+
+class DELPHICLASS TZBatchSql;
+class PASCALIMPLEMENTATION TZBatchSql : public Classes::TComponent 
+{
+	typedef Classes::TComponent inherited;
+	
+private:
+	TZTransact* FTransact;
+	int FAffectedRows;
+	Classes::TNotifyEvent FBeforeExecute;
+	Classes::TNotifyEvent FAfterExecute;
+	Classes::TStringList* FSql;
+	void __fastcall SetSql(Classes::TStringList* Value);
+	
+protected:
+	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation
+		);
+	
+public:
+	__fastcall virtual TZBatchSql(Classes::TComponent* AOwner);
+	__fastcall virtual ~TZBatchSql(void);
+	void __fastcall ExecSql(void);
+	
+__published:
+	__property TZTransact* Transaction = {read=FTransact, write=FTransact};
+	__property Classes::TStringList* Sql = {read=FSql, write=SetSql};
+	__property int RowsAffected = {read=FAffectedRows, nodefault};
+	__property Classes::TNotifyEvent OnBeforeExecute = {read=FBeforeExecute, write=FBeforeExecute};
+	__property Classes::TNotifyEvent OnAfterExecute = {read=FAfterExecute, write=FAfterExecute};
+};
+
+
+typedef void __fastcall (__closure *TZNotifyEvent)(System::TObject* Sender, AnsiString Event);
+
+class DELPHICLASS TZNotify;
+class PASCALIMPLEMENTATION TZNotify : public Classes::TComponent 
+{
+	typedef Classes::TComponent inherited;
+	
+private:
+	bool FActive;
+	bool FAutoOpen;
+	Classes::TStringList* FEventsList;
+	Extctrls::TTimer* FTimer;
+	bool FFirstConnect;
+	TZNotifyEvent FBeforeRegister;
+	TZNotifyEvent FBeforeUnregister;
+	TZNotifyEvent FAfterRegister;
+	TZNotifyEvent FAfterUnregister;
+	TZNotifyEvent FNotifyFired;
+	
+protected:
+	TZTransact* FTransact;
+	Zdirsql::TDirNotify* FHandle;
+	Classes::TStringList* FBackEventsList;
+	void __fastcall SetActive(bool Value);
+	virtual unsigned __fastcall GetInterval(void);
+	virtual void __fastcall SetInterval(unsigned Value);
+	virtual void __fastcall SetEventsList(Classes::TStringList* Value);
+	void __fastcall SetTransact(TZTransact* Value);
+	virtual void __fastcall TimerProc(System::TObject* Sender);
+	virtual void __fastcall CheckEvents(void);
+	virtual void __fastcall EventsChange(System::TObject* Sender);
+	virtual void __fastcall EventsChanging(System::TObject* Sender);
+	virtual void __fastcall CheckActive(void);
+	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation
+		);
+	virtual void __fastcall Loaded(void);
+	
+public:
+	__fastcall virtual TZNotify(Classes::TComponent* AOwner);
+	__fastcall virtual ~TZNotify(void);
+	virtual void __fastcall Open(void);
+	virtual void __fastcall Close(void);
+	void __fastcall ListenTo(AnsiString Event);
+	void __fastcall DoNotify(AnsiString Event);
+	void __fastcall UnlistenTo(AnsiString Event);
+	__property Zdirsql::TDirNotify* Handle = {read=FHandle};
+	
+__published:
+	__property bool Active = {read=FActive, write=SetActive, nodefault};
+	__property Classes::TStringList* EventsList = {read=FEventsList, write=SetEventsList};
+	__property unsigned Interval = {read=GetInterval, write=SetInterval, nodefault};
+	__property TZNotifyEvent OnBeforeRegister = {read=FBeforeRegister, write=FBeforeRegister};
+	__property TZNotifyEvent OnAfterRegister = {read=FAfterRegister, write=FAfterRegister};
+	__property TZNotifyEvent OnBeforeUnregister = {read=FBeforeUnregister, write=FBeforeUnregister};
+	__property TZNotifyEvent OnAfterUnregister = {read=FAfterUnregister, write=FAfterUnregister};
+	__property TZNotifyEvent OnNotify = {read=FNotifyFired, write=FNotifyFired};
+};
+
+
+//-- var, const, procedure ---------------------------------------------------
+static const Word LIST_BLOCK_SIZE = 0x1f4;
+static const Shortint MIN_FETCH_ROWS = 0x0;
+static const Shortint MAX_NAME_LENGTH = 0x32;
+static const Shortint MAX_LINKS_COUNT = 0x5;
+static const Shortint MAX_SORT_COUNT = 0x5;
+static const Byte MAX_FIELD_COUNT = 0xff;
+static const Shortint MAX_INDEX_COUNT = 0x19;
+static const Shortint MAX_INDEX_FIELDS = 0x19;
+static const Shortint DEFAULT_STRING_SIZE = 0x32;
+static const Word MAX_STRING_SIZE = 0x200;
+static const char DEFAULT_MACRO_CHAR = '\x25';
+#define ZEOS_PALETTE "Zeos Common"
+#define ZEOS_DB_PALETTE "Zeos Access"
+static const Word ZDBO_VERSION = 0xc47c;
+
+}	/* namespace Ztransact */
+#if !defined(NO_IMPLICIT_NAMESPACE_USE)
+using namespace Ztransact;
+#endif
+#pragma option pop	// -w-
+#pragma option pop	// -Vx
+
+#pragma delphiheader end.
+//-- end unit ----------------------------------------------------------------
+#endif	// ZTransact

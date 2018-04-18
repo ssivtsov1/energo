@@ -1,0 +1,2 @@
+class TDBGrid: ftable 0
+  method string Field(string): offset 1;

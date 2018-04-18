@@ -1,0 +1,75 @@
+<?xml version = "1.0" encoding = "windows-1251"?>
+
+<DECLAR xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation = "J1201207.xsd">
+   <DECLARHEAD>
+      <TIN>22815333</TIN>
+      <C_DOC>J12</C_DOC>
+      <C_DOC_SUB>012</C_DOC_SUB>
+      <C_DOC_VER>7</C_DOC_VER>
+      <C_DOC_TYPE>0</C_DOC_TYPE>
+      <C_DOC_CNT>2</C_DOC_CNT>
+      <C_REG>25</C_REG>
+      <C_RAJ>26</C_RAJ>
+      <PERIOD_MONTH>1</PERIOD_MONTH>
+      <PERIOD_TYPE>1</PERIOD_TYPE>
+      <PERIOD_YEAR>2015</PERIOD_YEAR>
+      <C_STI_ORIG>2526</C_STI_ORIG>
+      <C_DOC_STAN>1</C_DOC_STAN>
+      <LINKED_DOCS xsi:nil = "true"/>
+      <D_FILL>11022015</D_FILL>
+      <SOFTWARE>Energo</SOFTWARE>
+   </DECLARHEAD>
+   <DECLARBODY>
+      <HERPN xsi:nil = "true"/>
+      <H01 xsi:nil = "true"/>
+      <HORIG1 xsi:nil = "true"/>
+      <HTYPR xsi:nil = "true"/>
+      <HNUM>36</HNUM>
+      <HNUM1 xsi:nil = "true"/>
+      <HNUM2>21</HNUM2>
+      <HFILL>10012015</HFILL>
+      <HPODFILL>10012015</HPODFILL>
+      <HPODNUM>15</HPODNUM>
+      <HPODNUM1 xsi:nil = "true"/>
+      <HPODNUM2>21</HPODNUM2>
+      <H01G1D>01092007</H01G1D>
+      <H01G2S>163</H01G2S>
+      <HNAMESEL>ПУБЛІЧНЕ АКЦІОНЕРНЕ ТОВАРИСТВО "ЧЕРНІГІВОБЛЕНЕРГО" Відокремлений підрозділ Ріпкинський район електричних мереж</HNAMESEL>
+      <HNAMEBUY>ТОВАРИСТВО З ОБМЕЖЕНОЮ ВІДПОВІДАЛЬНІСТЮ "ГУРТОВО-РОЗДРІБНИЙ КОМПЛЕКС "СЕДАМ"</HNAMEBUY>
+      <HKSEL>228153325261</HKSEL>
+      <HKBUY>142286025267</HKBUY>
+      <HLOCSEL>14000, м.Чернігів, Деснянський р-н, вул.Горького, буд.40 / 
+15000, Чернігівська обл., Ріпкинський р-н, смт.Ріпки, вул.Шевченка, буд.2-А</HLOCSEL>
+      <HLOCBUY>вул. Інструментальна, буд.5, м.Чернігів 14037 Україна</HLOCBUY>
+      <HTELSEL>0464121454</HTELSEL>
+      <HTELBUY>0462655033</HTELBUY>
+      <H02G1S>договір про постачання електричної енергії</H02G1S>
+      <H02G2D>01092007</H02G2D>
+      <H02G3S>163</H02G3S>
+      <RXXXXG1D ROWNUM = "1">10012015</RXXXXG1D>
+      <RXXXXG1D ROWNUM = "2">10012015</RXXXXG1D>
+      <RXXXXG2S ROWNUM = "1">Стаття 192.1 ПКУ</RXXXXG2S>
+      <RXXXXG2S ROWNUM = "2">Стаття 192.1 ПКУ</RXXXXG2S>
+      <RXXXXG3S ROWNUM = "1">е/ен.</RXXXXG3S>
+      <RXXXXG3S ROWNUM = "2">е/ен.</RXXXXG3S>
+      <RXXXXG4 ROWNUM = "1">2716000000</RXXXXG4>
+      <RXXXXG4 ROWNUM = "2">2716000000</RXXXXG4>
+      <RXXXXG4S ROWNUM = "1">кВт.год</RXXXXG4S>
+      <RXXXXG4S ROWNUM = "2">кВт.год</RXXXXG4S>
+      <RXXXXG105_2S ROWNUM = "1">0415</RXXXXG105_2S>
+      <RXXXXG105_2S ROWNUM = "2">0415</RXXXXG105_2S>
+      <RXXXXG5 ROWNUM = "1">-1137</RXXXXG5>
+      <RXXXXG5 ROWNUM = "2">8199</RXXXXG5>
+      <RXXXXG6 ROWNUM = "1">1.3213</RXXXXG6>
+      <RXXXXG6 ROWNUM = "2">1.3213</RXXXXG6>
+      <RXXXXG9 ROWNUM = "1">-1502.32</RXXXXG9>
+      <RXXXXG9 ROWNUM = "2">10833.33</RXXXXG9>
+      <R01G9>9331.01</R01G9>
+      <R01G10 xsi:nil = "true"/>
+      <R01G11 xsi:nil = "true"/>
+      <R01G111 xsi:nil = "true"/>
+      <R02G9>1866.20</R02G9>
+      <R02G111>0.00</R02G111>
+      <H10G2S>Т.В. Лантух</H10G2S>
+   </DECLARBODY>
+</DECLAR>

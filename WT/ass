@@ -1,0 +1,23 @@
+Сравнение файлов Form.cpp и FORM.~CPP
+***** Form.cpp
+void __fastcall TWTForm::MainMenuEnabled(bool Enabled) {
+  for (int i = 1; i < MainMenuCount; i++) {
+    MainMenu->Items->Items[i]->Enabled = Enabled;
+***** FORM.~CPP
+void __fastcall TWTForm::MainMenuEnabled(bool Enabled) {
+/*  for (int i = 1; i < MainMenuCount; i++) {
+    MainMenu->Items->Items[i]->Enabled = Enabled;
+*****
+
+***** Form.cpp
+   FindToolBar(0)->Visible= Enabled;
+   FindToolBar(1)->Visible= Enabled;
+//;
+};
+***** FORM.~CPP
+   FindToolBar(0)->Visible= Enabled;
+   FindToolBar(1)->Visible= Enabled;*/
+;
+};
+*****
+

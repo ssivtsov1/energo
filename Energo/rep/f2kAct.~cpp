@@ -1,0 +1,128 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "f2kAct.h"
+#include "Query.h"
+#include "Table.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma link "xlcClasses"
+#pragma link "xlReport"
+#pragma link "ZPgSqlQuery"
+#pragma link "ZQuery"
+#pragma resource "*.dfm"
+TfPrint2krAct *fPrint2krAct;
+//---------------------------------------------------------------------------
+__fastcall TfPrint2krAct::TfPrint2krAct(TComponent* Owner)
+        : TForm(Owner)
+{
+  ZQXLReps->Database=TWTTable::Database;
+}
+//---------------------------------------------------------------------------
+
+void TfPrint2krAct::PrintAktDem(TDateTime mmgg,int client)
+{
+
+  AnsiString  sqlstr1=" select abon.name as abonname, \
+  abon.short_name as abonname, abon.code, res.name as resname,res.short_name as ressname, \
+  addr.full_adr as abonaddr, abonpar.doc_num, abonpar.doc_dat, \
+  text(lim.limit_demand::::int)||' Í¬Ú„.' as limit_demands, text(bill.fact_demand)||' Í¬Ú„.' as fact_demands, \
+  (case when   to_char( over.mmgg,'mm')<>'01' then \
+  date(to_char( over.mmgg,'yyyy')||'-'||to_char( over.mmgg-'1 month'::::interval,'mm')||'-'||text(abonpar.dt_start)) \
+  else \
+   date(to_char( over.mmgg-'1 year'::::interval,'yyyy')||'-'||to_char( over.mmgg-'1 month'::::interval,'mm')||'-'||text(abonpar.dt_start)) \
+   end ) as dt_b, \
+  date(to_char( over.mmgg,'yyyy')||'-'||to_char( over.mmgg,'mm')||'-'||text(abonpar.dt_indicat)) as dt_e, \
+  over.reg_date, text(over.over_demand)||' Í¬Ú„.' as over_demands,\
+  lim.limit_demand,bill.fact_demand,over.over_demand, \
+  'A2D'||abon.code||'_'||to_char( :mmgg::::date,'mm')||'-'||to_char( :mmgg::::date,'yyyy') as act_num, \
+  indic.reg_date as indic_date, over.value, over.value_tax, \
+  'π '||text(abonpar.doc_num)||' ‚≥‰ '|| to_char(abonpar.doc_dat,'DD.MM.YYYY')||' .' as docum_info, \
+  boss.name as bospos,boss.represent_name as bossname \
+  from \
+  clm_client_tbl as abon \
+  left join adv_address_tbl as addr on (addr.id = abon.id_addres) \
+  left join clm_statecl_tbl as abonpar on (abonpar.id_client = abon.id) , \
+  (select value_dem as limit_demand , reg_date \
+  from acm_headdemandlimit_tbl as hl join acd_demandlimit_tbl as l \
+  on (hl.id_doc = l.id_doc) \
+  where hl.id_client = :client and date_trunc('month',l.month_limit)  = :mmgg \
+  and hl.idk_document = 600 \
+  order by hl.reg_date desc ) as lim , \
+  (select sum(demand_val) as fact_demand, min(b.dat_b) as dt_b, max(b.dat_e) as dt_e  \
+  from acm_bill_tbl as b \
+  where b.mmgg = :mmgg and b.mmgg_bill = :mmgg \
+  and b.id_client = :client \
+  and b.id_pref = 10 and b.idk_doc = 200  ) as bill, \
+  (select demand_val as over_demand, reg_date, value, value_tax,mmgg  \
+  from acm_bill_tbl  \
+  where mmgg = :mmgg and  id_client = :client \
+  and id_pref = 520 and idk_doc = 210 limit 1 ) as over, \
+  (select reg_date from acm_headindication_tbl where mmgg = :mmgg and idk_document =310 and id_client = :client limit 1) as indic, \
+  clm_client_tbl as res \
+   left join ( select * from clm_position_tbl as pos \
+             join cli_position_tbl as p on (p.id = pos.id_position and p.ident ='boss') )as boss  on (boss.id_client = res.id) \
+  where abon.id = :client \
+  and lim.reg_date <= over.reg_date-'4 days'::::interval \
+  and res.id = syi_resid_fun();";
+
+  ZQXLReps->Sql->Clear();
+  ZQXLReps->Sql->Add(sqlstr1);
+
+  ZQXLReps->ParamByName("mmgg")->AsDateTime=mmgg;
+  ZQXLReps->ParamByName("client")->AsInteger=client;
+
+  try
+  {
+    ZQXLReps->Open();
+  }
+  catch(EDatabaseError &e)
+  {
+    ShowMessage("Œ¯Ë·Í‡ : "+e.Message.SubString(8,200));
+    return;
+  }
+
+  xlReport->XLSTemplate = "XL\\akt_2kd.xls";
+  TxlDataSource *Dsr;
+  TxlReportParam *Param;
+  xlReport->DataSources->Clear();
+
+
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQXLReps;
+  Dsr->Alias = "ZQXLReps";
+//  Dsr->Range = "Range";
+
+  xlReport->Params->Clear();
+//  Param=xlReport->Params->Add();
+//  Param->Name="lres";
+//  Param=xlReport->Params->Add();
+//  Param->Name="lmmgg";
+
+//  Param=xlReport->Params->Add();
+//  Param->Name="lnow";
+//  xlReport->ParamByName["lnow"]->Value = FormatDateTime("dd.mm.yy hh:nn",Now());
+
+
+//  xlReport->ParamByName["lres"]->Value = ResName;
+//  xlReport->ParamByName["lmmgg"]->Value = FormatDateTime("mmmm yyyy",mmgg);
+
+//  xlReport->ParamByName["workdt"]->Value = dt;
+
+ xlReport->Report();
+
+ ZQXLReps->Close();
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TfPrint2krAct::BitBtn1Click(TObject *Sender)
+{
+ if (id_pref = 520)
+ {
+   PrintAktDem(mmgg,id_client);
+ }
+
+}
+//---------------------------------------------------------------------------

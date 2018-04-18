@@ -1,0 +1,51 @@
+                  List of relations
+   Schema   |          Name          | Type  | Owner 
+------------+------------------------+-------+-------
+ pg_temp_19 | act1_met_kndzn_tbl     | table | osa
+ pg_temp_19 | act_2point_branch_tbl  | table | osa
+ pg_temp_19 | act_2pwr_demand_tbl    | table | osa
+ pg_temp_19 | act_add_calc           | table | osa
+ pg_temp_19 | act_calc_losts2_tbl    | table | osa
+ pg_temp_19 | act_calc_losts_tbl     | table | osa
+ pg_temp_19 | act_clc_inf            | table | osa
+ pg_temp_19 | act_demand_tbl         | table | osa
+ pg_temp_19 | act_desclosts_eqm_tbl  | table | osa
+ pg_temp_19 | act_difmetzone_tbl     | table | osa
+ pg_temp_19 | act_eqp_branch2_tbl    | table | osa
+ pg_temp_19 | act_eqp_branch_tbl     | table | osa
+ pg_temp_19 | act_inlosts_eqm_tbl    | table | osa
+ pg_temp_19 | act_losts_eqm2_tbl     | table | osa
+ pg_temp_19 | act_losts_eqm_tbl      | table | osa
+ pg_temp_19 | act_met_cntmet         | table | osa
+ pg_temp_19 | act_met_knd            | table | osa
+ pg_temp_19 | act_met_kndzn_tbl      | table | osa
+ pg_temp_19 | act_met_kndzn_tbl1     | table | osa
+ pg_temp_19 | act_met_warm           | table | osa
+ pg_temp_19 | act_meter_pnt_tbl      | table | osa
+ pg_temp_19 | act_pnt_cmp            | table | osa
+ pg_temp_19 | act_pnt_cntavg         | table | osa
+ pg_temp_19 | act_pnt_cntavgg        | table | osa
+ pg_temp_19 | act_pnt_cntavgr        | table | osa
+ pg_temp_19 | act_pnt_cntitr         | table | osa
+ pg_temp_19 | act_pnt_d              | table | osa
+ pg_temp_19 | act_pnt_hlosts         | table | osa
+ pg_temp_19 | act_pnt_inlost         | table | osa
+ pg_temp_19 | act_pnt_knd            | table | osa
+ pg_temp_19 | act_pnt_lost           | table | osa
+ pg_temp_19 | act_pnt_mlost          | table | osa
+ pg_temp_19 | act_pnt_pwr            | table | osa
+ pg_temp_19 | act_pnt_share          | table | osa
+ pg_temp_19 | act_pnt_tarif          | table | osa
+ pg_temp_19 | act_pnt_tg             | table | osa
+ pg_temp_19 | act_pnt_un             | table | osa
+ pg_temp_19 | act_pnt_wtm            | table | osa
+ pg_temp_19 | act_point_branch_tbl   | table | osa
+ pg_temp_19 | act_pwr_demand_tbl     | table | osa
+ pg_temp_19 | act_pwr_limit_over_tbl | table | osa
+ pg_temp_19 | act_pwr_limit_pnt_tbl  | table | osa
+ pg_temp_19 | act_res_notice         | table | osa
+ pg_temp_19 | act_summ_val           | table | osa
+ pg_temp_19 | act_taxkornums_tbl     | table | osa
+ pg_temp_19 | act_warm_period        | table | osa
+(46 rows)
+

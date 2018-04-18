@@ -1,0 +1,294 @@
+//---------------------------------------------------------------------------
+
+#ifndef ftreeH
+#define ftreeH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+#include <ComCtrls.hpp>
+#include <ToolWin.hpp>
+#include <ExtCtrls.hpp>
+#include "ZPgSqlQuery.hpp"
+#include "ZQuery.hpp"
+#include <Db.hpp>
+#include <ImgList.hpp>
+#include <Menus.hpp>
+#include "EasyPrint.h"
+#include <Dialogs.hpp>
+
+#ifndef EqpBaseIncl
+#include "fEqpBase.h"
+#define EqpBaseIncl
+#endif
+#include "TWTCompatable.h"
+#include <Dialogs.hpp>
+#include "EasyPrint.h"
+#include <map.h>
+//---------------------------------------------------------------------------
+
+typedef struct
+{
+  int type_eqp;
+  int line_no;
+  int id_tree;
+} TTreeNodeData;
+
+typedef  TTreeNodeData* PTreeNodeData;
+
+typedef struct
+{
+  AnsiString TreeName;
+  int id_tree;
+} TTreeListData;
+
+typedef  TTreeListData* PTreeListData;
+
+class TfEqpEdit;
+
+class TfTreeForm : public TfTWTCompForm
+{
+__published:	// IDE-managed Components
+        TCoolBar *CoolBar1;
+        TToolBar *ToolBar1;
+        TStatusBar *StatusBar1;
+        TPanel *PTree;
+        TSplitter *TreeSplitter;
+        TPanel *PEquipment;
+        TTreeView *tTreeEdit;
+        TImageList *TreeImageList;
+        TPopupMenu *TreePopupMenu;
+        TMenuItem *miDel;
+        TMenuItem *miNew;
+        TToolButton *tbNew;
+        TToolButton *tbDelete;
+        TToolButton *tbCancel;
+        TToolButton *tbApply;
+        TToolButton *tbChange;
+        TToolButton *tbNewTree;
+        TToolButton *tbDelTree;
+        TMenuItem *N1;
+        TMenuItem *miDown;
+        TMenuItem *miUp;
+        TMenuItem *N2;
+        TMenuItem *miAddTranzit;
+        TMenuItem *miDelTranzit;
+        TMenuItem *N3;
+        TMenuItem *miDelTree;
+        TToolButton *ToolButton3;
+        TToolButton *tbNewPoint;
+        TToolButton *tbConnect;
+        TMenuItem *miChange;
+        TImageList *ImageList1;
+        TToolButton *ToolButton1;
+        TMenuItem *miChangeTranzit;
+        TMenuItem *miAddDoc;
+        TMenuItem *N4;
+        TMenuItem *miOpenDoc;
+        TOpenDialog *OpenDialog;
+        TMenuItem *miRename;
+        TToolButton *tbAreas;
+        TToolButton *ToolButton2;
+        TToolButton *tbStations;
+        TToolButton *tbFiders;
+        TToolButton *ToolButton4;
+        TToolButton *tbExpand;
+        TToolButton *tbCollapse;
+        //TEasyPrint *EasyPrint;
+        TToolButton *tbPrint;
+        TToolButton *ToolButton5;
+        TToolButton *tbFullView;
+        TPanel *Panel1;
+        TComboBox *cbTreeSelect;
+        TToolButton *tbCopyTree;
+        TToolButton *ToolButton7;
+        TToolButton *tbPasteTree;
+        TToolButton *ToolButton6;
+        TToolButton *tbSearch;
+        TFindDialog *FindDialog1;
+        TMenuItem *miCivilian;
+        TToolButton *tbMove;
+        TToolButton *tbDeletedEqp;
+        TToolButton *tbMoveAbons;
+        TToolButton *tbSerchId;
+        TFindDialog *FindIdDialog;
+        TMenuItem *miGek;
+        TToolButton *ToolButton8;
+        TToolButton *tbOpenAbon;
+        TEasyPrint *EasyPrint;
+        void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+        void __fastcall ToolButton1Click(TObject *Sender);
+        void __fastcall ToolButton2Click(TObject *Sender);
+        void __fastcall FormCreate(TObject *Sender);
+        void __fastcall tTreeEditChanging(TObject *Sender, TTreeNode *Node,
+          bool &AllowChange);
+        void __fastcall FormShow(TObject *Sender);
+        void __fastcall tbNewClick(TObject *Sender);
+        void __fastcall tbApplyClick(TObject *Sender);
+        void __fastcall tbCancelClick(TObject *Sender);
+        void __fastcall tbDeleteClick(TObject *Sender);
+        void __fastcall tTreeEditDragOver(TObject *Sender, TObject *Source,
+          int X, int Y, TDragState State, bool &Accept);
+        void __fastcall tTreeEditStartDrag(TObject *Sender,
+          TDragObject *&DragObject);
+        void __fastcall tTreeEditDragDrop(TObject *Sender, TObject *Source,
+          int X, int Y);
+        void __fastcall tbChangeClick(TObject *Sender);
+        void __fastcall tTreeEditEdited(TObject *Sender, TTreeNode *Node,
+          AnsiString &S);
+        void __fastcall tbDelTreeClick(TObject *Sender);
+        void __fastcall tbNewTreeClick(TObject *Sender);
+        void __fastcall tTreeEditDblClick(TObject *Sender);
+        void __fastcall miUpClick(TObject *Sender);
+        void __fastcall miDownClick(TObject *Sender);
+        void __fastcall miAddTranzitClick(TObject *Sender);
+        void __fastcall miDelTranzitClick(TObject *Sender);
+        void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+        void __fastcall tbNewPointClick(TObject *Sender);
+        void __fastcall tbConnectClick(TObject *Sender);
+        void __fastcall miChangeClick(TObject *Sender);
+        void __fastcall FormDestroy(TObject *Sender);
+        void __fastcall miChangeTranzitClick(TObject *Sender);
+        void __fastcall miAddDocClick(TObject *Sender);
+        void __fastcall miOpenDocClick(TObject *Sender);
+        void __fastcall miRenameClick(TObject *Sender);
+        void __fastcall tbAreasClick(TObject *Sender);
+        void __fastcall tbStationsClick(TObject *Sender);
+        void __fastcall tbFidersClick(TObject *Sender);
+        void __fastcall tbExpandClick(TObject *Sender);
+        void __fastcall tbCollapseClick(TObject *Sender);
+        void __fastcall tTreeEditExpanded(TObject *Sender,
+          TTreeNode *Node);
+        void __fastcall tbPrintClick(TObject *Sender);
+        void __fastcall tbFullViewClick(TObject *Sender);
+        void __fastcall cbTreeSelectChange(TObject *Sender);
+        void __fastcall tbCopyTreeClick(TObject *Sender);
+        void __fastcall tbPasteTreeClick(TObject *Sender);
+        void __fastcall tbSearchClick(TObject *Sender);
+        void __fastcall FormKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift);
+        void __fastcall FindDialog1Find(TObject *Sender);
+        void __fastcall FindDialog1Close(TObject *Sender);
+        void __fastcall miCivilianClick(TObject *Sender);
+        void __fastcall tbMoveClick(TObject *Sender);
+        void __fastcall tbDeletedEqpClick(TObject *Sender);
+        void __fastcall tbMoveAbonsClick(TObject *Sender);
+        void __fastcall tbSerchIdClick(TObject *Sender);
+        void __fastcall FindIdDialogFind(TObject *Sender);
+        void __fastcall miGekClick(TObject *Sender);
+        void __fastcall tbOpenAbonClick(TObject *Sender);
+private:	// User declarations
+public:		// User declarations
+//       void BuildTreeRoot(int code_eqp,int code_eqp_p,int id_icon,int type_eqp,int line_no,AnsiString name);
+       void BuildTreeRoot(int code_eqp,TTreeNode* RootNode,int id_icon,int type_eqp,int line_no, AnsiString name,int id_tree);
+       void BuildTreeNode(int code_eqp,int code_eqp_p,int id_icon,int type_eqp,int line_no, AnsiString name,int id_tree);
+       void BuildTree(int tree_id, AnsiString tree_name, bool refresh);
+       bool SelectTrees(void);
+       void ShowTrees(int abonent,bool readonly = false,int node=0);
+       void ShowViewTrees(int abonent,int node);
+       void __fastcall PointClose(TObject* Sender, bool &CanClose);
+       void __fastcall PointAccept (TObject* Sender);
+       void __fastcall AbonAccept (TObject* Sender);
+       void __fastcall AbonClose(System::TObject* Sender, bool &CanClose);
+       void _fastcall  ShowPoints(void);
+       void __fastcall ClearTemp(void);
+       void __fastcall LockControls(void);
+       void __fastcall GhangeTreeRec(TTreeNode *VNode, int tree_id);       
+ //      void _fastcall ActivateMenu(TObject *Sender);
+ //      TMenuItem *WindowMenu;
+ //      AnsiString ID;
+
+       TZPgSqlQuery *ZQTree;
+       TfEqpEdit *EqpEdit;
+//       int tree_id;
+//       AnsiString tree_name;
+       int usr_id;
+       int abonent_id; //Обонент, для которого строятся схемы (код)
+       AnsiString abonent_name; // (наименование)
+       int parent_abonent; //Обонент верхнего уровня (код)
+       AnsiString sqlstr;
+
+      // int tree_id; //Временно, пока не доделаю
+
+       int CurrTreeId;  //Дерево, которое только что поредактировали
+       int NewTreeId;  //Дерево - получатель в операциях переноса
+       int OldTreeId;  //Дерево - источник в операциях переноса
+       int EqpType;    // Тип текущего узла
+       TfTreeForm* fSelectTree;  //Окно дерева для выбора элемента дерева-предка
+       int BorderParent; // идент. узла в дереве верхнего уровня, к которому подкл. граница
+       int ParentTree;  //Дерево -предок (принадлежит другому обоненту)
+
+       int CurParents; // Количество предков (копий узла) в текущей
+       //int CurLine_no; // операции подключения к точке
+
+       TTreeNode *CurrNode;
+       TTreeNode *NewNode;
+       TTreeNode *DragNode;
+       TTreeNode *NewTree;
+
+       TList* NodeDataList;
+
+       int NewParentId;
+       int WorkNodeId;
+       int WorkNodeLine;
+
+       //int PointParentId;    //Для идентификации при удалении копии
+       int PointTreeId;      //Для идентификации при удалении копии
+
+       bool CangeLogEnabled; //Записывать изменения в протокол замены
+       bool fReadOnly;      // Режим только для чтения
+       int treemode;  //Текущая операция с деревом
+       AnsiString DocFolder; //Путь к папке с файлами схем
+
+       // 0 - нейтрльное
+       // 1 - вставка
+       // 2 - перемещение
+       // 3 - удаление
+       // 31 - удаление копии
+       // 4 - новое дерево
+       // 41- новое дерево - субобонент
+       // 5 - удаление дерева
+       // 6 - Подключение существующего дерева как субобонента
+       // 61 -ПереПодключение к другому абоненту
+       // 7 - Подключение к точке схождения
+       // 8 - Замена оборудования
+
+       //TStringList* TreeList; //Список деревьев схемы
+       TList* TreeList; //Список деревьев схемы
+
+       int operation; //Текущая операция замены оборудования
+
+       int ResId;
+       AnsiString ResName;
+
+       bool BorderRequired;
+       bool eqpnamecopy;
+
+       typedef map<int,TTreeNode*> intmap;
+       intmap TreeNodesMap; // Структура для ускорения поиска узла дерева по коду оборудования
+       intmap FullTreeNodesMap; // Структура для ускорения поиска узла дерева по коду оборудования
+
+       TCheckBox* cbFindBegin;
+
+        __fastcall TfTreeForm(TComponent* Owner);
+       // __fastcall ~TfTreeForm(void);
+
+       bool newtree_enable;
+       bool edtree_enable;
+       bool deltree_enable;
+       bool neweqp_enable;
+       bool deleqp_enable;
+       bool point_enable;
+       bool change_enable;
+       bool copy_enable;
+       bool movefiz_enable;
+
+       TDateTime last_indic_date;
+       int dt_indicat;
+
+       };
+//---------------------------------------------------------------------------
+extern PACKAGE TfTreeForm *fTreeForm;
+//---------------------------------------------------------------------------
+#endif

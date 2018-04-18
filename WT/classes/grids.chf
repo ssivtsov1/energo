@@ -1,0 +1,10 @@
+class TGrid: ftable 2
+  method string Sum(int,int,int,int): offset 99;
+  method string Mul(int,int,int,int): offset 97;
+  method string Max(int,int,int,int): offset 96;
+  method string Cell(int,int): offset 92;
+  method int Next(): offset 95;
+  method int First(): offset 94;
+  method string Field(string): offset 93;
+  field int X: offset 4;
+  field int Y: offset 8;

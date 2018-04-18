@@ -1,0 +1,197 @@
+//---------------------------------------------------------------------------
+
+#ifndef fEqpBaseH
+#define fEqpBaseH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+#include "ZPgSqlQuery.hpp"
+#include "ZQuery.hpp"
+#include <ComCtrls.hpp>
+#include <Db.hpp>
+#include <ExtCtrls.hpp>
+#include <ToolWin.hpp>
+#include <Grids.hpp>
+#include "fDet.h"
+#include "WinGrid.h"
+#include <Buttons.hpp>
+#include <ImgList.hpp>
+#include <Mask.hpp>
+
+#ifndef FTreeIncl
+#include "ftree.h"
+#define FTreeIncl
+#endif
+
+#include <Buttons.hpp>
+#include <Mask.hpp>
+#include <ImgList.hpp>
+//---------------------------------------------------------------------------
+class TfTreeForm;
+
+class TfEqpEdit : public TfTWTCompForm
+{
+__published:	// IDE-managed Components
+        TCoolBar *CoolBar1;
+        TPanel *pEqpDet;
+        TToolBar *EqpToolBar;
+        TToolButton *tbDelInst;
+        TToolButton *tbNewInst;
+        TToolButton *tbSave;
+        TToolButton *tbCancel;
+        TPageControl *PageControl;
+        TTabSheet *tsMain;
+        TTabSheet *tsPlaces;
+        TPanel *pFramePanel;
+        TLabel *lType_eqp;
+        TSpeedButton *sbSelAddr;
+        TLabel *Label1;
+        TLabel *Label2;
+        TLabel *Label3;
+        TLabel *Label4;
+        TLabel *Label5;
+        TEdit *edName_eqp;
+        TEdit *edNum_eqp;
+        TMaskEdit *edDt_install;
+        TMaskEdit *edDt_change;
+        TCheckBox *chLoss_power;
+        TEdit *edAddress;
+        TPanel *Panel1;
+        TStringGrid *grStations;
+        TLabel *Label6;
+        TToolButton *ToolButton1;
+        TToolButton *ToolButton2;
+        TToolButton *tbAddAddress;
+        TToolButton *tbDelAddress;
+        TImageList *ImageList1;
+        TTabSheet *tsUse;
+        TPanel *Panel2;
+        TLabel *Label9;
+        TStringGrid *grAbons;
+        TToolButton *tbAddAbon;
+        TToolButton *tbDelAbon;
+        TToolButton *ToolButton5;
+        TTabSheet *tsAddAdr;
+        TPanel *Panel3;
+        TLabel *Label10;
+        TSpeedButton *sbAddrUp;
+        TSpeedButton *sbAddrDown;
+        TStringGrid *grAddress;
+        TLabel *Label14;
+        TLabel *Label7;
+        TLabel *lNumReq;
+        TLabel *lCode_eqp;
+        TToolButton *tbHistory;
+        TBitBtn *btAdditionalParams;
+        TCheckBox *chOwner;
+        TLabel *lLastIndDate;
+        void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+        void __fastcall tbNewInstClick(TObject *Sender);
+        void __fastcall tbDelInstClick(TObject *Sender);
+        void __fastcall FormCreate(TObject *Sender);
+        void __fastcall tbSaveClick(TObject *Sender);
+        void __fastcall tbCancelClick(TObject *Sender);
+
+        void __fastcall tbSaveClickAlt(TObject *Sender);
+        void __fastcall tbCancelClickAlt(TObject *Sender);
+
+        void __fastcall grStationsEnter(TObject *Sender);
+        void __fastcall grStationsExit(TObject *Sender);
+        void __fastcall sbSelAddrClick(TObject *Sender);
+        void __fastcall grAddressClick(TObject *Sender);
+        void __fastcall tbAddAddressClick(TObject *Sender);
+        void __fastcall tbDelAddressClick(TObject *Sender);
+        void __fastcall sbAddrUpClick(TObject *Sender);
+        void __fastcall grAddressEnter(TObject *Sender);
+        void __fastcall grAddressExit(TObject *Sender);
+        void __fastcall edDataChange(TObject *Sender);
+        void __fastcall FormHide(TObject *Sender);
+        void __fastcall chLoss_powerClick(TObject *Sender);
+        void __fastcall tbDelAbonClick(TObject *Sender);
+        void __fastcall tbAddAbonClick(TObject *Sender);
+        void __fastcall PageControlEnter(TObject *Sender);
+        void __fastcall PageControlExit(TObject *Sender);
+        void __fastcall FormActivate(TObject *Sender);
+        void __fastcall edDt_installEnter(TObject *Sender);
+        void __fastcall tbHistoryClick(TObject *Sender);
+        void __fastcall btAdditionalParamsClick(TObject *Sender);
+        void __fastcall grStationsDblClick(TObject *Sender);
+private:	// User declarations
+public:		// User declarations
+        __fastcall TfEqpEdit(TComponent* Owner);
+        void  ShowEqpAddress(void);
+        bool  ShowData(int eqp,bool readonly=false);
+        void  ShowEqpDet(int m);
+        void  ShowEqpInst(void);
+        void  ShowEqpUse(void);
+        void __fastcall AbonAccept (TObject* Sender);
+        bool  CheckData(void);
+        bool __fastcall SaveOnExit(void);
+
+        void __fastcall CreateNewEquipment(int eqpid);
+        void __fastcall CreateNewByType(int type,AnsiString type_name);
+        void __fastcall ShowNewEqp(void);
+        int __fastcall SaveNewEquipment(void);
+        bool __fastcall ChangeEquipment(void);
+        bool __fastcall DelEquipment(int id);
+        //--------------------------
+        void __fastcall PlaceAccept (TObject* Sender);
+        void _fastcall ShowPlaces(void);
+        void _fastcall ShowKinds(void);
+        void __fastcall KindAccept (TObject* Sender);
+        void __fastcall KindClose(TObject* Sender, bool &CanClose);
+        void __fastcall AddrAccept (TObject* Sender);
+        void __fastcall MainAddrAccept (TObject* Sender);
+
+        void __fastcall CancelInsert(TDataSet* DataSet);
+        void __fastcall AfterPost(TDataSet* DataSet);
+        void __fastcall ParamAccept (TObject* Sender);
+        void __fastcall AdditionalParamsGridClose(TObject *Sender, bool &CanClose);  
+
+        int usr_id;
+        bool CangeLogEnabled;
+        bool fReadOnly;      // Режим только для чтения
+
+        bool IsModified;
+
+        int eqp_id;
+        int abonent_id;
+        bool is_res; //это оборудование РЕСа
+        int mode;
+        int EqpType;
+        int inst_station;
+        int id_table;
+        int id_table_ind;
+        int id_address;
+
+        AnsiString DetEditName;
+        AnsiString sqlstr;
+        TfEqpDet *DetEditForm;
+        TfTreeForm *ParentTreeForm;
+        TZPgSqlQuery *ZEqpQuery;
+        // -- Запрос в списке, из которого вызвана форма(для обновления)
+        TZPgSqlQuery *ParentDataSet;
+        TDateTimePicker* dtAddParamDate;
+
+        TDate LastDate; //Последняя сохраненная дата оборудования
+        //-------Для совместимости с TWT...
+ //       void _fastcall ActivateMenu(TObject *Sender);
+ //       TMenuItem *WindowMenu;
+ //       AnsiString ID;
+
+        bool bt_save_enable;
+        bool bt_area_enable;
+        bool bt_abon_enable;
+        bool bt_hist_enable;
+
+        bool ed_name_enable;
+        bool ed_num_enable;
+        bool ed_addr_enable;
+        bool ed_lost_enable;
+};
+//---------------------------------------------------------------------------
+//extern PACKAGE TfEqpEdit *fEqpEdit;
+//---------------------------------------------------------------------------
+#endif

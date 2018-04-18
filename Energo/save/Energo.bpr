@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="Energo.exe"/>
+    <OBJFILES value="OBJ\Energo.obj OBJ\Main.obj OBJ\EqpList.obj OBJ\Log.obj OBJ\fCable.obj 
+      OBJ\fChange.obj OBJ\fComp.obj OBJ\fCompI.obj OBJ\fDet.obj 
+      OBJ\fEqpAirLineDet.obj OBJ\fEqpBase.obj OBJ\fEqpBorderDet.obj 
+      OBJ\fEqpSDet.obj OBJ\fEqpTheMeterDet.obj OBJ\fMeter.obj 
+      OBJ\fStationDet.obj OBJ\ftree.obj OBJ\equipment.obj OBJ\fBillPrint.obj 
+      OBJ\fParamSel.obj OBJ\fEqpThePointDet.obj OBJ\AreaList.obj 
+      OBJ\fFiderDet.obj OBJ\fBalRep.obj OBJ\fTaxPrint.obj OBJ\fTaxList.obj 
+      OBJ\fTaxCorPrint.obj OBJ\RepSaldo.obj OBJ\EqpSpr.obj OBJ\fDemandPrint.obj 
+      OBJ\fBankPrint.obj OBJ\AbonConnect.obj OBJ\fHist.obj OBJ\DelEqpList.obj 
+      OBJ\fBal.obj OBJ\fTaxListAll.obj OBJ\ftaxprintpar.obj OBJ\fPeriodSel.obj 
+      OBJ\fBillListAll.obj OBJ\fTaxDeleteAll.obj OBJ\fLogin.obj 
+      OBJ\fDemLimit.obj OBJ\f2kAct.obj OBJ\CliPowerIndic.obj OBJ\fCalendar.obj 
+      OBJ\fPenInf.obj OBJ\fAbonSw.obj OBJ\fReps.obj OBJ\fBillAct.obj 
+      OBJ\Address.obj OBJ\CliDemL.obj OBJ\AddrMain.obj OBJ\BankScr.obj 
+      OBJ\ClientBill.obj OBJ\CLIENTlIST.obj OBJ\ClientSprParam.obj 
+      OBJ\CliSald.obj OBJ\CliState.obj OBJ\Documents.obj OBJ\FOpenMonthM.obj 
+      OBJ\FSebPlan.obj OBJ\SysBase.obj OBJ\SysRelat.obj OBJ\SysUser.obj 
+      OBJ\SysUserPwdF.obj OBJ\SysVarM.obj OBJ\SysVers.obj OBJ\CommonTable.obj 
+      OBJ\BankAccountSel.obj OBJ\BankPScr.obj OBJ\fEdTaxParam.obj 
+      OBJ\Inspect.obj OBJ\RepInspect.obj OBJ\ResDemL.obj OBJ\fCheckFider.obj 
+      OBJ\fbalConnSw.obj OBJ\PlombList.obj OBJ\WorkList.obj OBJ\point_card.obj 
+      OBJ\fbalConnSwEdit.obj OBJ\FormFtp.obj OBJ\PlombInsert.obj 
+      OBJ\fmonFiderWorkEdit.obj OBJ\fmonFiderWorks.obj OBJ\FWorkPlan.obj 
+      OBJ\point_blank.obj"/>
+    <RESFILES value="Energo.res tools.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) eqp\Log.dfm eqp\fChange.dfm eqp\fComp.dfm eqp\fCompI.dfm 
+      eqp\fDet.dfm eqp\fEqpAirLineDet.dfm eqp\fEqpBase.dfm eqp\fEqpBorderDet.dfm 
+      eqp\fEqpSDet.dfm eqp\fEqpTheMeterDet.dfm eqp\fStationDet.dfm eqp\ftree.dfm 
+      bill\fBillPrint.dfm eqp\fParamSel.dfm eqp\fEqpThePointDet.dfm 
+      eqp\fFiderDet.dfm balans\fBalRep.dfm tax\fTaxPrint.dfm 
+      tax\fTaxCorPrint.dfm report\RepSaldo.dfm report\fDemandPrint.dfm 
+      report\fBankPrint.dfm balans\fBal.dfm tax\ftaxprintpar.dfm 
+      tax\fPeriodSel.dfm tax\fTaxDeleteAll.dfm bill\fLogin.dfm rep\f2kAct.dfm 
+      bill\fCalendar.dfm bill\fPenInf.dfm rep\fReps.dfm bill\fBillAct.dfm 
+      OSA\BankScr.dfm OSA\CliState.dfm OSA\FOpenMonthM.dfm OSA\SysBase.dfm 
+      OSA\SysUserPwdF.dfm OSA\SysVarM.dfm OSA\SysVers.dfm tax\fEdTaxParam.dfm 
+      OSA\RepInspect.dfm balans\fCheckFider.dfm eqp\point_card.dfm 
+      balans\fbalConnSwEdit.dfm OSA\FormFtp.dfm eqp\PlombInsert.dfm 
+      monitor\fmonFiderWorkEdit.dfm eqp\point_blank.dfm"/>
+    <LIBFILES value="Lib\VMachine.lib lib\wt.lib"/>
+    <LIBRARIES value="RXDB5.lib RXCTL5.lib vclado50.lib B5XLR4_R.lib NMFAST50.lib tsypcb50.lib 
+      ZCOMMONCB5.lib ZDBWARECB5.lib ZPgSqlCB5.lib bcbsmp50.lib vclbde50.lib 
+      vcldb50.lib vclx50.lib qrpt50.lib vcl50.lib"/>
+    <SPARELIBS value="vcl50.lib qrpt50.lib vclx50.lib vcldb50.lib vclbde50.lib bcbsmp50.lib 
+      ZPgSqlCB5.lib ZDBWARECB5.lib ZCOMMONCB5.lib tsypcb50.lib NMFAST50.lib 
+      B5XLR4_R.lib vclado50.lib RXCTL5.lib RXDB5.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Vcldb50.bpi vclado50.bpi ibsmp50.bpi 
+      VCLBDE50.bpi vcldbx50.bpi Qrpt50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi 
+      Dss50.bpi TeeQR50.bpi VCLIB50.bpi Vclmid50.bpi vclie50.bpi Inetdb50.bpi 
+      Inet50.bpi NMFast50.bpi webmid50.bpi bcbie50.bpi dclocx50.bpi 
+      bcb2kaxserver50.bpi dclusr50.bpi ZCommonCB5.bpi ZDbwareCB5.bpi 
+      ZPgSqlCB5.bpi tsypcb50.bpi tdbecb50.bpi"/>
+    <PATHCPP value=".;eqp;bill;balans;tax;report;rep;OSA;monitor"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="Energo.cpp"/>
+    <INCLUDEPATH value="monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\include;$(BCB)\include\vcl;..\Component\c5\WT\include;&quot;..\Component\c5\XL Report 4.0\B5Units&quot;;..\Component\c5\XMLPars2417Free\XMLPrsrFree\16Bit\Builder5;..\Component\c5\zeosdbo;..\Component\c5\zeosdbo\common;..\Component\c5\zeosdbo\dbase;..\Component\c5\RX&amp;Polaris\RX\Units"/>
+    <LIBPATH value="monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\Component\c5\WT\Lib;..\Component\c5\WT\include;&quot;..\Component\c5\XL Report 4.0\B5Units&quot;;..\Component\c5\XMLPars2417Free\XMLPrsrFree\16Bit\Builder5;..\Component\c5\zeosdbo;..\Component\c5\zeosdbo\common;..\Component\c5\zeosdbo\dbase;..\Component\c5\RX&amp;Polaris\RX\Units"/>
+    <WARNINGS value="-wuse -wucp -wstv -wstu -wpin -w-par -wnod -wnak -w-8032 -w-8031 -w-8030 
+      -w-8029 -w-hid -wcln -wbbf -wamp -wamb"/>
+    <WARNOPTSTR value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-Imonitor -IOSA -Irep -Ireport -Itax -Ibalans -Ibill -Ieqp 
+      -I$(BCB)\include -I$(BCB)\include\vcl -I..\Component\c5\WT\include 
+      -I&quot;..\Component\c5\XL Report 4.0\B5Units&quot; 
+      -I..\Component\c5\XMLPars2417Free\XMLPrsrFree\16Bit\Builder5 
+      -I..\Component\c5\zeosdbo -I..\Component\c5\zeosdbo\common 
+      -I..\Component\c5\zeosdbo\dbase -I..\Component\c5\RX&amp;Polaris\RX\Units 
+      -src_suffix cpp -D_DEBUG -type_code_info -impl_inherit -gen_included_files 
+      -no_tie -boa"/>
+    <CFLAG1 value="-O2 -H=vcl50.csm -Hc -Vx -Ve -Vmp -f- -X- -r- -a8 -5 -b -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2OBJ -N0OBJ -$YD -$W -$U -$O- -$I- -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd /z /x /n /c"/>
+    <LFLAGS value="-IOBJ -D&quot;&quot; -Rr -aa -Tpe -GD -x -Gn -M -w -v -wdpl"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=1
+MinorVer=1
+Release=1
+Build=10
+Debug=1
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1058
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=ВАТ ЕК &quot;Черниговобленерго&quot;
+FileDescription=
+FileVersion=1.1.1.10
+InternalName=energo.exe
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=energo.exe
+ProductName=Енергия --- Физические лица
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+C:\Windows\system32\ibsmp50.bpl=Borland C++ InterBase Alerter Component
+$(BCB)\Bin\dcltee50.bpl=TeeChart 5.0 Components
+$(BCB)\Bin\dcldss50.bpl=Borland Decision Cube Components
+$(BCB)\Bin\dclsmpedit50.bpl=Borland Editor Script Enhancements
+$(BCB)\Bin\dclmid50.bpl=Borland MIDAS Components
+$(BCB)\Bin\dclnet50.bpl=Borland Internet Components
+$(BCB)\Bin\dclwbm50.bpl=Borland InternetExpress Components
+
+[HistoryLists\hlIncludePath]
+Count=30
+Item0=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\include;$(BCB)\include\vcl;..\Component\c5\WT\include;..\Component\c5\XL Report 4.0\B5Units;..\Component\c5\XMLPars2417Free\XMLPrsrFree\16Bit\Builder5;..\Component\c5\zeosdbo;..\Component\c5\zeosdbo\common;..\Component\c5\zeosdbo\dbase;..\Component\c5\RX&amp;Polaris\RX\Units
+Item1=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\include;$(BCB)\include\vcl;..\Component\c5\WT\include
+Item2=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\include;$(BCB)\include\vcl
+Item3=$(BCB)\include;$(BCB)\include\vcl
+Item4=monitor;d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL;C:\Program Files\Borland\CBuilder5\Include\rx\;..\Components\XMLPrsrFree\8Bit\Builder5
+Item5=monitor;d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL;C:\Program Files\Borland\CBuilder5\Include\rx\;D:\WTools\Components\XMLPrsrFree\8Bit\Builder5
+Item6=monitor;d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL;C:\Program Files\Borland\CBuilder5\Include\rx\
+Item7=d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL;C:\Program Files\Borland\CBuilder5\Include\rx\
+Item8=d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL;C:\Program Files\Borland\CBuilder5\Include\rx
+Item9=d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;include\XL
+Item10=d:\program files\Borland\CBuilder5\Projects\;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item11=d:\program files\Borland\CBuilder5\Projects;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item12=OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item13=C:\Program Files\Borland\CBuilder5\Projects\;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item14=C:\Program Files\Borland\CBuilder5\Projects;report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item15=report;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item16=report;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;include\XL
+Item17=report;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\;E:\WTools\energo8\include\XL
+Item18=report;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;E:\Imports\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\installed\cr_vcl\;E:\XL\B5Units\
+Item19=report;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\installed\cr_vcl;..\..\..\XL\B5Units
+Item20=report;..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\installed\cr_vcl;..\..\..\XL\B5Units
+Item21=report;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\installed\cr_vcl;C:\Program Files\Borland\XL\B5Units
+Item22=report;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\installed\cr_vcl
+Item23=..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\installed\cr_vcl
+Item24=..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;C:\Program Files\Borland\installed\cr_vcl\CrDSVcl\CBuilder5;C:\Program Files\Borland\installed\cr_vcl
+Item25=..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports
+Item26=..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports
+Item27=..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports;C:\Program Files\Borland\cr_vcl\ds\CrDSVcl\CBuilder5
+Item28=..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;..\..\Imports
+Item29=..\..\..\zeosdbo\dbase;tax;..\;balans;rep;..\Images;C:\Program Files\Borland\CBuilder5\Projects\;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\include;$(BCB)\include\vcl;include;lib;include\ZEOS;C:\Program Files\Borland\CBuilder5\Imports\
+
+[HistoryLists\hlLibraryPath]
+Count=30
+Item0=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\Component\c5\WT\Lib ;..\Component\c5\WT\include;..\Component\c5\XL Report 4.0\B5Units;..\Component\c5\XMLPars2417Free\XMLPrsrFree\16Bit\Builder5;..\Component\c5\zeosdbo;..\Component\c5\zeosdbo\common;..\Component\c5\zeosdbo\dbase;..\Component\c5\RX&amp;Polaris\RX\Units
+Item1=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\Component\c5\WT\Lib
+Item2=monitor;OSA;rep;report;tax;balans;bill;eqp;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item3=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item4=..\Components\Eazy\demo;monitor;d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS;..\Components\rx\RX_BC5\RX\Units\Resource;..\Components\XMLPrsrFree\8Bit\Builder5
+Item5=..\Components\Eazy\demo;monitor;d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS;..\Components\rx\RX_BC5\RX\Units\Resource;D:\WTools\Components\XMLPrsrFree\8Bit\Builder5
+Item6=..\Components\Eazy\demo;monitor;d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS;..\Components\rx\RX_BC5\RX\Units\Resource
+Item7=monitor;d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS;D:\WTools\Components\rx\RX_BC5\RX\Units\Resource
+Item8=monitor;d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS
+Item9=d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS
+Item10=d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;$(BCB)\lib\release;..\zeos;include\ZEOS
+Item11=d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos;include\ZEOS
+Item12=d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos;D:\WTools\Energo\include\ZEOS;include\ZEOS
+Item13=d:\program files\Borland\CBuilder5\Projects\;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item14=d:\program files\Borland\CBuilder5\Projects;..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item15=..\Eazy\demo;OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item16=OSA;C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item17=C:\Program Files\Borland\CBuilder5\Projects\;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item18=C:\Program Files\Borland\CBuilder5\Projects;report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item19=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release;..\zeos
+Item20=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release
+Item21=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;..\zeosdbo\common\;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release
+Item22=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;..\zeosdbo\dbase;E:\zeosdbo\common\;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release
+Item23=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;E:\zeos\zeosdbo\common\;E:\zeos\zeosdbo\dbase\;..\zeosdbo\common;..\zeosdbo\dbase;E:\zeosdbo\common\;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\;$(BCB)\lib\release
+Item24=report;E:\cr_vcl\ds\CrDSVcl\CBuilder5\;E:\cr_vcl\;E:\Common Files\Gnostice Shared\Compression\Lib\C5\;E:\Gnostice\QRExport3\Lib\C5\;..\__print\easy\demo;E:\zeosdbo\dbase\;tax;..;balans;rep;..\Images;docu\sql;E:\Lib\Release\;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;E:\zeos\zeosdbo\common\;E:\zeos\zeosdbo\dbase\;..\zeosdbo\common;..\zeosdbo\dbase;E:\zeosdbo\common\;E:\installed\cr_vcl\;E:\installed\cr_vcl\CrDSVcl\CBuilder5\;E:\XL\B5Units\
+Item25=report;..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Common Files\Gnostice Shared\Compression\Lib\C5;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\__print\easy\demo;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;..\..\Lib\Release;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;..\..\zeos\zeosdbo\common;..\..\zeos\zeosdbo\dbase;..\zeosdbo\common;..\zeosdbo\dbase;..\..\..\zeosdbo\common;..\..\..\installed\cr_vcl;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\XL\B5Units
+Item26=report;..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Common Files\Gnostice Shared\Compression\Lib\C5;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\__print\easy\demo;..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;..\..\Lib\Release;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;..\..\zeos\zeosdbo\common;..\..\zeos\zeosdbo\dbase;..\zeosdbo\common;..\zeosdbo\dbase;..\..\..\zeosdbo\common;..\..\..\installed\cr_vcl;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5;..\..\..\XL\B5Units
+Item27=report;..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Common Files\Gnostice Shared\Compression\Lib\C5;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\__print\easy\demo;..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;..\..\Lib\Release;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;..\..\zeos\zeosdbo\common;..\..\zeos\zeosdbo\dbase;..\zeosdbo\common;..\zeosdbo\dbase;..\..\..\zeosdbo\common;..\..\..\installed\cr_vcl;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5
+Item28=report;..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Common Files\Gnostice Shared\Compression\Lib\C5;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\__print\easy\demo;..\..\..\zeosdbo\dbase;tax;..;balans;rep;..\Images;docu\sql;..\..\Lib\Release;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;..\..\zeos\zeosdbo\common;..\..\zeos\zeosdbo\dbase;..\zeosdbo\common;..\zeosdbo\dbase;..\..\..\zeosdbo\common;..\..\..\installed\cr_vcl;..\..\..\installed\cr_vcl\CrDSVcl\CBuilder5
+Item29=..\..\..\cr_vcl\ds\CrDSVcl\CBuilder5;..\..\..\cr_vcl;..\..\..\..\Common Files\Gnostice Shared\Compression\Lib\C5;..\..\..\..\Gnostice\QRExport3\Lib\C5;..\__print\easy\demo;..\..\..\zeosdbo\dbase;tax;..\..\Projects;balans;rep;..\Images;docu\sql;..\..\Lib\Release;bill;docu\Otch;docu;eqp;client;..\WT;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;lib;lib\zeos;..\..\zeos\zeosdbo\common;..\..\zeos\zeosdbo\dbase;..\zeosdbo\common;..\zeosdbo\dbase;..\..\..\zeosdbo\common;C:\Program Files\Borland\installed\cr_vcl;C:\Program Files\Borland\installed\cr_vcl\CrDSVcl\CBuilder5
+
+[HistoryLists\hlDebugSourcePath]
+Count=8
+Item0=d:\cbuilder5\source\vcl;D:\WTools\WT\;D:\WTools\do_razbora\zeosdbo\dbase\
+Item1=d:\cbuilder5\source\vcl;D:\WTools\WT\
+Item2=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\For_OSA\zeosdbo\common\;E:\WTool\WT\;E:\WTools\zeosdbo\dbase\;D:\WTools\WT\
+Item3=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\For_OSA\zeosdbo\common\;E:\WTool\WT\;E:\WTools\zeosdbo\dbase\
+Item4=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\For_OSA\zeosdbo\common\;E:\WTool\WT\
+Item5=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\For_OSA\zeosdbo\common\
+Item6=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\
+Item7=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=2
+Item0=OBJ
+Item1=OBJ[Debugging]
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

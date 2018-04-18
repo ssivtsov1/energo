@@ -1,0 +1,11 @@
+Сравнение файлов fEqpTheMeterDet.cpp и FEQPTHEMETERDET.~CPP
+***** fEqpTheMeterDet.cpp
+    ZEqpQuery->Open();
+   }                                      
+   catch(...)
+***** FEQPTHEMETERDET.~CPP
+    ZEqpQuery->Open();
+   }
+   catch(...)
+*****
+

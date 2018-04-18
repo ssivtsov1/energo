@@ -1,0 +1,94 @@
+object fPrint2krAct: TfPrint2krAct
+  Left = 333
+  Top = 300
+  Width = 321
+  Height = 119
+  Caption = 'Печать расчета'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 313
+    Height = 92
+    Align = alClient
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 36
+      Top = 16
+      Width = 237
+      Height = 25
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 
+        'Сформировать расчет суммы оплаты за  превышении договорных лимит' +
+        'ов?'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+    end
+    object BitBtn1: TBitBtn
+      Left = 144
+      Top = 60
+      Width = 75
+      Height = 25
+      Caption = 'Да'
+      TabOrder = 0
+      OnClick = BitBtn1Click
+      Kind = bkOK
+    end
+    object BitBtn2: TBitBtn
+      Left = 228
+      Top = 60
+      Width = 75
+      Height = 25
+      Caption = 'Нет'
+      TabOrder = 1
+      Kind = bkCancel
+    end
+  end
+  object ZQXLReps: TZPgSqlQuery
+    CachedUpdates = False
+    ShowRecordTypes = [ztModified, ztInserted, ztUnmodified]
+    Options = [doHourGlass, doAutoFillDefs, doQuickOpen]
+    LinkOptions = [loAlwaysResync]
+    Constraints = <>
+    ExtraOptions = [poTextAsMemo, poOidAsBlob]
+    Macros = <>
+    RequestLive = False
+    Left = 92
+    Top = 65528
+  end
+  object xlReport: TxlReport
+    DataSources = <>
+    Preview = False
+    Params = <>
+    Left = 136
+    Top = 65528
+  end
+  object ZQXLReps2: TZPgSqlQuery
+    CachedUpdates = False
+    ShowRecordTypes = [ztModified, ztInserted, ztUnmodified]
+    Options = [doHourGlass, doAutoFillDefs, doQuickOpen]
+    LinkOptions = [loAlwaysResync]
+    Constraints = <>
+    ExtraOptions = [poTextAsMemo, poOidAsBlob]
+    Macros = <>
+    RequestLive = False
+    Left = 92
+    Top = 24
+  end
+end

@@ -1,0 +1,370 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+
+#pragma hdrstop
+#include "Main.h"
+#include "fCable.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+//TfCableSpr *fCableSpr;
+AnsiString sqlstr;
+//---------------------------------------------------------------------------
+__fastcall TfCableSpr::TfCableSpr(TComponent* AOwner,AnsiString FName) : TWTDoc(AOwner,FName)
+
+{
+  ZEqpQuery = new TWTQuery(Application);
+  ZEqpQuery->MacroCheck=true;
+  TZDatasetOptions Options;
+  Options.Clear();
+  Options << doQuickOpen;
+  ZEqpQuery->Options=Options;
+  ZEqpQuery->RequestLive=false;
+  ZEqpQuery->CachedUpdates=false;
+
+  //-----------------------------
+  MainTabSheet->Caption="";
+  PageControl->TabHeight=1;
+  PageControl->TabWidth=1;
+
+  CoolBar->RemoveToolBar((TWTToolBar*)(CoolBar->Bands->Items[0]->Control));
+
+  TWTToolBar* MyBar=new TWTToolBar(this);
+  MyBar->Parent=CoolBar;
+  MyBar->ID="Главная панель";
+
+  MyBar->AddButton("Save", "Сохранить", tbSaveClick)->ID="Save";
+  MyBar->AddButton("Cancel", "Отмена", tbCancelClick)->ID="Cancel";
+  CoolBar->AddToolBar(MyBar);
+
+  TWTPanel* PEdits=MainPanel->InsertPanel(30,true,180); // (X,bool,Y) X,Y min size panel
+
+  edType=(TEdit*)(PEdits->Params->AddSimple("Тип",150,"")->Control);
+  edNormative=(TEdit*)(PEdits->Params->AddSimple("ГОСТ ",150,"",false)->Control);
+  edVoltage_nom=(TEdit*)(PEdits->Params->AddSimple("Номинальное напряжение (первичное),  В",90,"")->Control);
+  edAmperage_nom=(TEdit*)(PEdits->Params->AddSimple("Номинальный ток (первичный), А  ",90,"",false)->Control);
+  edVoltage_max=(TEdit*)(PEdits->Params->AddSimple("Максимальное напряжение (первичное), В",90,"")->Control);
+  edAmperage_max=(TEdit*)(PEdits->Params->AddSimple("Максимальный ток (первичный), А",90,"",false)->Control);
+  edRo=(TEdit*)(PEdits->Params->AddSimple("Активное сопротивление,Ом/км",90,"")->Control);
+  edDPo=(TEdit*)(PEdits->Params->AddSimple("Удельные потери мощности,кВт/км",90,"",false)->Control);
+  edSnom=(TEdit*)(PEdits->Params->AddSimple("Номинальное сечение, мм2",90,"")->Control);
+  edCords=(TEdit*)(PEdits->Params->AddSimple("Количество жил",90,"", false)->Control);
+  edCover=(TEdit*)(PEdits->Params->AddSimple("Вид изоляции",257,"")->Control);
+  TButton* butt;
+  butt= new TButton(this);
+//  butt->Parent=PEdits;
+  //butt->Glyph=SpeedButton3->Glyph;
+ // butt->Flat=true;
+  PEdits->Params->AddButton(butt,false);
+  //butt->Align=alLeft;
+  butt->Align=alNone;
+  butt->Top=4;
+  butt->Height=21;
+  butt->Width=22;
+  //butt->Left=430;
+  butt->Caption="...";
+  butt->OnClick=CoverClick;
+  butt->ShowHint=true;
+  butt->Hint="Открыть справочник изоляций.";
+
+  //
+  // Таблица
+  //
+  TWTPanel* PCords=MainPanel->InsertPanel(300,true,100);
+
+  TWTQuery *Query = new  TWTQuery(this);
+  Query->Options << doQuickOpen;
+
+  Query->Sql->Clear();
+  Query->Sql->Add("select ca.id,ca.id_type_eqp,ca.materal,ca.calc_diam,ca.cord_diam,ca.cord_qn,ca.cover " );
+  Query->Sql->Add("from eqi_cable_c_tbl as ca where id_type_eqp= :id;");
+//  Query->ParamByName("id")->AsInteger=eqid;
+
+  CableGrid = new TWTDBGrid(PCords, Query);
+  CableQuery = CableGrid->Query;
+  PCords->Params->AddGrid(CableGrid, true)->ID="Cord";
+
+  CableQuery->BeforePost=NewCord;
+
+  OnCloseQuery=FormClose;
+
+  TStaticText *lHead=new TStaticText(PEdits);
+  lHead->Parent=PEdits;
+  lHead->Caption="Описание жил кабеля";
+  lHead->Top=160;
+  lHead->Left=1;
+  lHead->Width=600;
+  lHead->Alignment=Classes::taCenter;
+  lHead->BorderStyle=sbsSunken;
+
+  StatusBar = new TStatusBar(this);
+  StatusBar->Parent = this;
+  StatusBar->SimplePanel=false;
+  TStatusPanel* SP=StatusBar->Panels->Add();
+  SP->Width=350;
+
+  refresh=0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TfCableSpr::FormClose(TObject *Sender, bool &CanClose)
+{
+ delete ZEqpQuery;
+ if (WCableGrid!=NULL) ParentDataSet->Refresh();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfCableSpr::ShowData(int compid)
+{
+  eqid=compid;
+  //--------------------------------------
+
+  CableGrid->SetFocus();
+
+  if (mode==0)
+   {
+    CableGrid->Enabled=false;
+    return;
+   }
+  //--------------------------------------
+
+
+     edType->Text=ParentDataSet->FieldByName("Type")->AsString;
+     edNormative->Text=ParentDataSet->FieldByName("Normative")->AsString;
+     edVoltage_nom->Text=ParentDataSet->FieldByName("Voltage_nom")->AsString;
+     edAmperage_nom->Text=ParentDataSet->FieldByName("amperage_nom")->AsString;
+     edVoltage_max->Text=ParentDataSet->FieldByName("Voltage_max")->AsString;
+     edAmperage_max->Text=ParentDataSet->FieldByName("Amperage_max")->AsString;
+
+     edRo->Text=ParentDataSet->FieldByName("ro")->AsString;
+     edDPo->Text=ParentDataSet->FieldByName("dpo")->AsString;
+     edSnom->Text=ParentDataSet->FieldByName("s_nom")->AsString;     
+
+     edCords->Text=ParentDataSet->FieldByName("Cords")->AsString;
+     CoverId=ParentDataSet->FieldByName("Cover")->AsInteger;
+     edCover->Text=ParentDataSet->FieldByName("covername")->AsString;
+
+
+     if (refresh==1) return;
+    //-------------------
+
+    ShowCordeGrid();
+}
+//---------------------------------------------------------------------------
+ bool TfCableSpr::SaveData(void)
+{
+   ZEqpQuery->Close();
+
+   sqlstr="update eqi_cable_tbl set type= :type,normative= :normative,voltage_nom= :voltage_nom,\
+   amperage_nom= :amperage_nom,voltage_max= :voltage_max,amperage_max= :amperage_max,\
+   cords= :cords, cover= :cover, s_nom = :s_nom, ro= :ro, dpo= :dpo where id= :id;";
+
+   ZEqpQuery->Sql->Clear();
+   ZEqpQuery->Sql->Add(sqlstr);
+   if (edType->Text!="")
+    ZEqpQuery->ParamByName("type")->AsString=edType->Text;
+   if (edNormative->Text!="")
+    ZEqpQuery->ParamByName("normative")->AsString=edNormative->Text;
+   if (edVoltage_nom->Text!="")
+    ZEqpQuery->ParamByName("voltage_nom")->AsInteger=StrToInt(edVoltage_nom->Text);
+   if (edAmperage_nom->Text!="")
+    ZEqpQuery->ParamByName("amperage_nom")->AsInteger=StrToInt(edAmperage_nom->Text);
+   if (edVoltage_max->Text!="")
+    ZEqpQuery->ParamByName("voltage_max")->AsInteger=StrToInt(edVoltage_max->Text);
+   if (edAmperage_max->Text!="")
+    ZEqpQuery->ParamByName("amperage_max")->AsInteger=StrToInt(edAmperage_max->Text);
+   if (edCords->Text!="")
+    ZEqpQuery->ParamByName("Cords")->AsInteger=StrToInt(edCords->Text);
+   if (edSnom->Text!="")
+    ZEqpQuery->ParamByName("s_nom")->AsFloat=StrToFloat(edSnom->Text);
+   if (edRo->Text!="")
+    ZEqpQuery->ParamByName("ro")->AsFloat=StrToFloat(edRo->Text);
+   if (edDPo->Text!="")
+    ZEqpQuery->ParamByName("dpo")->AsFloat=StrToFloat(edDPo->Text);
+
+
+   if (CoverId!=0)
+    ZEqpQuery->ParamByName("Cover")->AsInteger=CoverId;
+
+   ZEqpQuery->ParamByName("id")->AsInteger=eqid;
+
+   try
+     {
+      ZEqpQuery->ExecSql();
+     }
+   catch(...)
+     {
+      ShowMessage("Ошибка SQL :"+sqlstr);
+      ZEqpQuery->Close();
+//      ZEqpQuery->Transaction->Rollback();
+      return 0;
+     }
+//  ZEqpQuery->Transaction->Commit();
+  return 1;
+}
+//---------------------------------------------------------------------------
+
+  bool TfCableSpr::SaveNewData(void)
+{
+   ZEqpQuery->Close();
+
+   sqlstr="select eqi_newcable_fun( CAST( :type AS varchar), CAST( :normative AS varchar), :voltage_nom, :amperage_nom, :voltage_max, :amperage_max, :cords, :cover, :s_nom, :ro, :dpo);";
+   ZEqpQuery->Sql->Clear();
+   ZEqpQuery->Sql->Add(sqlstr);
+   if (edType->Text!="")
+    ZEqpQuery->ParamByName("type")->AsString=edType->Text;
+   if (edNormative->Text!="")
+    ZEqpQuery->ParamByName("normative")->AsString=edNormative->Text;
+   if (edVoltage_nom->Text!="")
+    ZEqpQuery->ParamByName("voltage_nom")->AsInteger=StrToInt(edVoltage_nom->Text);
+   if (edAmperage_nom->Text!="")
+    ZEqpQuery->ParamByName("amperage_nom")->AsInteger=StrToInt(edAmperage_nom->Text);
+   if (edVoltage_max->Text!="")
+    ZEqpQuery->ParamByName("voltage_max")->AsInteger=StrToInt(edVoltage_max->Text);
+   if (edAmperage_max->Text!="")
+    ZEqpQuery->ParamByName("amperage_max")->AsInteger=StrToInt(edAmperage_max->Text);
+   if (edCords->Text!="")
+    ZEqpQuery->ParamByName("Cords")->AsInteger=StrToInt(edCords->Text);
+   if (edSnom->Text!="")
+    ZEqpQuery->ParamByName("s_nom")->AsFloat=StrToFloat(edSnom->Text);
+   if (edRo->Text!="")
+    ZEqpQuery->ParamByName("ro")->AsFloat=StrToFloat(edRo->Text);
+   if (edDPo->Text!="")
+    ZEqpQuery->ParamByName("dpo")->AsFloat=StrToFloat(edDPo->Text);
+
+   if (CoverId!=0)
+    ZEqpQuery->ParamByName("Cover")->AsInteger=CoverId;
+
+   try
+     {
+      ZEqpQuery->Open();
+     }
+   catch(...)
+     {
+      ShowMessage("Ошибка SQL :"+sqlstr);
+      ZEqpQuery->Close();
+//      ZEqpQuery->Transaction->Rollback();
+      return 0;
+     }
+
+   if (ZEqpQuery->RecordCount!=0)
+     {
+      ZEqpQuery->First();
+      eqid=ZEqpQuery->Fields->Fields[0]->AsInteger;
+     }
+   else
+     {
+//     ZEqpQuery->Transaction->Rollback();
+     ZEqpQuery->Close();
+     return 0;
+     };
+
+   ZEqpQuery->Close();
+//   ZEqpQuery->Transaction->Commit();
+   return 1;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfCableSpr::tbSaveClick(TObject *Sender)
+{
+/* if ()
+  {
+   ShowMessage("");
+   return;
+  }
+  */
+/* if (mode==0)
+  {
+   SaveNewData();
+   mode=1;
+   ShowCordeGrid();
+  }
+ else SaveData(); */
+
+  if (mode==0)
+  {
+   if (SaveNewData())
+   {
+   CableGrid->Enabled=true;
+   ShowCordeGrid();
+   mode=1;
+   }
+  }
+ else
+  {
+  SaveData();
+  CableGrid->ApplyUpdatesMenu(Sender);
+  }
+
+ if (WCableGrid==NULL) return; //Таблицу уже закрыли
+
+ ParentDataSet->Refresh();
+
+ TLocateOptions SearchOptions;
+ SearchOptions.Clear();
+ ParentDataSet->Locate("id",eqid ,SearchOptions);
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfCableSpr::tbCancelClick(TObject *Sender)
+{
+ if (mode==0)
+  {
+    Close();
+  }
+ else
+  {
+    refresh=1;
+    if (WCableGrid==NULL) {Close(); return; } //Таблицу уже закрыли
+    ShowData(eqid);
+  }
+}
+//---------------------------------------------------------------------------
+void __fastcall TfCableSpr::NewCord(TDataSet* DataSet)
+{
+ CableGrid->Query->FieldByName("id_type_eqp")->AsInteger=eqid;
+}
+//-----------------------------------------------------------------------
+void __fastcall TfCableSpr::ShowCordeGrid(){
+
+  CableQuery->ParamByName("id")->AsInteger=eqid;
+
+  CableQuery->AddLookupField("MATNAME", "materal", "eqk_materals_tbl", "name","id");
+  CableQuery->AddLookupField("COVERNAME", "cover", "eqk_cover_tbl", "name","id");
+  CableQuery->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+
+  CableQuery->SetSQLModify("eqi_cable_c_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = CableGrid->AddColumn("MATNAME", "Материал", "Материал");
+  Field->SetOnHelp(((TMainForm*)MainForm)->EqiMatSpr);
+  Field = CableGrid->AddColumn("COVERNAME", "Изоляция", "Вид изоляции");
+  Field->SetOnHelp(((TMainForm*)MainForm)->EqiCoverSpr);
+  Field = CableGrid->AddColumn("calc_diam", "D провода расч.,мм", "Расчетный диаметр провода");
+  Field = CableGrid->AddColumn("cord_diam", "D проволок,мм", "Диамертр проволок");
+  Field = CableGrid->AddColumn("cord_qn", "Кол. проволок", "Количество проволок");
+ }
+//---------------------------------------------------------------------------
+void __fastcall TfCableSpr::CoverClick(TObject *Sender)
+{
+  TWTWinDBGrid* Grid;
+  Grid=((TMainForm* )MainForm)->EqiCoverGrid(NULL);
+  if(Grid==NULL) return;
+  else WCoverGrid=Grid;
+
+//  WCoverGrid->DBGrid->FieldSource = WCoverGrid->DBGrid->Query->GetTField("id");
+  WCoverGrid->DBGrid->StringDest = CoverId==0?AnsiString("-1"):IntToStr(CoverId);
+  WCoverGrid->DBGrid->OnAccept=CoverAccept;
+}
+//---------------------------------------------------------------------------
+void __fastcall TfCableSpr::CoverAccept (TObject* Sender)
+{
+  CoverId=StrToInt(WCoverGrid->DBGrid->StringDest);
+  edCover->Text=WCoverGrid->DBGrid->Table->FieldByName("name")->AsString;
+}

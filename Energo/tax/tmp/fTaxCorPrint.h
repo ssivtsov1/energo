@@ -1,0 +1,243 @@
+//---------------------------------------------------------------------------
+
+#ifndef fTaxCorPrintH
+#define fTaxCorPrintH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+#include <ExtCtrls.hpp>
+#include <Qrctrls.hpp>
+#include <QuickRpt.hpp>
+#include "ZPgSqlQuery.hpp"
+#include "ZQuery.hpp"
+#include <Db.hpp>
+#include <QRCtrls.hpp>
+//---------------------------------------------------------------------------
+class TfRepTaxCor : public TForm
+{
+__published:	// IDE-managed Components
+        TQuickRep *PrintTax;
+        TQRBand *QRBand1;
+        TQRShape *QRShape1;
+        TQRShape *QRShape2;
+        TQRShape *QRShape3;
+        TQRShape *QRShape4;
+        TQRLabel *QRLabel1;
+        TQRLabel *QRLabel2;
+        TQRMemo *QRMemo1;
+        TQRLabel *QRLabel3;
+        TQRLabel *QRLabel4;
+        TQRLabel *QRLabel6;
+        TQRLabel *QRLabel7;
+        TQRLabel *QRLabel9;
+        TQRLabel *QRLabel10;
+        TQRShape *QRShape5;
+        TQRShape *QRShape6;
+        TQRShape *QRShape7;
+        TQRShape *QRShape8;
+        TQRShape *QRShape9;
+        TQRShape *QRShape10;
+        TQRShape *QRShape11;
+        TQRShape *QRShape12;
+        TQRShape *QRShape13;
+        TQRShape *QRShape14;
+        TQRShape *QRShape15;
+        TQRShape *QRShape16;
+        TQRShape *QRShape17;
+        TQRShape *QRShape18;
+        TQRShape *QRShape19;
+        TQRShape *QRShape20;
+        TQRShape *QRShape21;
+        TQRShape *QRShape22;
+        TQRShape *QRShape23;
+        TQRShape *QRShape24;
+        TQRShape *QRShape25;
+        TQRShape *QRShape26;
+        TQRShape *QRShape27;
+        TQRShape *QRShape28;
+        TQRShape *QRShape29;
+        TQRShape *QRShape30;
+        TQRLabel *QRLabel11;
+        TQRLabel *QRLabel12;
+        TQRLabel *QRLabel13;
+        TQRLabel *QRLabel14;
+        TQRLabel *QRLabel15;
+        TQRLabel *QRLabel16;
+        TQRLabel *QRLabel17;
+        TQRLabel *QRLabel18;
+        TQRShape *QRShape31;
+        TQRShape *QRShape32;
+        TQRLabel *QRLabel19;
+        TQRLabel *QRLabel20;
+        TQRLabel *QRLabel21;
+        TQRLabel *QRLabel22;
+        TQRShape *QRShape33;
+        TQRShape *QRShape34;
+        TQRShape *QRShape35;
+        TQRShape *QRShape36;
+        TQRShape *QRShape39;
+        TQRShape *QRShape40;
+        TQRShape *QRShape41;
+        TQRShape *QRShape43;
+        TQRLabel *QRLabel23;
+        TQRLabel *QRLabel24;
+        TQRLabel *QRLabel25;
+        TQRLabel *QRLabel26;
+        TQRLabel *QRLabel29;
+        TQRLabel *QRLabel30;
+        TQRLabel *QRLabel34;
+        TQRLabel *lResName;
+        TQRLabel *lResAddr;
+        TQRLabel *lResPhone;
+        TQRLabel *lResSvidNum;
+        TQRLabel *lContract;
+        TQRLabel *lFormPay;
+        TQRLabel *lAbonAddr;
+        TQRLabel *lAbonPhone;
+        TQRLabel *lAbonName;
+        TQRLabel *lAbonSvidNum;
+        TQRLabel *QRLabel77;
+        TQRLabel *QRLabel78;
+        TQRLabel *QRLabel79;
+        TQRLabel *QRLabel80;
+        TQRLabel *QRLabel81;
+        TQRLabel *QRLabel82;
+        TQRLabel *QRLabel83;
+        TQRLabel *QRLabel84;
+        TQRLabel *QRLabel85;
+        TQRLabel *QRLabel86;
+        TQRLabel *QRLabel87;
+        TQRLabel *QRLabel88;
+        TQRLabel *lCorNum;
+        TQRLabel *QRLabel89;
+        TQRLabel *QRLabel90;
+        TQRLabel *QRLabel91;
+        TQRLabel *QRLabel92;
+        TQRLabel *QRLabel93;
+        TQRLabel *QRLabel94;
+        TQRLabel *QRLabel95;
+        TQRLabel *QRLabel96;
+        TQRLabel *QRLabel97;
+        TQRLabel *QRLabel98;
+        TQRLabel *QRLabel99;
+        TQRLabel *QRLabel100;
+        TQRBand *QRBand3;
+        TQRDBText *QRDBText7;
+        TQRDBText *QRDBText9;
+        TQRDBText *QRDBText11;
+        TQRDBText *QRDBText1;
+        TQRDBText *QRDBText2;
+        TQRDBText *QRDBText5;
+        TQRBand *QRBand2;
+        TQRLabel *QRLabel62;
+        TQRLabel *QRLabel63;
+        TQRLabel *QRLabel64;
+        TQRLabel *lBottomText;
+        TQRLabel *QRLabel66;
+        TQRLabel *QRLabel76;
+        TQRLabel *QRLabel31;
+        TQRShape *QRShape37;
+        TQRShape *QRShape38;
+        TQRShape *QRShape42;
+        TQRShape *QRShape111;
+        TQRShape *QRShape44;
+        TQRShape *QRShape134;
+        TQRShape *QRShape135;
+        TQRShape *QRShape144;
+        TQRLabel *QRLabel27;
+        TQRLabel *QRLabel28;
+        TQRLabel *QRLabel32;
+        TQRShape *QRShape145;
+        TQRLabel *QRLabel35;
+        TQRLabel *QRLabel116;
+        TQRLabel *QRLabel117;
+        TQRShape *QRShape155;
+        TQRShape *QRShape156;
+        TQRShape *QRShape186;
+        TQRShape *QRShape187;
+        TQRLabel *QRLabel118;
+        TQRLabel *QRLabel119;
+        TQRLabel *QRLabel120;
+        TQRLabel *QRLabel121;
+        TQRLabel *QRLabel122;
+        TQRLabel *QRLabel123;
+        TQRLabel *QRLabel124;
+        TQRBand *QrHeader;
+        TQRShape *QRShape56;
+        TQRShape *QRShape57;
+        TQRShape *QRShape58;
+        TQRShape *QRShape59;
+        TQRShape *QRShape60;
+        TQRShape *QRShape61;
+        TQRShape *QRShape62;
+        TQRShape *QRShape63;
+        TQRShape *QRShape64;
+        TQRShape *QRShape65;
+        TQRShape *QRShape66;
+        TQRLabel *QRLabel36;
+        TQRLabel *QRLabel37;
+        TQRLabel *QRLabel38;
+        TQRLabel *QRLabel39;
+        TQRLabel *QRLabel40;
+        TQRLabel *QRLabel41;
+        TQRLabel *QRLabel42;
+        TQRLabel *QRLabel43;
+        TQRLabel *QRLabel44;
+        TQRLabel *QRLabel45;
+        TQRLabel *QRLabel46;
+        TQRShape *QRShape67;
+        TQRShape *QRShape68;
+        TQRShape *QRShape69;
+        TQRShape *QRShape70;
+        TQRLabel *QRLabel33;
+        TQRLabel *QRLabel47;
+        TQRLabel *QRLabel50;
+        TQRLabel *QRLabel51;
+        TQRShape *QRShape45;
+        TQRShape *QRShape71;
+        TQRShape *QRShape72;
+        TQRShape *QRShape73;
+        TQRShape *QRShape74;
+        TQRShape *QRShape75;
+        TQRShape *QRShape76;
+        TQRShape *QRShape77;
+        TQRShape *QRShape79;
+        TQRShape *QRShape80;
+        TQRShape *QRShape81;
+        TQRShape *QRShape82;
+        TQRShape *QRShape83;
+        TQRShape *QRShape84;
+        TQRShape *QRShape85;
+        TQRLabel *QRLabel48;
+        TQRLabel *QRLabel49;
+        TQRShape *QRShape46;
+        TQRLabel *QRLabel52;
+        TQRLabel *lTaxInfo;
+        TZPgSqlQuery *ZQTax;
+        TZPgSqlQuery *ZQTaxSumm;
+        TQRExpr *QRExpr3;
+        TQRExpr *QRExpr1;
+        TQRExpr *QRExpr2;
+        TQRExpr *QRExpr4;
+        TQRLabel *QRLabel5;
+        TQRLabel *QRLabel8;
+        TQRLabel *lDateStr;
+        TQRLabel *lReason;
+        TQRLabel *QRLabel53;
+        TQRLabel *QRLabel54;
+        TQRLabel *QRLabel55;
+        TQRDBText *QRDBText3;
+        TQRDBText *QRDBText4;
+        void __fastcall QRBand3BeforePrint(TQRCustomBand *Sender,
+          bool &PrintBand);
+private:	// User declarations
+public:		// User declarations
+        __fastcall TfRepTaxCor(TComponent* Owner);
+   void __fastcall ShowTaxCor(int id_doc, int print =0);        
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TfRepTaxCor *fRepTaxCor;
+//---------------------------------------------------------------------------
+#endif

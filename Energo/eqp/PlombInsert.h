@@ -1,0 +1,88 @@
+//---------------------------------------------------------------------------
+
+#ifndef PlombInsertH
+#define PlombInsertH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+#include <Buttons.hpp>
+#include <ExtCtrls.hpp>
+#include "RxLookup.hpp"
+#include "ToolEdit.hpp"
+#include <Mask.hpp>
+#include "ZPgSqlQuery.hpp"
+#include "ZQuery.hpp"
+#include <Db.hpp>
+#include "TWTCompatable.h"
+#include "ftree.h"
+//---------------------------------------------------------------------------
+class TfPlombNew : public TfTWTCompForm
+{
+__published:	// IDE-managed Components
+        TPanel *Panel1;
+        TPanel *Panel2;
+        TRxLookupEdit *lcPoint;
+        TSpeedButton *bEqpTypeSel;
+        TStaticText *lAddr;
+        TRxLookupEdit *lcType;
+        TLabel *Label1;
+        TLabel *Label2;
+        TLabel *Label3;
+        TLabel *Label4;
+        TMaskEdit *edDateB;
+        TRxLookupEdit *lcPosition;
+        TLabel *Label5;
+        TComboBox *edPlombOwner;
+        TSpeedButton *sbDateClear;
+        TLabel *Label8;
+        TSpeedButton *SpeedButton3;
+        TEdit *edComment;
+        TLabel *Label10;
+        TEdit *edNumber;
+        TLabel *Label11;
+        TComboBox *edLocation;
+        TLabel *Label12;
+        TLabel *Label13;
+        TMaskEdit *edDateE;
+        TLabel *Label14;
+        TRxLookupEdit *lcPosition_off;
+        TZPgSqlQuery *ZQPoint;
+        TDataSource *dsPoint;
+        TZPgSqlQuery *ZQPosition;
+        TDataSource *dsPosition;
+        TZPgSqlQuery *ZQType;
+        TDataSource *dsType;
+        TZPgSqlQuery *ZQPosition_off;
+        TDataSource *dsPosition_off;
+        TBitBtn *btOk;
+        TBitBtn *btCancel;
+        void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+        void __fastcall btCancelClick(TObject *Sender);
+        void __fastcall btOkClick(TObject *Sender);
+        void __fastcall sbDateClearClick(TObject *Sender);
+        void __fastcall bEqpTypeSelClick(TObject *Sender);
+        void __fastcall tTreeEditDblClick(TObject *Sender);
+        void __fastcall lcPointCloseUp(TObject *Sender);
+        void __fastcall edDateBClick(TObject *Sender);
+        void __fastcall edDateEClick(TObject *Sender);
+private:	// User declarations
+public:		// User declarations
+        __fastcall TfPlombNew(TComponent* Owner);
+
+        TZPgSqlQuery *ZQuery;
+        TZPgSqlQuery *ZMeterQuery;        
+        TWTQuery*  qParent;
+        TfTreeForm* fSelectTree;  //Окно дерева для выбора элемента дерева-предка
+        void ShowNew(void);
+        void ShowData( int sw_id);
+        int id_point;
+        int id_client;
+        int mode;
+        int Id;
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TfPlombNew *fPlombNew;
+//---------------------------------------------------------------------------
+#endif

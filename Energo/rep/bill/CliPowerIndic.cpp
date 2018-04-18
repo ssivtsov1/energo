@@ -1,0 +1,1074 @@
+//---------------------------------------------------------------------------
+
+//#include <vcl.h>
+#include <vcl.h>
+#pragma hdrstop
+
+#include "CliPowerIndic.h"
+#include "Main.h"
+#include "fDemandPrint.h"
+#include "fBillPrint.h"
+#include "fTaxPrint.h"
+#include "fTaxCorPrint.h"
+#include "ftree.h"
+#include "xlcClasses.hpp"
+#include "xlReport.hpp"
+
+#define WinName "Контрольные замеры"
+
+_fastcall TfPowerInd::TfPowerInd(TWinControl *owner, TWTQuery *Client, int fid_clien)  : TWTDoc(owner)
+
+{
+  // Запрсы для печати акта
+  ZQuery = new TWTQuery(this);
+  ZQuery->Options.Clear();
+  ZQuery->Options<< doQuickOpen;
+  ZQuery->RequestLive=false;
+
+  ZQuery2 = new TWTQuery(this);
+  ZQuery2->Options.Clear();
+  ZQuery2->Options<< doQuickOpen;
+  ZQuery2->RequestLive=false;
+
+  ZQueryIndic = new TWTQuery(this);
+  ZQueryIndic->Options.Clear();
+  ZQueryIndic->Options<< doQuickOpen;
+  ZQueryIndic->RequestLive=false;
+
+  ZQuerySum = new TWTQuery(this);
+  ZQuerySum->Options.Clear();
+  ZQuerySum->Options<< doQuickOpen;
+  ZQuerySum->RequestLive=false;
+
+    fid_cl=fid_clien;
+    int lost=0;
+    name_cl=Client->DataSource->DataSet->FieldByName("short_name")->AsString;
+
+    //выбрать данные о схеме во ременные таблици заранее по состоянию на начало месяца
+    // прои работе с конкретной строкой данные обновятся на дату конкретного замера
+    
+    QueryWork=new TWTQuery(this);
+    QueryWork->Options<< doQuickOpen;
+    QueryWork->RequestLive=false;
+    QueryWork->CachedUpdates=false;
+
+    QueryWork->Sql->Clear();
+
+    QueryWork->Sql->Add("Select del_eqtmp_t(0,0); ");
+    QueryWork->Sql->Add("Select oabn_tree( :client, fun_mmgg()::::date, ( fun_mmgg()::::date+'1 day'::::interval)::::date ); ");
+    QueryWork->ParamByName("client")->AsInteger = fid_cl;
+//    QueryWork->ParamByName("dt")->AsDateTime = Sender->DataSource->DataSet->FieldByName("reg_date")->AsDateTime;
+
+    try
+    {
+     QueryWork->ExecSql();
+    }
+    catch(EDatabaseError &e)
+    {
+     ShowMessage("Ошибка "+e.Message.SubString(8,200));
+     return;
+   }
+
+
+/*
+     TWTQuery* QuerC=new TWTQuery(this);
+    QuerC->Sql->Add("select c.*,s.flag_hlosts from clm_client_tbl c \
+     left join clm_statecl_tbl  s on (c.id=s.id_client ) where c.id=:pid_client");
+    QuerC->ParamByName("pid_client")->AsInteger=fid_cl;
+    QuerC->Open();
+    lost=QuerC->DataSource->DataSet->FieldByName("flag_hlosts")->AsInteger;
+    name_cl=QuerC->DataSource->DataSet->FieldByName("short_name")->AsString;
+*/
+    TWTPanel* PHIndic=MainPanel->InsertPanel(200,true,200);
+    TFont *F;
+    F=new TFont();
+    F ->Size=10;
+    F->Style=F->Style << fsBold;
+    F->Color=clBlue;
+    PHIndic->Params->AddText("Контрольные замеры "+ name_cl,18,F,Classes::taCenter,false);
+
+    TWTQuery *QuerH=new TWTQuery(this);
+
+    QuerH->Sql->Add("select distinct h.*,('рах.№ '||b.reg_num||' від '||b.reg_date::::varchar)::::varchar as nam_bill ");
+    QuerH->Sql->Add(" from acm_headpowerindication_tbl h left join (select id_doc,id_client,id_ind,reg_num,reg_date ");
+    QuerH->Sql->Add(" from acm_bill_tbl where id_client=:pid_client) b ");
+    QuerH->Sql->Add(" on (b.id_ind=h.id_doc ) ");
+    QuerH->Sql->Add(" where  h.id_client=:pid_client");
+    QuerH->Sql->Add(" order by h.reg_date desc");
+
+    QuerH->ParamByName("pid_client")->AsInteger=fid_cl;
+
+    DBGrHInd=new TWTDBGrid(this, QuerH);
+
+    PHIndic->Params->AddGrid(DBGrHInd, true)->ID="HIndic";
+
+    QueryH = DBGrHInd->Query;
+
+    TWTQuery* QuerRep=new TWTQuery(this);
+    QuerRep->Sql->Add("select di.id,di.name from dci_document_tbl di,dck_document_tbl dk " );
+    QuerRep->Sql->Add(" where  di.idk_document=dk.id and dk.ident='pwrind' order by di.id " );
+    QuerRep->Open();
+
+    QueryH->AddLookupField("Namek_doc","idk_document",QuerRep,"name","id");
+    QueryH->Open();
+
+   TStringList *WList=new TStringList();
+   WList->Add("id_doc");
+
+  TStringList *NList=new TStringList();
+  NList->Add("nam_bill");
+
+  QueryH->SetSQLModify("acm_headpowerindication_tbl",WList,NList,true,true,true);
+
+  //--------------------------------------------------
+  QueryH->OnNewRecord=NewHeaderInsert;
+//  DBGrHInd->BeforePost=CheckIndic;
+  DBGrHInd->AfterPost=IndicPost;
+//  DBGrHInd->AfterInsert=IndicAddCl;
+  //---------------------------------------------------
+
+
+
+  TWTField *Fieldh;
+
+  Fieldh = DBGrHInd->AddColumn("reg_num", "Номер акта", "Номер акта");
+   Fieldh->SetWidth(100);
+
+  Fieldh = DBGrHInd->AddColumn("reg_date", "Дата акта", "Дата акта");
+   Fieldh->SetWidth(100);
+
+  Fieldh = DBGrHInd->AddColumn("Namek_doc", "Тип акта", "Код");
+  //Field->OnChange=OnChangeKindRep;
+  Fieldh->SetWidth(120);
+
+//  Fieldh = DBGrHInd->AddColumn("date_end", "Дт снятия показ.", "Дата по ");
+  //Field->OnChange=OnChangeDateRep;
+//  Fieldh->SetWidth(100);
+  Fieldh = DBGrHInd->AddColumn("night_day", "Время суток", "");
+  Fieldh->AddFixedVariable("1", "Утро");
+  Fieldh->AddFixedVariable("2", "Вечер");
+  Fieldh->SetDefValue("1");
+  Fieldh->SetWidth(70);
+
+  Fieldh = DBGrHInd->AddColumn("nam_bill", "Счет", "Счет");
+  Fieldh->SetWidth(180);
+    Fieldh = DBGrHInd->AddColumn("comment", "Поясн.", "Поясн.");
+  Fieldh->SetWidth(200);
+
+  Fieldh = DBGrHInd->AddColumn("mmgg", "Месяц", "Месяц");
+  Fieldh->SetReadOnly();
+  Fieldh->SetWidth(80);
+
+  Fieldh = DBGrHInd->AddColumn("flock", "Зак.", "Закрыт");
+  Fieldh->AddFixedVariable("1", "^");
+  Fieldh->AddFixedVariable("0"," ");
+  Fieldh->SetReadOnly();
+  Fieldh->SetWidth(20);
+
+
+  TButton *BtnCalc=new TButton(this);
+  BtnCalc->Caption="Расчет";
+  BtnCalc->OnClick=ClientCalcPower;
+  BtnCalc->Width=100;
+  BtnCalc->Top=2;
+  BtnCalc->Left=2;
+
+  TButton *BtnPrn=new TButton(this);
+  BtnPrn->Caption="Печать счета";
+  BtnPrn->OnClick=ClientBillPrintP;
+  BtnPrn->Width=100;
+  BtnPrn->Top=2;
+  BtnPrn->Left=102;
+
+    TButton *BtnAktPrn=new TButton(this);
+  BtnAktPrn->Caption="Печать акта";
+  BtnAktPrn->OnClick=ClientAktPrintP;
+  BtnAktPrn->Width=100;
+  BtnAktPrn->Top=2;
+  BtnAktPrn->Left=202;
+
+  TButton *BtnNull=new TButton(this);
+  BtnNull->Caption="";
+  BtnNull->Width=100;
+  BtnNull->Top=2;
+  BtnNull->Left=700;
+  TWTPanel* PBtnP=MainPanel->InsertPanel(25,25);
+  //TWTPanel* PBtnP=DocHInd->MainPanel->InsertPanel(25,25);
+  PBtnP->RealHeight=25;
+
+  PBtnP->Params->AddButton(BtnCalc,false)->ID="BtnCalc";
+  PBtnP->Params->AddButton(BtnPrn,false)->ID="BtnPrn";
+   PBtnP->Params->AddButton(BtnAktPrn,false)->ID="BtnAktPrn";
+  PBtnP->Params->AddButton(BtnNull,false)->ID="BtnNull";
+
+  TWTPanel* PIndicGr=MainPanel->InsertPanel(200,true,200);
+
+  TWTQuery * QuerI=new TWTQuery(this);
+/*
+  QuerI->Sql->Add(" select distinct i.*,e.name_eqp as name_met,pi.value as before_value  \
+     from  acd_powerindication_tbl as i left join acd_powerindication_tbl as pi \
+     on (pi.id=i.id_previndic ) \
+     inner join eqm_equipment_h e on (i.id_meter=e.id and i.num_eqp=e.num_eqp ) \
+     where i.id_client=:pid_client \
+     order by i.id_doc,i.num_eqp");
+*/
+                    /*//pi.value as oldvalue  \*/
+  QuerI->Sql->Add(" select distinct i.* \
+     from  acd_powerindication_tbl as i left join acd_powerindication_tbl as pi \
+     on (pi.id=i.id_previndic ) \
+     where i.id_client=:pid_client \
+     order by i.id_doc,i.id_area,i.num_eqp, i.id_zone, i.time_indic ;");
+
+  QuerI->ParamByName("pid_client")->AsInteger=fid_cl;
+
+  DBGrInd=new TWTDBGrid(this, QuerI);
+
+  PIndicGr->Params->AddText("Показания оборудования ",18,F,Classes::taCenter,false);
+  PIndicGr->Params->AddGrid(DBGrInd, true)->ID="Indic";
+  TWTQuery * QuerP=new TWTQuery(this);
+  QuerP->Sql->Add(" select distinct i.* from  acd_powerindication_tbl  i  where i.id_client=:pid_client  order by i.id;");
+  QuerP->ParamByName("pid_client")->AsInteger=fid_cl;
+     QuerP->Open();
+  QueryI = DBGrInd->Query;
+  QueryI->AddLookupField("type_met","id_typemet","eqi_meter_tbl","type","id");
+  QueryI->AddLookupField("Zone","ID_ZONE","eqk_zone_tbl","name","id"); // Потом Name
+  QueryI->AddLookupField("before_value","ID_previndic",QuerP,"value","id"); // Потом Name
+
+
+
+   TWTQuery* QuerRep2=new TWTQuery(this);
+   QuerRep2->Sql->Add("   select distinct eq.id,eq.name_eqp as name from eqm_area_h as a join " );
+   QuerRep2->Sql->Add("   (select distinct id, name_eqp from eqm_equipment_h) as eq on (eq.id = a.code_eqp) " );
+   QuerRep2->Sql->Add("   where id_client = :client ; " );
+   QuerRep2->ParamByName("client")->AsInteger = fid_cl;
+   QuerRep2->Open();
+   QueryI->AddLookupField("Name_area","id_area",QuerRep2,"name","id");
+
+   TWTQuery* QuerRep3=new TWTQuery(this);
+
+   QuerRep3->Sql->Add(" select distinct eq.id,eq.name_eqp as name from  eqm_equipment_h as eq " );
+   QuerRep3->Sql->Add(" where type_eqp = 1 and dt_b = (select max(dt_b) from eqm_equipment_h where id = eq.id); " );
+   QuerRep3->Open();
+   QueryI->AddLookupField("name_met","id_meter",QuerRep3,"name","id");
+
+   QueryI->Open();
+
+  TStringList *WListI=new TStringList();
+
+  WListI->Add("id");
+
+  TStringList *NListI=new TStringList();
+ // NListI->Add("before_value");
+
+//  NListI->Add("name_met");
+
+  QueryI->SetSQLModify("acd_powerindication_tbl",WListI,NListI,true,true,true);
+//  QueryI->IndexFieldNames = "id_doc;num_eqp";
+  QueryI->LinkFields = "id_doc=id_doc";
+  QueryI->MasterSource = DBGrHInd->DataSource;
+
+  QueryI->OnNewRecord=NewIndicInsert;
+
+  TWTField *Field;
+
+  Field = DBGrInd->AddColumn("name_met", "Счетчик", "Счетчик");
+   Field->SetOnHelp(BtnMeterClick);
+//  Field->SetReadOnly();
+   Field->SetWidth(120);
+   Field->SetRequired("Нужен счетчик!");
+
+   Field = DBGrInd->AddColumn("Name_area", "Площадка", "");
+   Field->SetWidth(110);
+
+   Field = DBGrInd->AddColumn("night_day", "Время суток", "");
+   Field->AddFixedVariable("1", "Утро");
+   Field->AddFixedVariable("2", "Вечер");
+   Field->SetDefValue(1);
+   Field->SetWidth(70);
+
+   Field = DBGrInd->AddColumn("time_indic", "Время", "");
+   Field->Field->EditMask = "90.90.0000 99:99";
+
+   Field = DBGrInd->AddColumn("type_met", "Тип", "Тип");
+   Field->SetReadOnly();
+   Field->SetWidth(120);
+
+   Field = DBGrInd->AddColumn("carry", "Разр.", "Разрядность");
+   Field->SetWidth(50);
+   Field->SetReadOnly();
+
+   Field = DBGrInd->AddColumn("num_eqp", "Номер", "Номер");
+   Field->SetWidth(80);
+   Field->SetReadOnly();
+/*
+  Field = DBGrInd->AddColumn("name_energy", "Енергия", "Вид енергии");
+  Field->SetWidth(50);
+  Field->SetReadOnly();
+*/
+  Field = DBGrInd->AddColumn("Zone", "Зона", "Зона");
+  Field->SetDefValue(0);
+  Field->SetWidth(50);
+//  Field->SetReadOnly();
+
+
+  Field = DBGrInd->AddColumn("k_tr", "К-ф.тр. напр", "Коеф трансформации");
+  Field->SetWidth(50);
+  Field->SetReadOnly();
+
+  Field = DBGrInd->AddColumn("k_ts", "К-ф.тр.тока", "Коеффициент трансформации");
+  Field->SetWidth(50);
+  Field->SetReadOnly();
+       /*
+  Field = DBGrInd->AddColumn("before_value", "Предыдущие", "Предыдущие показания");
+//  Field->Column->ButtonStyle=cbsNone;
+  Field->SetReadOnly();
+     */
+    Field = DBGrInd->AddColumn("before_value", "Предыдущие", "Предыдущие показания");
+//  Field->Column->ButtonStyle=cbsNone;
+  Field->SetReadOnly();
+ //
+  Field = DBGrInd->AddColumn("value", "Текущие", "Текущие показания");
+  Field->OnChange=OnChangeIndic;
+ // Field->Precision=4;
+
+  Field = DBGrInd->AddColumn("value_dev", "Разность", "Разность");
+  //Field->SetReadOnly();
+
+  Field = DBGrInd->AddColumn("value_dem", "Потребление", "Потребление");
+  //Field->SetReadOnly();
+
+
+
+  DBGrInd->Visible = true;
+ // QueryI->IndexFieldNames = "id_doc;num_eqp;id_zone";
+  DBGrInd->Visible = true;
+ // DBGrInd->OnAccept=IndicAccept;
+
+  SetCaption("Контрольные замеры "+name_cl);
+  ShowAs(WinName);
+  MainPanel->ParamByID("HIndic")->Control->SetFocus();
+  MainPanel->ParamByID("Indic")->Control->SetFocus();
+  MainPanel->ParamByID("HIndic")->Control->SetFocus();
+ }
+#undef WinName
+
+__fastcall TfPowerInd::~TfPowerInd()
+{
+//  Close();
+};
+
+//----------------------------------------
+void __fastcall TfPowerInd::BtnMeterClick(TWTField *Sender)
+{
+  Application->CreateForm(__classid(TfTreeForm), &fSelectTree);
+  fSelectTree->tTreeEdit->OnDblClick=tTreeEditDblClick;
+//  fSelectTree->OnCloseQuery=FormCloseQuery;
+
+  int fid_eqp=0;
+  if (!Sender->Field->IsNull) fid_eqp=Sender->Field->AsInteger;
+
+  fSelectTree->ShowTrees(fid_cl,true,fid_eqp);
+};
+//--------------------------------------------------------
+
+void __fastcall TfPowerInd::tTreeEditDblClick(TObject *Sender)
+{
+if ((fSelectTree->CurrNode!=NULL)&&(fSelectTree->CurrNode->ImageIndex!=0))
+ {
+ fid_eqp=fSelectTree->CurrNode->StateIndex;
+
+ if (PTreeNodeData(fSelectTree->CurrNode->Data)->type_eqp!=1)
+   { ShowMessage("Выберите счетчик !!");
+     return;
+   };
+
+ if (!((QueryI->State==dsInsert)||(QueryI->State==dsEdit)) )
+     QueryI->Edit();
+
+ QueryI->FieldByName("id_meter")->AsInteger=fid_eqp;
+
+ //-----------------------------------------------------------------------------
+ // Выберем параметры счетчика из временных таблиц
+
+   QueryWork->Sql->Clear();
+
+   QueryWork->Sql->Add(" select  a1.num_eqp, a1.id_zone, a1.id_type_eqp,a2.carry ,a1.k_tr,a1.k_ts  ");
+   QueryWork->Sql->Add(" from  act_met_kndzn_tbl as a1  ");
+   QueryWork->Sql->Add(" left join eqi_meter_tbl as a2 on (a2.id=a1.id_type_eqp)  ");
+   QueryWork->Sql->Add(" where a1.id_meter =:meter and a1.kind_energy = 1 ; ");
+
+ //  QueryWork->ParamByName("client")->AsInteger = fid_cl;
+   QueryWork->ParamByName("meter")->AsInteger = fid_eqp;
+
+  try
+  {
+   QueryWork->Open();
+  }
+  catch(EDatabaseError &e)
+  {
+   ShowMessage("Ошибка "+e.Message.SubString(8,200));
+   QueryWork->Close();
+//   delete QueryWork;
+   return;
+  }
+  if (QueryWork->RecordCount > 0)
+  {
+   QueryWork->First();
+
+   QueryI->FieldByName("num_eqp")->AsString = QueryWork->FieldByName("num_eqp")->AsString ;
+   QueryI->FieldByName("id_typemet")->AsInteger = QueryWork->FieldByName("id_type_eqp")->AsInteger;
+   QueryI->FieldByName("kind_energy")->AsInteger = 1;
+   QueryI->FieldByName("id_zone")->AsInteger = QueryWork->FieldByName("id_zone")->AsInteger;
+   QueryI->FieldByName("carry")->AsInteger = QueryWork->FieldByName("carry")->AsInteger;
+   QueryI->FieldByName("k_tr")->AsFloat = QueryWork->FieldByName("k_tr")->AsFloat;
+   QueryI->FieldByName("k_ts")->AsFloat = QueryWork->FieldByName("k_ts")->AsFloat;
+   QueryI->FieldByName("night_day")->AsInteger = 1;
+  }
+  QueryWork->Close();
+ //-----------------------------------------------------------------------------
+ fSelectTree->Close();
+ };
+}
+//--------------------------------------------------
+void __fastcall TfPowerInd::NewHeaderInsert(TDataSet* DataSet)
+{
+ DataSet->FieldByName("reg_date")->AsDateTime=Date();
+// DataSet->FieldByName("mmgg")->AsDateTime = mmgg;
+ DataSet->FieldByName("id_client")->AsInteger=fid_cl;
+ DataSet->FieldByName("idk_document")->AsInteger=700;
+}
+//----------------------------------------------------------------------
+
+void __fastcall TfPowerInd::NewIndicInsert(TDataSet* DataSet)
+{
+ DataSet->FieldByName("id_doc")->AsInteger = QueryH->FieldByName("id_doc")->AsInteger;
+ DataSet->FieldByName("mmgg")->AsDateTime = QueryH->FieldByName("mmgg")->AsDateTime;
+ DataSet->FieldByName("id_client")->AsInteger=fid_cl;
+  DataSet->FieldByName("time_indic")->AsDateTime = QueryH->FieldByName("reg_date")->AsDateTime;
+
+}
+//----------------------------------------------------------------------
+
+
+void _fastcall TfPowerInd::IndicPost(TWTDBGrid *Sender) {
+//  int i=0;
+//  int id_clientp=0;
+
+//  TWTDBGrid *GrIndic= Sender;
+//  TWTDBGrid *GrDetIndic= DBGrInd;
+//  id_clientp =fid_cl;
+
+//   Sender->DataSource->DataSet->FieldByName("id_client")->AsInteger=id_clientp;
+  /// вставляем заголовок
+//   int id_docp=Sender->DataSource->DataSet->FieldByName("id_doc")->AsInteger;
+//   int idk_documentp=Sender->DataSource->DataSet->FieldByName("idk_document")->AsInteger;
+//   TDateTime reg_datep=Sender->DataSource->DataSet->FieldByName("date_end")->AsDateTime;
+
+
+
+   QueryWork->Sql->Clear();
+
+   QueryWork->Sql->Add("Select del_eqtmp_t(0,0); ");
+   QueryWork->Sql->Add("Select oabn_tree( :client, :dt::::date, ( :dt::::date+'1 day'::::interval)::::date ); ");
+   QueryWork->ParamByName("client")->AsInteger = fid_cl;
+   QueryWork->ParamByName("dt")->AsDateTime = Sender->DataSource->DataSet->FieldByName("reg_date")->AsDateTime;
+
+  try
+  {
+   QueryWork->ExecSql();
+  }
+  catch(EDatabaseError &e)
+  {
+   ShowMessage("Ошибка "+e.Message.SubString(8,200));
+//   delete QueryWork;
+   return;
+  }
+
+
+//   GrDetIndic->DataSource->DataSet->Refresh();
+//   GrDetIndic->Refresh();
+
+};
+
+//------------------------------------------------------------------------------
+void _fastcall  TfPowerInd::OnChangeIndic(TWTField *Sender)
+{
+
+  int pind;
+  int car,c_comp=1;                               
+  bool c_ind=true;
+  float prev_ind;
+  prev_ind=0,00;
+   if (Sender->Field->FieldName=="value")
+  {
+  TWTTable *Table = (TWTTable *)Sender->Field->DataSet;
+
+  if (Table->FieldByName("id_meter")->IsNull)
+   {  ShowMessage("Выберите счетчик !");
+     return;
+   };
+
+  if (Table->FieldByName("id_previndic")->IsNull)
+  {
+   QueryWork->Sql->Clear();
+   QueryWork->Sql->Add("select id from acd_powerindication_tbl where id_doc = :doc ");
+   QueryWork->Sql->Add(" and id_meter = :meter and time_indic< :time_ind order by time_indic desc limit 1; ");
+   QueryWork->ParamByName("doc")->AsInteger = Table->FieldByName("id_doc")->AsInteger;
+   QueryWork->ParamByName("meter")->AsInteger = Table->FieldByName("id_meter")->AsInteger;
+   QueryWork->ParamByName("time_ind")->AsDateTime = Table->FieldByName("time_indic")->AsDateTime;
+
+   try
+   {
+    QueryWork->Open();
+   }
+   catch(EDatabaseError &e)
+   {
+    ShowMessage("Ошибка "+e.Message.SubString(8,200));
+    QueryWork->Close();
+    return;
+   }
+   if (QueryWork->RecordCount > 0)
+   {
+    QueryWork->First();
+    pind=QueryWork->FieldByName("id")->AsInteger;
+    c_ind=true;
+   }
+   else c_ind=false;
+
+   QueryWork->Close();
+  }
+  else
+  {
+   pind=Table->FieldByName("id_previndic")->AsInteger;
+   c_ind=true;
+  }
+
+  if (c_ind){
+
+   Table->FieldByName("id_previndic")->AsInteger = pind;
+   QueryWork->Sql->Clear();
+   QueryWork->Sql->Add("select p.value, calc_ind_pr(:eind,p.value, p.carry) as dem from acd_powerindication_tbl as p where p.id= :pind ");
+   QueryWork->ParamByName("eind")->AsFloat=Round(Sender->Field->AsFloat,4);
+   QueryWork->ParamByName("pind")->AsInteger = pind;
+
+   try
+   {
+    QueryWork->Open();
+   }
+   catch(EDatabaseError &e)
+   {
+    ShowMessage("Ошибка "+e.Message.SubString(8,200));
+    QueryWork->Close();
+    return;
+   }
+
+   if (!QueryWork->FieldByName("dem")->AsString.IsEmpty())
+   {
+    Table->FieldByName("value_dev")->AsFloat=Round(QueryWork->FieldByName("dem")->AsFloat,4);
+
+    if ( Table->FieldByName("k_tr")->AsInteger!=0)
+     Table->FieldByName("value_dem")->AsFloat=Round(QueryWork->FieldByName("dem")->AsFloat*
+         Table->FieldByName("k_tr")->AsInteger,0);
+    else
+     Table->FieldByName("value_dem")->AsFloat=Round(QueryWork->FieldByName("dem")->AsFloat,0);
+   }
+   else
+   {  ShowMessage("Ошибка вычисления потребления! Проверте разрядность!");
+     return;
+   };
+  }
+  else
+  { Table->FieldByName("value_dem")->AsFloat=0;
+    Table->FieldByName("value_dev")->AsFloat=0;
+  };
+
+
+  }; 
+   return;
+}
+
+//------------------------------------------------------------------------------
+void __fastcall TfPowerInd::ClientCalcPower(TObject *Sender)
+{
+   TWTPanel *TDoc;
+   int id_clientp=0;
+   bool check=false;
+   TWTDBGrid *HIndic= DBGrHInd;
+   id_clientp =fid_cl;
+
+ // TWTQuery *QueryMet=new TWTQuery(this);
+ // TWTQuery *QueryErr=new TWTQuery(this);
+
+  int id_docp=HIndic->DataSource->DataSet->FieldByName("id_doc")->AsInteger;
+
+  if (id_docp==0)  {
+    ShowMessage("Нет документа для расчета");
+    return;
+    };
+
+  if ((DBGrInd->DataSource->DataSet->State==dsInsert) ||
+      (DBGrInd->DataSource->DataSet->State==dsEdit))
+  DBGrInd->DataSource->DataSet->Post();
+
+//   ShortDateFormat="yyyy-mm-dd";
+
+//   TDateTime d_e=HIndic->DataSource->DataSet->FieldByName("date_end")->AsDateTime;
+//   TDateTime d_b=HIndic->DataSource->DataSet->FieldByName("date_begin")->AsDateTime;
+//   TDateTime d_m=HIndic->DataSource->DataSet->FieldByName("mmgg")->AsDateTime;
+
+   QueryWork->Sql->Clear();
+   QueryWork->Params->Clear();
+   QueryWork->Sql->Add("select crt_pwr2krbill( :client, :hind , :mmgg); ");
+   QueryWork->ParamByName("client")->AsInteger = fid_cl;
+   QueryWork->ParamByName("hind")->AsInteger = id_docp;
+   QueryWork->ParamByName("mmgg")->AsDateTime = HIndic->DataSource->DataSet->FieldByName("mmgg")->AsDateTime;
+
+   try
+   {
+    QueryWork->ExecSql();
+   }
+   catch(EDatabaseError &e)
+   {
+    ShowMessage("Ошибка "+e.Message.SubString(8,200));
+    return;
+   }
+
+ // ShortDateFormat="dd.mm.yyyy";
+    QueryWork->Sql->Clear();
+    QueryWork->Sql->Add("select id_error from sys_error_tbl where  nam ='2krp'");
+    QueryWork->Open();
+    if(!(QueryWork->Eof))
+    {   AnsiString err=" ";
+        int id_err=QueryWork->Fields->Fields[0]->AsInteger;
+        err=((TMainForm*)(Application->MainForm))->GetValueFromBase("select name from syi_error_tbl where id="+ToStrSQL(id_err));
+        ShowMessage("Сообщение: "+err);
+      //  ShortDateFormat="dd.mm.yyyy";
+
+    };
+
+   QueryWork->Close();
+   // ShortDateFormat="dd.mm.yyyy";
+   HIndic->DataSource->DataSet->Refresh();
+};
+///-----------------------------------------------------------------------------
+
+void _fastcall   TfPowerInd::ClientBillPrintP(TObject *Sender)
+{
+  TWTDBGrid *GrHIndic= DBGrHInd;
+  TDateTime mmgg_bill=GrHIndic->DataSource->DataSet->FieldByName("mmgg")->AsDateTime;
+  int id_bill=0;
+  AnsiString nam_bill=" ";
+  int id_head=GrHIndic->DataSource->DataSet->FieldByName("id_doc")->AsInteger;
+  int id_client=GrHIndic->DataSource->DataSet->FieldByName("id_client")->AsInteger;
+
+ // TWTQuery *QuerBill=new TWTQuery(this);
+  QueryWork->Sql->Clear();
+  QueryWork->Sql->Add("select b.id_doc,id_pref,p.name from acm_bill_tbl as b, \
+   aci_pref_tbl p where p.id=b.id_pref and id_ind="+ToStrSQL(id_head));
+  QueryWork->Sql->Add(" and b.id_client="+ToStrSQL(id_client));
+
+  QueryWork->Open();
+
+   if (QueryWork->RecordCount>0)
+   {  while (!QueryWork->Eof)  {
+        id_bill=QueryWork->FieldByName("id_doc")->AsInteger;
+
+//        Application->CreateForm(__classid(TfPrintBill), &fPrintBill);
+        fPrintBill->ShowBill(id_bill);
+        QueryWork->Next();
+        if  (!(QueryWork->Eof))
+
+         {  nam_bill=QueryWork->FieldByName("name")->AsString;
+              if (!Ask("Печатать счет"+nam_bill) ) {
+             QueryWork->Next();
+         };
+       }
+
+      };
+    }
+   else    ShowMessage("Не сформирован счет по данным показаниям!");
+   QueryWork->Close();
+};
+
+
+//---------------------------------------------------------------------------
+void _fastcall   TfPowerInd::ClientAktPrintP(TObject *Sender)
+{
+  TWTDBGrid *GrHIndic= DBGrHInd;
+  TDateTime mmgg_bill=GrHIndic->DataSource->DataSet->FieldByName("mmgg")->AsDateTime;
+
+  int id_head=GrHIndic->DataSource->DataSet->FieldByName("id_doc")->AsInteger;
+  int id_client=GrHIndic->DataSource->DataSet->FieldByName("id_client")->AsInteger;
+
+  QueryWork->Sql->Clear();
+  QueryWork->Sql->Add("select distinct b.id_doc, b.mmgg, p.id_area \
+     from acm_bill_tbl as b join acd_pwr_limit_over_tbl as p on (b.id_doc = p.id_doc) \
+   where b.id_ind="+ToStrSQL(id_head));
+  QueryWork->Sql->Add(" and b.id_client="+ToStrSQL(id_client));
+
+  QueryWork->Open();
+
+   if (QueryWork->RecordCount>0)
+   {
+       for (int i = 0;  i<=QueryWork->RecordCount-1;i++)
+       {
+         PrintAct(id_client,id_head,QueryWork->FieldByName("id_doc")->AsInteger,QueryWork->FieldByName("id_area")->AsInteger,mmgg_bill);
+         QueryWork->Next();
+       }
+
+   }
+   else ShowMessage("Не сформирован счет по данным показаниям!");
+   QueryWork->Close();
+};
+//--------------------------------------------------
+void __fastcall TfPowerInd::PrintAct(int id_client, int id_head, int id_doc, int id_area, TDateTime mmgg_bill)
+{
+ TxlReport* xlReport = new TxlReport(this);
+
+  int id_meter[3]={0,0,0};
+  AnsiString num_meter[3]={"","",""};
+  AnsiString k_tr[3]={"","",""};
+  AnsiString k_ts[3]={"","",""};
+/*
+  TWTQuery* ZQuery = new TWTQuery(this);
+  ZQuery->Options.Clear();
+  ZQuery->Options<< doQuickOpen;
+  ZQuery->RequestLive=false;
+
+  TWTQuery* ZQuery2 = new TWTQuery(this);
+  ZQuery2->Options.Clear();
+  ZQuery2->Options<< doQuickOpen;
+  ZQuery2->RequestLive=false;
+
+  TWTQuery* ZQueryIndic = new TWTQuery(this);
+  ZQueryIndic->Options.Clear();
+  ZQueryIndic->Options<< doQuickOpen;
+  ZQueryIndic->RequestLive=false;
+*/
+  AnsiString  sqlstr_m="select distinct id_meter,num_eqp as num_meter, k_tr, k_ts \
+   from acm_headpowerindication_tbl as hp \
+   join acd_powerindication_tbl as p on (p.id_doc = hp.id_doc) \
+   where hp.id_client = :client and hp.id_doc = :doc and p.id_area = :area \
+   order by id_meter; ";
+
+  ZQuery->Sql->Clear();
+  ZQuery->Sql->Add(sqlstr_m);
+  ZQuery->ParamByName("client")->AsInteger=id_client;
+  ZQuery->ParamByName("doc")->AsInteger=id_head;
+  ZQuery->ParamByName("area")->AsInteger=id_area;
+
+  try
+  {
+    ZQuery->Open();
+  }
+  catch(...)
+  {
+    ShowMessage("Ошибка SQL :"+sqlstr_m);
+    return;
+  }
+
+  ZQuery->First();
+
+  for (int i = 0;  i<=(ZQuery->RecordCount<=3? ZQuery->RecordCount:3)-1;i++)
+  {
+    id_meter[i] = ZQuery->FieldByName("id_meter")->AsInteger;
+    num_meter[i] = ZQuery->FieldByName("num_meter")->AsString;
+    k_tr[i] = ZQuery->FieldByName("k_tr")->AsString;
+    k_ts[i] = ZQuery->FieldByName("k_ts")->AsString;
+
+    ZQuery->Next();
+  }
+  ZQuery->Close();
+
+
+
+  AnsiString  sqlstr_ind=" select * from \
+  (select hp.id_doc,time_indic, value as indic1, value_dev as demand1, value_dem as ktr_demand1 \
+  from acm_headpowerindication_tbl as hp \
+  join acd_powerindication_tbl as p on (p.id_doc = hp.id_doc) \
+  where hp.id_client = :client and hp.id_doc = :doc and id_meter = :meter1 \
+  order by id_meter, time_indic \
+  ) as m1 \
+  left join \
+  (select hp.id_doc,time_indic, value as indic2, value_dev as demand2, value_dem as ktr_demand2 \
+  from acm_headpowerindication_tbl as hp \
+  join acd_powerindication_tbl as p on (p.id_doc = hp.id_doc) \
+  where hp.id_client = :client and hp.id_doc = :doc and id_meter = :meter2 \
+  order by id_meter, time_indic \
+  ) as m2 using (id_doc, time_indic) \
+  left join \
+  (select hp.id_doc,time_indic, value as indic3, value_dev as demand3, value_dem as ktr_demand3 \
+  from acm_headpowerindication_tbl as hp \
+  join acd_powerindication_tbl as p on (p.id_doc = hp.id_doc) \
+  where hp.id_client = :client and hp.id_doc = :doc and id_meter = :meter3 \
+  order by id_meter, time_indic \
+  ) as m3 using (id_doc, time_indic) ; ";
+
+  ZQueryIndic->Sql->Clear();
+  ZQueryIndic->Sql->Add(sqlstr_ind);
+  ZQueryIndic->ParamByName("client")->AsInteger=id_client;
+  ZQueryIndic->ParamByName("doc")->AsInteger=id_head;
+  ZQueryIndic->ParamByName("meter1")->AsInteger=id_meter[0];
+  ZQueryIndic->ParamByName("meter2")->AsInteger=id_meter[1];
+  ZQueryIndic->ParamByName("meter3")->AsInteger=id_meter[2];
+
+                   /*
+  AnsiString  sqlstr_sum=" select coalesce(a.name_eqp, ' - ') as area, \
+  bs.id_area,bs.night_day,bs.power_limit,bs.power_fact,bs.power_ower,bs.tarif,bs.sum_value, \
+  case when bs.night_day = 1 then 'Ранковий макс.' when bs.night_day = 2 then 'Вечірній макс.' end as period_str \
+  from acd_pwr_limit_over_tbl as bs \
+  left join \
+  (select eq.id, eq.name_eqp from eqm_equipment_h as eq \
+   join (select id, max(dt_b) as dt from eqm_equipment_h  where dt_b <= :mmgg and coalesce(dt_e, :mmgg) >= :mmgg  and type_eqp = 11 group by id) as eq2 \
+   on (eq.id = eq2.id and eq2.dt = eq.dt_b) \
+ )as a on (bs.id_area = a.id) \
+  where bs.id_doc = :doc and bs.id_area = :area ; ";
+
+  ZQuerySum->Sql->Clear();
+  ZQuerySum->Sql->Add(sqlstr_sum);
+  ZQuerySum->ParamByName("doc")->AsInteger=id_doc;
+  ZQuerySum->ParamByName("area")->AsInteger=id_area;
+  ZQuerySum->ParamByName("mmgg")->AsDateTime=mmgg_bill;
+                */
+
+  AnsiString  sqlstr1=" select abon.name as abonname, substr_word(abon.name,0,50) as abonname1, \
+  substr(abon.name,length(substr_word(abon.name,0,50))+1,200) as abonname2, \
+  users.represent_name as usrname, cla.name as grpname, users.phone as usrphone, \
+  abon.short_name as abonsname, abon.code, res.name as resname,res.short_name as ressname, \
+  addr.full_adr as abonaddr, 'тел.'||abonpar.phone as abonphone, \
+  abonpar.doc_num, abonpar.doc_dat,  b.dat_b,b.dat_e, b.demand_val, b.reg_date, b.value, b.value_tax, b.mmgg, b.mmgg_bill,b.id_pref, \
+  '№ '||text(abonpar.doc_num)||' від '||to_char(abonpar.doc_dat,'DD.MM.YYYY')::::varchar  as docum_info, \
+  CASE WHEN abonpar.dt_start >=abonpar.dt_indicat THEN \
+    calend_get_date((b.mmgg - '1 month'::::interval)::::date,abonpar.dt_start) \
+  ELSE \
+    calend_get_date(b.mmgg::::date ,abonpar.dt_start) \
+  END as period_start, \
+  calend_get_date(b.mmgg::::date ,abonpar.dt_indicat) as period_end, \
+  boss.represent_name as bossname , abn_boss, \
+  slimit1.limit1 , slimit2.limit2, time11.min_time1, time21.min_time2, time12.max_time1, time22.max_time2 \
+  from  clm_client_tbl as abon \
+  join acm_bill_tbl as b on (b.id_client = abon.id) \
+  left join clm_statecl_tbl as abonpar on (abonpar.id_client = abon.id) \
+  left join cla_param_tbl as cla on ( abonpar.id_section = cla.id and cla.id_group = 200) \
+  left join clm_position_tbl as users on (users.id = b.id_person) \
+  left join adv_address_tbl as addr on (addr.id = abon.id_addres) \
+  left join ( select pos.id_client, coalesce(p.name||' ','')||pos.represent_name as abn_boss   \
+            from clm_position_tbl as pos \
+            join cli_position_tbl as p on (p.id = pos.id_position) \
+            left join (select pos2.id_client,min(pos2.id) as minid  from clm_position_tbl as pos2 \
+                  join cli_position_tbl as p2 on (p2.id = pos2.id_position and p2.ident ='boss') \
+                  group by pos2.id_client order by minid ) as p_1 on (p_1.minid = pos.id ) \
+            left join (select pos3.id_client,count(*) as cnt  from clm_position_tbl as pos3 \
+                  group by pos3.id_client) as pc on (pc.id_client = pos.id_client ) \
+    where ((p_1.minid is not null ) or (pc.cnt = 1))  \
+    order by id_client  ) as ab on ( ab.id_client = abon.id) \
+  left join ( \
+   select hl.id_client, sum(d1.value_dem) as limit1 \
+     from acd_demandlimit_tbl as d1 \
+     join acm_headdemandlimit_tbl as hl on (hl.id_doc = d1.id_doc) \
+           join ( \
+           select h2.id_client,d2.month_limit, d2.id_area, max(h2.reg_date) as maxdate , max(h2.mmgg) as maxmmgg \
+           from acm_headdemandlimit_tbl as h2 \
+           join acd_demandlimit_tbl as d2  on  (h2.id_doc = d2.id_doc) \
+           where h2.idk_document = 601 and d2.night_day =1 and d2.month_limit= :mmgg \
+           group by h2.id_client , d2.id_area, d2.month_limit order by h2.id_client \
+          ) as hh on (hh.id_client = hl.id_client and hh.maxdate = hl.reg_date and hh.maxmmgg = hl.mmgg  \
+             and hh.month_limit = d1.month_limit and hh.id_area = :area) \
+     where hl.idk_document = 601 and d1.night_day =1 and d1.id_area = :area and d1.month_limit= :mmgg \
+     group by hl.id_client \
+     order by hl.id_client \
+   ) as slimit1 on (slimit1.id_client =abon.id ) \
+  left join ( \
+   select hl.id_client, sum(d1.value_dem) as limit2 \
+     from acd_demandlimit_tbl as d1 \
+     join acm_headdemandlimit_tbl as hl on (hl.id_doc = d1.id_doc) \
+           join ( \
+           select h2.id_client,d2.month_limit, d2.id_area, max(h2.reg_date) as maxdate , max(h2.mmgg) as maxmmgg \
+           from acm_headdemandlimit_tbl as h2 \
+           join acd_demandlimit_tbl as d2  on  (h2.id_doc = d2.id_doc) \
+           where h2.idk_document = 601 and d2.night_day =2 and d2.month_limit= :mmgg \
+           group by h2.id_client , d2.id_area, d2.month_limit order by h2.id_client \
+          ) as hh on (hh.id_client = hl.id_client and hh.maxdate = hl.reg_date and hh.maxmmgg = hl.mmgg  \
+             and hh.month_limit = d1.month_limit and hh.id_area = :area) \
+     where hl.idk_document = 601 and d1.night_day =2 and d1.id_area = :area and d1.month_limit= :mmgg \
+     group by hl.id_client \
+     order by hl.id_client \
+   ) as slimit2 on (slimit2.id_client =abon.id ) \
+  ,(select strtime as min_time1 from ask_picktime_tbl a,cmi_time_tbl t  where t.id= a.id_time-1 and  mmgg= :mmgg   and t.night_day=1 order by mmgg ,id_time asc  limit 1) as time11 \
+  ,(select strtime as max_time1 from ask_picktime_tbl a,cmi_time_tbl t  where t.id= a.id_time and  mmgg= :mmgg   and t.night_day=1 order by mmgg ,id_time desc limit 1) as time12 \
+  ,(select strtime as min_time2 from ask_picktime_tbl a,cmi_time_tbl t  where t.id= a.id_time-1 and  mmgg= :mmgg   and t.night_day=2 order by mmgg ,id_time asc  limit 1) as time21 \
+  ,(select strtime as max_time2 from ask_picktime_tbl a,cmi_time_tbl t  where t.id= a.id_time and  mmgg= :mmgg   and t.night_day=2 order by mmgg ,id_time desc limit 1) as time22 \
+  ,( select * from clm_client_tbl where id = syi_resid_fun() ) as res \
+  left join ( select * from clm_position_tbl as pos \
+             join cli_position_tbl as p on (p.id = pos.id_position and p.ident ='boss') )as boss  on (boss.id_client = res.id) \
+  where b.id_doc = :bill ;";
+
+  ZQuery->Sql->Clear();
+  ZQuery->Sql->Add(sqlstr1);
+  ZQuery->ParamByName("mmgg")->AsDateTime=mmgg_bill;
+  ZQuery->ParamByName("bill")->AsInteger=id_doc;
+  ZQuery->ParamByName("area")->AsInteger=id_area;
+
+//  ,(select min(strtime) as min_time1, max(strtime) as max_time1  from cmi_time_tbl where pick_time =1 and night_day = 1) as time1 \
+//  ,(select min(strtime) as min_time2, max(strtime) as max_time2  from cmi_time_tbl where pick_time =1 and night_day = 2) as time2 \
+
+
+
+  try
+   {
+    ZQuery->Open();
+    ZQueryIndic->Open();
+    //ZQuerySum->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr1);
+    ZQuery->Close();
+    return;
+   }
+
+   int limit1  = ZQuery->FieldByName("limit1")->AsInteger;
+   int limit2  = ZQuery->FieldByName("limit2")->AsInteger;
+
+   TDateTime min_time1 = ZQuery->FieldByName("min_time1")->AsDateTime;
+   TDateTime min_time2 = ZQuery->FieldByName("min_time2")->AsDateTime;
+
+   TDateTime max_time1 = ZQuery->FieldByName("max_time1")->AsDateTime;
+   TDateTime max_time2 = ZQuery->FieldByName("max_time2")->AsDateTime;
+
+
+    AnsiString  sqlstr="select * from( \
+    select p.night_day,time_indic, sum(value_dem) as demand, \
+    (sum(value_dem)*2 - CASE WHEN p.night_day = 1 THEN :limit1 WHEN p.night_day = 2 THEN :limit2 END) as delta_power \
+    from acm_headpowerindication_tbl as hp \
+    join acd_powerindication_tbl as p on (p.id_doc = hp.id_doc) \
+    where hp.id_client = :client and hp.id_doc = :doc and p.id_area = :area \
+    group by p.night_day,time_indic  ) as d \
+    order by delta_power desc limit 1; ";
+
+  ZQuery2->Sql->Clear();
+  ZQuery2->Sql->Add(sqlstr);
+  ZQuery2->ParamByName("client")->AsInteger=id_client;
+  ZQuery2->ParamByName("doc")->AsInteger=id_head;
+  ZQuery2->ParamByName("area")->AsInteger=id_area;
+  ZQuery2->ParamByName("limit1")->AsInteger=limit1;
+  ZQuery2->ParamByName("limit2")->AsInteger=limit2;
+
+  try
+  {
+    ZQuery2->Open();
+  }
+  catch(...)
+  {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    return;
+  }
+
+  int W_max = ZQuery2->FieldByName("demand")->AsInteger;
+  int delta_power = ZQuery2->FieldByName("delta_power")->AsInteger;
+  int night_day = ZQuery2->FieldByName("night_day")->AsInteger;
+
+  ZQuery2->Close();
+
+  xlReport->XLSTemplate = "XL\\akt_2k_power.xls";
+
+  TxlDataSource *Dsr;
+
+  TxlReportParam *Param;
+  xlReport->DataSources->Clear();
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQueryIndic;
+  Dsr->Alias =  "ZQXLRepsStr";
+  Dsr->Range = "Range";
+/*
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQuerySum;
+  Dsr->Alias =  "ZQXLRepsSum";
+  Dsr->Range = "RangeSum";
+*/
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQuery;
+  Dsr->Alias =  "ZQXLReps";
+  //Dsr->Range = "Range";
+//  Dsr->MasterSourceName="ZQXLReps";
+
+  xlReport->Params->Clear();
+
+  Param=xlReport->Params->Add();
+  Param->Name="num_meter1";
+  Param=xlReport->Params->Add();
+  Param->Name="k_ts1";
+  Param=xlReport->Params->Add();
+  Param->Name="k_tr1";
+
+  Param=xlReport->Params->Add();
+  Param->Name="num_meter2";
+  Param=xlReport->Params->Add();
+  Param->Name="k_ts2";
+  Param=xlReport->Params->Add();
+  Param->Name="k_tr2";
+
+  Param=xlReport->Params->Add();
+  Param->Name="num_meter3";
+  Param=xlReport->Params->Add();
+  Param->Name="k_ts3";
+  Param=xlReport->Params->Add();
+  Param->Name="k_tr3";
+
+  Param=xlReport->Params->Add();
+  Param->Name="w_max";
+  Param=xlReport->Params->Add();
+  Param->Name="delta_power";
+
+  Param=xlReport->Params->Add();
+  Param->Name="night_day";
+  Param=xlReport->Params->Add();
+  Param->Name="min_time";
+  Param=xlReport->Params->Add();
+  Param->Name="max_time";
+
+
+  xlReport->ParamByName["num_meter1"]->Value = num_meter[0];
+  xlReport->ParamByName["num_meter2"]->Value = num_meter[1];
+  xlReport->ParamByName["num_meter3"]->Value = num_meter[2];
+
+  xlReport->ParamByName["k_ts1"]->Value = k_ts[0];
+  xlReport->ParamByName["k_ts2"]->Value = k_ts[1];
+  xlReport->ParamByName["k_ts3"]->Value = k_ts[2];
+
+  xlReport->ParamByName["k_tr1"]->Value = k_tr[0];
+  xlReport->ParamByName["k_tr2"]->Value = k_tr[1];
+  xlReport->ParamByName["k_tr3"]->Value = k_tr[2];
+
+  xlReport->ParamByName["w_max"]->Value = W_max;
+  xlReport->ParamByName["delta_power"]->Value = delta_power;
+
+  if (night_day==1)
+  {
+    xlReport->ParamByName["night_day"]->Value = "ранкового";
+    xlReport->ParamByName["min_time"]->Value = min_time1;
+    xlReport->ParamByName["max_time"]->Value = max_time1;
+  }
+  else
+  {
+    xlReport->ParamByName["night_day"]->Value = "вечірнього";
+    xlReport->ParamByName["min_time"]->Value = min_time2;
+    xlReport->ParamByName["max_time"]->Value = max_time2;
+
+  }
+  //xlReport->ParamByName["lnow"]->Value = FormatDateTime("dd.mm.yy hh:nn",Now());
+  //xlReport->ParamByName["lres"]->Value = ResName;
+
+  xlReport->Report();
+
+  ZQuery->Close();
+  ZQueryIndic->Close();
+ // ZQuerySum->Close();
+
+  delete xlReport;
+}
+//--------------------------------------------------
+
+
+
+

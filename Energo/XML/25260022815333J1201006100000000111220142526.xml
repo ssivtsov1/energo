@@ -1,0 +1,70 @@
+<?xml version = "1.0" encoding = "windows-1251"?>
+
+<DECLAR xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation = "J1201006.xsd">
+   <DECLARHEAD>
+      <TIN>22815333</TIN>
+      <C_DOC>J12</C_DOC>
+      <C_DOC_SUB>010</C_DOC_SUB>
+      <C_DOC_VER>6</C_DOC_VER>
+      <C_DOC_TYPE>0</C_DOC_TYPE>
+      <C_DOC_CNT>1</C_DOC_CNT>
+      <C_REG>25</C_REG>
+      <C_RAJ>26</C_RAJ>
+      <PERIOD_MONTH>12</PERIOD_MONTH>
+      <PERIOD_TYPE>1</PERIOD_TYPE>
+      <PERIOD_YEAR>2014</PERIOD_YEAR>
+      <C_STI_ORIG>2526</C_STI_ORIG>
+      <C_DOC_STAN>1</C_DOC_STAN>
+      <LINKED_DOCS xsi:nil = "true"/>
+      <D_FILL>28012015</D_FILL>
+      <SOFTWARE>Energo</SOFTWARE>
+   </DECLARHEAD>
+   <DECLARBODY>
+      <HORIG>1</HORIG>
+      <HERPN>1</HERPN>
+      <HORIG1 xsi:nil = "true"/>
+      <HTYPR xsi:nil = "true"/>
+      <HFILL>31122014</HFILL>
+      <HNUM>55</HNUM>
+      <HNUM1 xsi:nil = "true"/>
+      <HNUM2>11</HNUM2>
+      <HNAMESEL>ПУБЛІЧНЕ АКЦІОНЕРНЕ ТОВАРИСТВО "ЧЕРНІГІВОБЛЕНЕРГО"відокремлений підрозділ Городнянський район електричних мереж</HNAMESEL>
+      <HNAMEBUY>Фермерське господарство "Соната"</HNAMEBUY>
+      <HKSEL>228153325261</HKSEL>
+      <HKBUY>308944325063</HKBUY>
+      <HLOCSEL>14000  м. Чернігів, Деснянський р-н, вул. Горького буд.  40 / 
+15100  Чернiгiвська область, Городнянський район, м. Городня,  вулиця Чорноуса, будинок  88</HLOCSEL>
+      <HLOCBUY>15160 Україна, Чернiгiвська обл., Городнянський р-н с. В.Листвен  вул. 1 Травня     81</HLOCBUY>
+      <HTELSEL>0464521348</HTELSEL>
+      <HTELBUY>0464533396</HTELBUY>
+      <H01G1S>договір про постачання електричної енергії</H01G1S>
+      <H01G2D>14052008</H01G2D>
+      <H01G3S>47</H01G3S>
+      <H02G1S>Оплата з поточного рахунку</H02G1S>
+      <RXXXXG2D ROWNUM = "1">31122014</RXXXXG2D>
+      <RXXXXG3S ROWNUM = "1">За активну електроенергiю (аванс)</RXXXXG3S>
+      <RXXXXG4 ROWNUM = "1">2716000000</RXXXXG4>
+      <RXXXXG4S ROWNUM = "1">кВтг</RXXXXG4S>
+      <RXXXXG5 ROWNUM = "1">65</RXXXXG5>
+      <RXXXXG6 ROWNUM = "1">1.252</RXXXXG6>
+      <RXXXXG7 ROWNUM = "1">81.38</RXXXXG7>
+      <R01G7>81.38</R01G7>
+      <R01G8 xsi:nil = "true"/>
+      <R01G9 xsi:nil = "true"/>
+      <R01G10 xsi:nil = "true"/>
+      <R01G11>81.38</R01G11>
+      <R02G11 xsi:nil = "true"/>
+      <R03G7>16.28</R03G7>
+      <R03G8 xsi:nil = "true"/>
+      <R03G9 xsi:nil = "true"/>
+      <R03G10S xsi:nil = "true"/>
+      <R03G11>16.28</R03G11>
+      <R04G7>97.66</R04G7>
+      <R04G8 xsi:nil = "true"/>
+      <R04G9 xsi:nil = "true"/>
+      <R04G10 xsi:nil = "true"/>
+      <R04G11>97.66</R04G11>
+      <R003G10S xsi:nil = "true"/>
+      <H10G1S>Л.М. Назимко</H10G1S>
+   </DECLARBODY>
+</DECLAR>

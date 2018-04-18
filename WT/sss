@@ -1,0 +1,21 @@
+Сравнение файлов DBGrid.~cpp и DBGRID.CPP
+***** DBGrid.~cpp
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull-1+5,S.Length());
+           S=S1;
+***** DBGRID.CPP
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull+5,S.Length());
+           S=S1;
+*****
+
+***** DBGrid.~cpp
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull-1+5,S.Length());
+           S=S1;
+***** DBGRID.CPP
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull+5,S.Length());
+           S=S1;
+*****
+

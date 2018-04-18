@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="WT.exe"/>
+    <OBJFILES value="OBJ\WT.obj OBJ\Query.obj OBJ\About.obj OBJ\Edit.obj OBJ\DBGrid.obj 
+      OBJ\WinGrid.obj OBJ\Form.obj OBJ\List.obj OBJ\MainForm.obj OBJ\Message.obj 
+      OBJ\SetQuery.obj OBJ\SprGrid.obj OBJ\FilterForm.obj OBJ\SetWFForm.obj 
+      OBJ\ReportView.obj OBJ\MyThread.obj OBJ\SetGrp.obj OBJ\SelFields.obj 
+      OBJ\Table.obj OBJ\Defines.obj OBJ\func.obj OBJ\WTGrids.obj 
+      OBJ\TWTCompatable.obj OBJ\Common.obj OBJ\Main.obj OBJ\Address.obj 
+      OBJ\AddrMain.obj OBJ\FastSForm.obj OBJ\ParamsForm.obj"/>
+    <RESFILES value="tools.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) TWTCompatable.dfm"/>
+    <LIBFILES value="Lib\VMachine.lib"/>
+    <LIBRARIES value="ZCOMMONCB5.lib ZDBWARECB5.lib ZPgSqlCB5.lib"/>
+    <SPARELIBS value="vcl50.lib qrpt50.lib vclx50.lib vcldb50.lib vclbde50.lib bcbsmp50.lib 
+      ZPgSqlCB5.lib ZDBWARECB5.lib ZCOMMONCB5.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Vcldb50.bpi vclado50.bpi ibsmp50.bpi 
+      VCLBDE50.bpi vcldbx50.bpi Qrpt50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi 
+      Dss50.bpi TeeQR50.bpi VCLIB50.bpi Vclmid50.bpi vclie50.bpi Inetdb50.bpi 
+      Inet50.bpi NMFast50.bpi webmid50.bpi bcbie50.bpi dclocx50.bpi 
+      bcb2kaxserver50.bpi QRExports.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value=""/>
+    <RELEASELIBPATH value=""/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="WT.cpp"/>
+    <INCLUDEPATH value="..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\include;$(BCB)\include\vcl;..\zeos"/>
+    <LIBPATH value="&quot;D:\Program Files\Borland\CBuilder5\Lib\Release\&quot;;..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;&quot;C:\Program Files\Borland\CBuilder5\Lib\Release\&quot;;..\zeos;include\ZEOS"/>
+    <WARNINGS value="-wuse -wucp -wstv -wstu -wpin -w-par -wnod -wnak -w-8032 -w-8031 -w-8030 
+      -w-8029 -w-hid -wcln -wbbf -wamp -wamb"/>
+    <WARNOPTSTR value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\zeosdbo\dbase -I..\zeosdbo\common -Izeos -I.. -I$(BCB)\include 
+      -I$(BCB)\include\vcl -I..\zeos -src_suffix cpp -no_tie -boa"/>
+    <CFLAG1 value="-Od -H=d:\CBUILDER5\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2OBJ -N0OBJ -$YD -$W -$U -$O- -$I- -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd /z /x /n /c"/>
+    <LFLAGS value="-IOBJ -D&quot;&quot; -Rr -aa -Tpe -GD -x -Gn -M -w -v -wdpl"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1058
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+$(BCB)\Bin\mfcwizard.bpl=MFC Wizard
+$(BCB)\Bin\dcl31w50.bpl=Delphi 1.0 Compatibility Components
+C:\WINDOWS\system32\ibsmp50.bpl=Borland C++ InterBase Alerter Component
+$(BCB)\Bin\dcldss50.bpl=Borland Decision Cube Components
+$(BCB)\Bin\dclsmpedit50.bpl=Borland Editor Script Enhancements
+$(BCB)\Bin\dclmid50.bpl=Borland MIDAS Components
+$(BCB)\Bin\dclnet50.bpl=Borland Internet Components
+$(BCB)\Bin\dclwbm50.bpl=Borland InternetExpress Components
+$(BCB)\Projects\Bpl\ZCommonCB4.bpl=Zeos Common Routines
+F:\_Install\CBuilderComponent\teasy\delphi\demo\tsypd50.bpl=TEasyPrint for Delphi 5
+
+[HistoryLists\hlIncludePath]
+Count=28
+Item0=..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\include;$(BCB)\include\vcl;..\zeos
+Item1=..\;..;$(BCB)\include;$(BCB)\include\vcl;..\zeos
+Item2=C:\Program Files\Borland\CBuilder5\Projects\;E:\energo\;$(BCB)\include;$(BCB)\include\vcl;..\zeos
+Item3=C:\Program Files\Borland\CBuilder5\Projects\;E:\energo\;$(BCB)\include;$(BCB)\include\vcl;E:\WTools\zeos
+Item4=C:\Program Files\Borland\CBuilder5\Projects\;E:\energo\;$(BCB)\include;$(BCB)\include\vcl
+Item5=C:\Program Files\Borland\CBuilder5\Projects;E:\energo\;$(BCB)\include;$(BCB)\include\vcl
+Item6=C:\Program Files\Borland\CBuilder5\Projects;E:\energo\;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\common\;c:\PROGRA~1\BORLAND\zeosdbo\dbase\
+Item7=E:\energo\;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\common\;c:\PROGRA~1\BORLAND\zeosdbo\dbase\
+Item8=..\energo;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\common\;c:\PROGRA~1\BORLAND\zeosdbo\dbase\
+Item9=..\energo;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;$(BCB)\..\zeosdbo\common;$(BCB)\..\zeosdbo\dbase
+Item10=..\energo;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase
+Item11=..\energo;$(BCB)\include;$(BCB)\include\vcl
+Item12=..\energo;..\wt;$(BCB)\include;$(BCB)\include\vcl
+Item13=$(BCB)\include;$(BCB)\include\vcl
+Item14=C:\Dream\units\;E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;E:\Dream\units\
+Item15=C:\Dream\units;E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;E:\Dream\units\
+Item16=E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;E:\Dream\units\
+Item17=..\..;d;ed;red;bred;..\..\bred;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item18=..\..;d;ed;red;bred;..\..\bred;..\bred;..\..\KIAWORK;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item19=..\..;d\;ed;red;bred;..\..\bred;..\bred;..\..\KIAWORK;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item20=..\..;d\\;ed\;red\;bred\;..\..\bred\;\\bred\;\bred\;..\bred\;..\;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\Bred;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item21=C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\Bred;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item22=C:\Program Files\Borland\CBuilder4\Bin;C:\Program Files\Borland\CBuilder4\Bin\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\Bred;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item23=C:\Program Files\Borland\CBuilder4\Bin;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\Program Files\Borland\CBuilder4\Bin\;..\Bred;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item24=C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;C:\Program Files\Borland\CBuilder4\Bin\;..\Bred;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;..\..\Dream\units
+Item25=C:\Program Files\Borland\CBuilder4\Projects;..\ToolsComp;Compiler;C:\Program Files\Borland\CBuilder4\Bin;..\Bred;C:\Program Files\Borland\CBuilder4\Bin\;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl;E:\Dream\units
+Item26=..\ReportMaster;..\Bred;C:\Program Files\Borland\CBuilder4\Bin\;C:\CBuilder4\Bin\;$(BCB)\include;$(BCB)\include\vcl
+Item27=..\ReportMaster;..\Bred;C:\Program Files\Borland\CBuilder4\Bin;C:\CBuilder4\Bin;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=30
+Item0=D:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos;include\ZEOS
+Item1=D:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos;D:\WTools\WT\include\ZEOS
+Item2=D:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos
+Item3=D:\Program Files\Borland\CBuilder5\Lib\Release;..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos
+Item4=..\zeosdbo\dbase;..\zeosdbo\common;zeos;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos
+Item5=..\;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder5\Lib\Release\;..\zeos
+Item6=..\energo\lib;C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\zeos
+Item7=C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;E:\WTools\zeos
+Item8=C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\zeosdbo\dbase;..\zeosdbo\common
+Item9=C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\zeosdbo\dbase\;..\zeosdbo\common\
+Item10=C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\dbase\;c:\PROGRA~1\BORLAND\zeosdbo\common\
+Item11=C:\Program Files\Borland\CBuilder5\Projects;C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\dbase\;c:\PROGRA~1\BORLAND\zeosdbo\common\
+Item12=C:\Program Files\Borland\CBuilder5\Lib\Release\;E:\energo\;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\dbase\;c:\PROGRA~1\BORLAND\zeosdbo\common\
+Item13=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;c:\PROGRA~1\BORLAND\zeosdbo\dbase\;c:\PROGRA~1\BORLAND\zeosdbo\common\
+Item14=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase;$(BCB)\..\zeosdbo\dbase;$(BCB)\..\zeosdbo\common
+Item15=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos;$(BCB)\zeos\zeosdbo\common;$(BCB)\zeos\zeosdbo\dbase
+Item16=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo;$(BCB)\zeos
+Item17=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\zeos\zeosdbo
+Item18=C:\Program Files\Borland\CBuilder5\Lib\Release\;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item19=C:\Program Files\Borland\CBuilder5\Lib\Release;..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item20=..\energo;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item21=..\energo;..\wt;D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item22=D:\CBuilder5\Lib\Release\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item23=D:\CBuilder5\Lib\Release;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item24=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item25=C:\Dream\units\;D:\CBuilder5\Lib\Release\;C:\CBuilder4\CBuilder4\Lib\;C:\CBuilder4\CBuilder4\Lib\Release\;E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;c:\program files\borland\cbuilder4\projects\lib\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\ReportMaster;C:\CBuilder4\Bin\;$(BCB)\lib\obj;$(BCB)\lib;E:\Dream\units\
+Item26=C:\Dream\units;D:\CBuilder5\Lib\Release\;C:\CBuilder4\CBuilder4\Lib\;C:\CBuilder4\CBuilder4\Lib\Release\;E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;c:\program files\borland\cbuilder4\projects\lib\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\ReportMaster;C:\CBuilder4\Bin\;$(BCB)\lib\obj;$(BCB)\lib;E:\Dream\units\
+Item27=D:\CBuilder5\Lib\Release\;C:\CBuilder4\CBuilder4\Lib\;C:\CBuilder4\CBuilder4\Lib\Release\;E:\;d;ed;red;bred;E:\bred\;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;c:\program files\borland\cbuilder4\projects\lib\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\ReportMaster;C:\CBuilder4\Bin\;$(BCB)\lib\obj;$(BCB)\lib;E:\Dream\units\
+Item28=D:\CBuilder5\Lib\Release;C:\CBuilder4\CBuilder4\Lib;C:\CBuilder4\CBuilder4\Lib\Release;C:\CBuilder4\CBuilder4\Lib\;C:\CBuilder4\CBuilder4\Lib\Release\;..\..;d;ed;red;bred;..\..\bred;..\bred;..;C:\Program Files\Borland\CBuilder4\Bin\;c:\program files\borland\cbuilder4\projects\lib\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\ReportMaster;C:\CBuilder4\Bin\;$(BCB)\lib\obj;$(BCB)\lib;..\..\Dream\units
+Item29=C:\CBuilder4\CBuilder4\Lib;C:\CBuilder4\CBuilder4\Lib\Release;C:\CBuilder4\CBuilder4\Lib\;C:\CBuilder4\CBuilder4\Lib\Release\;..\..;d;ed;red;bred;..\..\bred;..\bred;..\..\KIAWORK;C:\Program Files\Borland\CBuilder4\Bin\;c:\program files\borland\cbuilder4\projects\lib\;C:\Program Files\Borland\CBuilder4\Projects\;..\ToolsComp;Compiler;..\ReportMaster;C:\CBuilder4\Bin\;$(BCB)\lib\obj;$(BCB)\lib;..\..\Dream\units
+
+[HistoryLists\hlDebugSourcePath]
+Count=3
+Item0=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\WTools\zeosdbo\dbase\;E:\WTools\zeosdbo\common\
+Item1=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\
+Item2=$(BCB)\source\vcl
+
+[HistoryLists\hlIntOutputDir]
+Count=2
+Item0=OBJ
+Item1=OBJ[Debugging]
+
+[Debugging]
+DebugSourceDirs=d:\cbuilder5\source\vcl;E:\For_OSA\zeosdbo\dbase\;E:\WTools\zeosdbo\dbase\;E:\WTools\zeosdbo\common\
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

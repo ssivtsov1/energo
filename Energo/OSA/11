@@ -1,0 +1,13 @@
+Сравнение файлов CLIENTlIST.cpp и CLIENTLIST.~CPP
+***** CLIENTlIST.cpp
+
+     QueryCli->DefaultFilter="id_state<>50 and c.id_state<>99 and idk_work<>0 or (c.id=getsysvarn('id_res') or c.id=999999999 o
+r c.id=getsysvarn('id_chnoe'))";
+    QueryCli->Filtered=true;
+***** CLIENTLIST.~CPP
+
+     QueryCli->DefaultFilter="id_state<>50 and c.id_state<>99 and idk_work<>0 or (c.id=getsysvarn('id_res') or c.id=999999999)"
+;
+    QueryCli->Filtered=true;
+*****
+

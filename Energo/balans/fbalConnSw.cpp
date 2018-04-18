@@ -1,0 +1,539 @@
+//---------------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+#include "Main.h"
+//#include "fTaxListAll.h"
+#include "ParamsForm.h"
+#include "fbalConnSw.h"
+#include "fbalConnSwEdit.h"
+#include "fPeriodSel.h"
+#include "xlcClasses.hpp"
+#include "xlReport.hpp"
+
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+AnsiString sqlstr;
+
+//----------------------------------------------------------------------
+//--------------------------- Отключения/подключения переключателей-----
+//----------------------------------------------------------------------
+__fastcall TfConnSwitch::TfConnSwitch( TComponent* AOwner ) : TWTDoc(AOwner)
+{
+
+ // получим иекущий рабочий период
+  TWTQuery * ZQuery = new TWTQuery(Application);
+  ZQuery->Options<< doQuickOpen;
+
+  ZQuery->RequestLive=false;
+  ZQuery->CachedUpdates=false;
+  check_mode=0;
+/*
+  AnsiString sqlstr="select fun_mmgg() as mmgg ;";
+  ZQuery->Sql->Clear();
+  ZQuery->Sql->Add(sqlstr);
+
+  try
+  {
+   ZQuery->Open();
+  }
+  catch(EDatabaseError &e)
+  {
+   ShowMessage("Ошибка "+e.Message.SubString(8,200));
+   ZQuery->Close();
+   delete ZQuery;
+   return;
+  }
+  ZQuery->First();
+  mmgg = ZQuery->FieldByName("mmgg")->AsDateTime;
+
+  ZQuery->Close();
+*/
+
+//  TWTPanel* PCaption=MainPanel->InsertPanel(10,true,10);
+
+  TWTPanel* PTax=MainPanel->InsertPanel(200,true,200);
+/*
+    TFont *F;
+    F=new TFont();
+    F ->Size=10;
+    F->Style=F->Style << fsBold;
+    F->Color=clBlue;
+    PCaption->Params->AddText("Отключения "+ ZQAbonList->FieldByName("short_name")->AsString,10,F,Classes::taCenter,false);
+*/
+  TWTQuery *Query2 = new  TWTQuery(this);
+  Query2->Options << doQuickOpen;
+
+
+   Query2->Sql->Clear();
+   Query2->Sql->Add("select sw.*, eq.name_eqp, s.name_st , cal_minutes_fun(sw.dt_on::::timestamp, sw.dt_off::::timestamp) as minutes_switch, \
+   CASE WHEN err.id_sw is null THEN 0 ELSE 1 END as err_flag \
+   from bal_switching_tbl as sw left join eqm_equipment_tbl as eq on (sw.id_fider = eq.id) \
+   left join (select id_con, sum(eq2.name_eqp||',')::::varchar as name_st from bal_connector_oper_tbl as co join eqm_equipment_tbl as eq2 on (co.id_st = eq2.id) group by id_con ) as s \
+     on (s.id_con = sw.id) \
+   left join (select distinct id_sw from bal_switch_errors_tmp ) as err on (err.id_sw = sw.id) \
+     order by sw.dt_on ; " );
+
+   DBGrDoc=new TWTDBGrid(PTax, Query2);
+
+   qDocList = DBGrDoc->Query;
+
+   DBGrDoc->SetReadOnly(false);
+   PTax->Params->AddGrid(DBGrDoc, true)->ID="SwGrid";
+/*
+   TWTQuery* QuerDci=new TWTQuery(this);
+   QuerDci->Sql->Add(" select name,id from dci_document_tbl where idk_document = 600 order by id; " );
+   QuerDci->Open();
+
+   qDocList->AddLookupField("Namek_doc","idk_document",QuerDci,"name","id");
+*/
+//  qDocList->AddLookupField("CONNAME", "id_con", "bal_connector_tbl", "name","id");
+
+  qDocList->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("name_eqp");
+  NList->Add("name_st");
+
+  qDocList->SetSQLModify("bal_switching_tbl",WList,NList,true,false,true);
+ // TDataSetNotifyEvent OldInsert =
+  /////////////////////////qDocList->AfterInsert=  NewDocInsert;
+  qDocList->OnNewRecord =  NewDocInsert;
+  qDocList->AfterInsert=CancelInsert;
+
+  DBGrDoc->OnDrawColumnCell=DrawColumnCell;
+
+  qDocList->FieldByName("dt_on")->EditMask = "90.90.0000 00:00";
+  qDocList->FieldByName("dt_off")->EditMask = "90.90.0000 00:00";
+  ((TDateTimeField*)(qDocList->FieldByName("dt_on")))->DisplayFormat = "dd.mm.yyyy hh:nn";
+  ((TDateTimeField*)(qDocList->FieldByName("dt_off")))->DisplayFormat = "dd.mm.yyyy hh:nn";
+
+  TWTField *Fieldh;
+
+  Fieldh = DBGrDoc->AddColumn("name_eqp", "Фидер", "Фидер");
+  Fieldh->SetWidth(150);
+  Fieldh->SetReadOnly();
+  Fieldh = DBGrDoc->AddColumn("name_st", "ТП", "Переключенные ТП");
+  //Fieldh->SetWidth(300);
+  Fieldh->SetReadOnly();
+
+
+  Fieldh = DBGrDoc->AddColumn("dt_on", "Дата нач.", "Дата начала переключения");
+  Fieldh->SetWidth(100);
+  Fieldh = DBGrDoc->AddColumn("dt_off", "Дата кон.", "Дата окончания переключения");
+  Fieldh->SetWidth(100);
+
+/*
+  Fieldh= DBGrDoc->AddColumn("operation", "Событие", "Событие");
+  Fieldh->AddFixedVariable("0", "Отключение");
+  Fieldh->AddFixedVariable("1", "Включение");
+  Fieldh->SetDefValue("0");
+  Fieldh->SetWidth(100);
+*/
+
+  Fieldh = DBGrDoc->AddColumn("comment", "Комментарий", "Комментарий");
+  Fieldh->SetWidth(300);
+
+  DBGrDoc->BeforeInsert=SwitchNewGr;
+  DBGrDoc->OnAccept=SwitchEdit;
+
+  DBGrDoc->Visible=true;
+
+  SetCaption("Переключения в сетях 10 кВ");
+
+  //---------------------------------------------
+  TWTToolBar* tb=DBGrDoc->ToolBar;
+
+  TWTToolButton* btAll=tb->AddButton("dateinterval", "Выбор периода", PeriodSel);
+  TWTToolButton* btnPrint=tb->AddButton("print", "Печать", PrintList);
+  TWTToolButton* btnCheck=tb->AddButton("INSPECT", "Проверить", CheckIntervals);
+
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=SwitchEdit;
+    if ( btn->ID=="NewRecord")
+       {
+//       if (IsInsert)
+         tb->Buttons[i]->OnClick=SwitchNew;
+//       else
+//         tb->Buttons[i]->OnClick=NULL;
+       }
+    if ( btn->ID=="DelRecord")
+     {
+//     if (IsInsert)
+//       {
+//        OldDelEqp=tb->Buttons[i]->OnClick;
+//        tb->Buttons[i]->OnClick=DelEqp;
+//       }
+//     else
+//       tb->Buttons[i]->OnClick=NULL;
+     }
+   }
+
+  DateTo = Now();
+  DateFrom = Now();
+ };
+//---------------------------------------------------------------------------
+
+void __fastcall TfConnSwitch::NewDocInsert(TDataSet* DataSet)
+{
+// DataSet->FieldByName("reg_date")->AsDateTime=Date();
+}
+//----------------------------------------------------------------------
+
+void __fastcall TfConnSwitch::ShowData(void)
+{
+ MainPanel->ParamByID("SwGrid")->Control->SetFocus();
+ DBGrDoc->Query->Refresh();
+// MainPanel->ParamByID("DocLines")->Control->SetFocus();
+// MainPanel->ParamByID("DemLimitH")->Control->SetFocus();
+};
+
+//----------------------------------------------------------------------
+void __fastcall TfConnSwitch::ShowData(TDateTime dt_from,TDateTime dt_to)
+{
+ MainPanel->ParamByID("SwGrid")->Control->SetFocus();
+
+ DateFrom=dt_from;
+ DateTo = dt_to;
+
+ DBGrDoc->Query->Filtered=false;
+ DBGrDoc->Query->DefaultFilter="dt_on >= '" +FormatDateTime("yyyy-mm-dd",DateFrom)+"' and dt_on <= '"
+    + FormatDateTime("yyyy-mm-dd",DateTo)+ "'";
+ DBGrDoc->Query->Filtered=true;
+ DBGrDoc->Query->Refresh();
+
+ SetCaption("Переключения в сетях 10 кВ ("+ FormatDateTime("dd.mm.yy ",DateFrom)+" - "+FormatDateTime("dd.mm.yy ",DateTo)+ ")");
+
+};
+
+//--------------------------------------------------
+/*
+void __fastcall TMainForm::ShowAbonSwitch(TObject *Sender)
+{
+  TWinControl *Owner = NULL;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild("Состояния", Owner)) {
+    return;
+  }
+
+  TWTPanel *TDoc=( TWTPanel *)((TWinControl *)Sender)->Parent;
+  TWTPanel *MPanel= ( TWTPanel *)TDoc->Parent->Parent->Parent->Parent;
+  TWTDBGrid *GrClient= ((TWTDBGrid *)MPanel->ParamByID("Client")->Control);
+
+  TfAbonSwitch* fAbonSwitch=new TfAbonSwitch(this,GrClient->DataSource->DataSet);
+
+  fAbonSwitch->ShowAs("Отключения");
+ // fTaxListFull->SetCaption("Журнал налоговых накладных");
+
+  fAbonSwitch->ID="Отключения";
+
+  fAbonSwitch->ShowData();
+
+}
+//----------------------------------------------------------
+*/
+void _fastcall TfConnSwitch::SwitchNewGr(TWTDBGrid *Sender) {
+
+  //if (!ReadOnly)
+  SwitchNew(Sender);
+ // DBGrDoc->Query->Refresh();
+  Sender->Query->Cancel();
+};
+//---------------------------------------------------------------------------
+
+void __fastcall TfConnSwitch::SwitchNew(TObject* Sender)
+{
+/*
+  TWinControl *Owner = NULL;
+
+  // Если такое окно есть - активизируем и выходим
+  if (((TWTMainForm*)Application->MainForm)->ShowMDIChild("Переключатель", Owner)) {
+    return;
+  }
+  TfConnector *fConnector;
+*/
+  Application->CreateForm(__classid(TfbalConnSwitchEdit), &fbalConnSwitchEdit);
+  fbalConnSwitchEdit->ShowNew();
+  fbalConnSwitchEdit->qParent = DBGrDoc->Query;
+/*
+  fConnector=new TfConnector(this,"");
+  fConnector->ShowAs("Новый переключатель");
+  fConnector->SetCaption("Новый переключатель");
+  fConnector->mode=0;
+  fConnector->ID="Переключатель";
+  fConnector->ParentDataSet=DBGrid->Query;
+  fConnector->ShowData(0);
+*/
+// fConnector->ShowData(DBGrid->Query->FieldByName("id")->AsInteger);
+}
+//---------------------------------------------------------------------------
+void __fastcall TfConnSwitch::SwitchEdit (TObject* Sender)
+{
+  TWinControl *Owner = NULL;
+/*
+  // Если такое окно есть - активизируем и выходим
+  if (((TWTMainForm*)Application->MainForm)->ShowMDIChild("Переключатель", Owner)) {
+    return;
+  }
+  TfConnector *fConnector;
+
+  fConnector=new TfConnector(this,"");
+  fConnector->ShowAs(DBGrid->Query->FieldByName("name")->AsString);
+  fConnector->SetCaption("Переключатель "+DBGrid->Query->FieldByName("name")->AsString);
+
+  fConnector->mode=1;
+  fConnector->ID="Переключатель";
+  fConnector->ParentDataSet=DBGrid->Query;
+
+  fConnector->ShowData(DBGrid->Query->FieldByName("id")->AsInteger);
+*/
+
+  Application->CreateForm(__classid(TfbalConnSwitchEdit), &fbalConnSwitchEdit);
+
+  if(DBGrDoc->Query->FieldByName("id")->AsInteger!=0)
+    fbalConnSwitchEdit->ShowData(DBGrDoc->Query->FieldByName("id")->AsInteger);
+  else
+    fbalConnSwitchEdit->ShowNew();
+
+  fbalConnSwitchEdit->qParent = DBGrDoc->Query;
+}
+//---------------------------------------------------------------------------
+void __fastcall TfConnSwitch::CancelInsert(TDataSet* DataSet)
+{
+ DataSet->Cancel();
+}
+//---------------------------------------------------------------------------
+void __fastcall TfConnSwitch::PeriodSel(TObject *Sender)
+{
+
+    TfPeriodSelect* fPeriodSelect;
+    Application->CreateForm(__classid(TfPeriodSelect), &fPeriodSelect);
+
+    TDateTime ZeroTime;
+
+//    if (qTaxList->FieldByName("mmgg")->AsDateTime != ZeroTime)
+//        fPeriodSelect->FormShow(qTaxList->FieldByName("mmgg")->AsDateTime,qTaxList->FieldByName("mmgg")->AsDateTime);
+//    else
+    fPeriodSelect->FormShow(DateFrom,DateTo);
+
+
+    int rez =fPeriodSelect->ShowModal();
+
+    if (rez == mrCancel)
+     {
+      delete fPeriodSelect;
+      return ;
+     };
+
+
+   if (rez == mrOk)
+   {
+     DBGrDoc->Query->Filtered=false;
+     DBGrDoc->Query->DefaultFilter="dt_on >= '" +FormatDateTime("yyyy-mm-dd",fPeriodSelect->DateFrom)+"' and dt_on <= '"
+     + FormatDateTime("yyyy-mm-dd",fPeriodSelect->DateTo)+ "'";
+     DBGrDoc->Query->Filtered=true;
+     DBGrDoc->Query->Refresh();
+
+     SetCaption("Переключения в сетях 10 кВ ("+ FormatDateTime("dd.mm.yy ",fPeriodSelect->DateFrom)
+     +" - "+FormatDateTime("dd.mm.yy ",fPeriodSelect->DateTo)+ ")");
+
+     DateFrom=fPeriodSelect->DateFrom;
+     DateTo = fPeriodSelect->DateTo;
+    }
+   else
+   {
+     //qTaxList->Filtered=false;
+     DBGrDoc->Query->DefaultFilter="";
+     DBGrDoc->Query->Refresh();
+     DBGrDoc->Query->Refresh();
+     SetCaption("Переключения в сетях 10 кВ");
+   }
+
+//    delete fPeriodSelect;
+//    ReBuildGrid();
+};
+
+//--------------------------------------------------
+void __fastcall TfConnSwitch::PrintList(TObject *Sender)
+{
+ TxlReport* xlReport = new TxlReport(this);
+
+  TWTQuery* ZQuery = new TWTQuery(this);
+  ZQuery->Options.Clear();
+  ZQuery->Options<< doQuickOpen;
+  ZQuery->RequestLive=false;
+
+  AnsiString ResName;
+
+  AnsiString sqlstr="select sw.id, b.name as name_st, b2.name as name_from, co.id_st  \
+    from bal_connector_oper_tbl as co \
+    join bal_switching_tbl as sw  on (co.id_con = sw.id) \
+    left join bal_grp_tree_tbl as b on (b.code_eqp = co.id_st and b.mmgg = (select max(mmgg) from bal_grp_tree_tbl where code_eqp = b.code_eqp) ) \
+    left join bal_grp_tree_tbl as b2 on (b2.code_eqp = b.id_p_eqp and b2.mmgg = (select max(mmgg) from bal_grp_tree_tbl where code_eqp = b2.code_eqp ) ) \
+    order by sw.id, b.name  ;";
+
+  ZQuery->Sql->Clear();
+  ZQuery->Sql->Add(sqlstr);
+
+  ZQuery->MasterSource=DBGrDoc->DataSource;
+  ZQuery->LinkFields="id = id";
+
+  try
+   {
+    ZQuery->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQuery->Close();
+    return;
+   }
+
+  xlReport->XLSTemplate = "XL\\recon_list.xls";
+
+  TxlDataSource *Dsr;
+
+  TxlReportParam *Param;
+  xlReport->DataSources->Clear();
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = DBGrDoc->Query;
+  Dsr->Alias =  "ZQXLReps";
+  Dsr->Range = "GroupRange";
+
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQuery;
+  Dsr->Alias =  "ZQXLReps2";
+  Dsr->Range = "Range";
+  Dsr->MasterSourceName="ZQXLReps";
+
+
+  xlReport->Params->Clear();
+  Param=xlReport->Params->Add();
+  Param->Name="lres";
+  Param=xlReport->Params->Add();
+  Param->Name="lnow";
+  Param=xlReport->Params->Add();
+  Param->Name="lperiod";
+
+
+  TWTQuery* ZQueryRes = new TWTQuery(this);
+  ZQueryRes->Options.Clear();
+  ZQueryRes->Options<< doQuickOpen;
+  ZQueryRes->RequestLive=false;
+
+  sqlstr="select id,name from clm_client_tbl where id = syi_resid_fun();";
+  ZQueryRes->Sql->Clear();
+  ZQueryRes->Sql->Add(sqlstr);
+  try
+   {
+    ZQueryRes->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQueryRes->Close();
+    return;
+   }
+   if (ZQueryRes->RecordCount>0)
+   {
+    ZQueryRes->First();
+    ResName=ZQueryRes->FieldByName("name")->AsString;
+   }
+  ZQueryRes->Close();
+
+  xlReport->ParamByName["lnow"]->Value = FormatDateTime("dd.mm.yy hh:nn",Now());
+  xlReport->ParamByName["lres"]->Value = ResName;
+
+  if (DBGrDoc->Query->Filtered==true)
+  {
+     xlReport->ParamByName["lperiod"]->Value = FormatDateTime("dd.mm.yyyy",DateFrom)+" - "+
+     FormatDateTime("dd.mm.yyyy",DateTo);
+  }
+  else
+     xlReport->ParamByName["lperiod"]->Value ="";
+
+
+  xlReport->Report();
+
+  delete xlReport;
+}
+//--------------------------------------------------
+void __fastcall TfConnSwitch::CheckIntervals(TObject *Sender)
+{
+  TWTQuery* ZQuery = new TWTQuery(this);
+  ZQuery->Options.Clear();
+  ZQuery->Options<< doQuickOpen;
+  ZQuery->RequestLive=false;
+
+
+  AnsiString sqlstr="select bal_check_sw_fun ( :dtb, :dte) as rr;";
+
+  ZQuery->Sql->Clear();
+  ZQuery->Sql->Add(sqlstr);
+
+  if (DateTo == DateFrom )
+  {
+    ZQuery->ParamByName("dtb")->Clear();
+    ZQuery->ParamByName("dte")->Clear();
+  }
+  else
+  {
+    ZQuery->ParamByName("dtb")->AsDateTime = DateFrom;
+    ZQuery->ParamByName("dte")->AsDateTime = DateTo;
+  }
+
+  try
+   {
+    ZQuery->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQuery->Close();
+    return;
+   }
+
+   if (ZQuery->FieldByName("rr")->AsInteger ==0 )
+   {
+    ShowMessage("Ошибок не найдено.");
+   }
+   else
+   {
+    ShowMessage("Найдены ошибки! Строки с ошибками выделены.");
+    check_mode=1;
+    DBGrDoc->Query->Refresh();
+   }
+
+
+   ZQuery->Close();
+   return;
+
+}
+//------------------------------------------------------------------------------
+void __fastcall TfConnSwitch::DrawColumnCell(TObject *Sender,  const TRect &Rect, int DataCol, TColumn *Column,   TGridDrawState State)
+{
+
+ TDBGrid* t=(TDBGrid*)Sender;
+ int err =t->DataSource->DataSet->FieldByName("err_flag")->AsInteger;
+
+ t->Canvas->Font->Color=clBlack;
+ if ((err==1)&&(check_mode==1))
+ {
+    t->Canvas->Brush->Color=clYellow;
+ }
+ else
+ {
+    t->Canvas->Brush->Color=clWhite;
+ }
+
+ ((TDBGrid*)Sender)->DefaultDrawColumnCell(Rect, DataCol, Column, State);
+
+}
+

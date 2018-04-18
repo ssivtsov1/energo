@@ -1,0 +1,10 @@
+iconv -f KOI8-U -t utf8  %1 -o rep_utf.dmp
+
+sed 's/\xE2\x95\xA7/\xE2\x84\x96/g' rep_utf.dmp >rep_utf1.dmp
+sed 's/KOI8/UTF8/g' rep_utf1.dmp >rep_utf2.dmp
+
+sed 's/\xE2\x8C\xA1/_/g' rep_utf2.dmp >rep_utf3.dmp
+sed 's/\xE2\x8C\xA0/_/g' rep_utf3.dmp >rep_utf4.dmp
+sed 's/\xE2\x89\xA4/_/g' rep_utf4.dmp > rep_utf5.dmp
+
+

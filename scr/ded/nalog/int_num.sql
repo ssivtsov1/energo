@@ -1,0 +1,1 @@
+alter table acm_tax_tbl add column int_num int;

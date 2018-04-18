@@ -1,0 +1,76 @@
+<?xml version = "1.0" encoding = "windows-1251"?>
+
+<DECLAR xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation = "J1201007.xsd">
+   <DECLARHEAD>
+      <TIN>22815333</TIN>
+      <C_DOC>J12</C_DOC>
+      <C_DOC_SUB>010</C_DOC_SUB>
+      <C_DOC_VER>7</C_DOC_VER>
+      <C_DOC_TYPE>0</C_DOC_TYPE>
+      <C_DOC_CNT>11</C_DOC_CNT>
+      <C_REG>25</C_REG>
+      <C_RAJ>26</C_RAJ>
+      <PERIOD_MONTH>1</PERIOD_MONTH>
+      <PERIOD_TYPE>1</PERIOD_TYPE>
+      <PERIOD_YEAR>2015</PERIOD_YEAR>
+      <C_STI_ORIG>2526</C_STI_ORIG>
+      <C_DOC_STAN>1</C_DOC_STAN>
+      <LINKED_DOCS xsi:nil = "true"/>
+      <D_FILL>15012015</D_FILL>
+      <SOFTWARE>Energo</SOFTWARE>
+   </DECLARHEAD>
+   <DECLARBODY>
+      <H01 xsi:nil = "true"/>
+      <HORIG1 xsi:nil = "true"/>
+      <HTYPR xsi:nil = "true"/>
+      <HFILL>10012015</HFILL>
+      <HNUM>67</HNUM>
+      <HNUM1 xsi:nil = "true"/>
+      <HNUM2>24</HNUM2>
+      <HNAMESEL> ПУБЛІЧНЕ АКЦІОНЕРНЕ ТОВАРИСТВО "ЧЕРНІГІВОБЛЕНЕРГО" Відокремлений підрозділ Срібнянський район електричних мереж </HNAMESEL>
+      <HNAMEBUY>Кiнцевий споживач неплатник податку</HNAMEBUY>
+      <HKSEL>228153325261</HKSEL>
+      <HKBUY>100000000000</HKBUY>
+      <HLOCSEL> 14000, м.Чернігів, Деснянський р-н,   вул. Горького, буд. 40 / 
+  17300 Чернiгiвська область, Срібнянський район,  смт. Срiбне,  вул. Калiнiна,  будинок  6</HLOCSEL>
+      <HLOCBUY/>
+      <HTELSEL>0463921269</HTELSEL>
+      <HTELBUY/>
+      <H01G1S>договір про постачання електричної енергії</H01G1S>
+      <H01G2D>30121899</H01G2D>
+      <H01G3S/>
+      <H02G1S>Оплата з поточного рахунку</H02G1S>
+      <RXXXXG2D ROWNUM = "1">10012015</RXXXXG2D>
+      <RXXXXG2D ROWNUM = "2">10012015</RXXXXG2D>
+      <RXXXXG3S ROWNUM = "1">За активну електроенергiю</RXXXXG3S>
+      <RXXXXG3S ROWNUM = "2">За активну електроенергiю</RXXXXG3S>
+      <RXXXXG4S ROWNUM = "1">кВт.год</RXXXXG4S>
+      <RXXXXG4S ROWNUM = "2">кВт.год</RXXXXG4S>
+      <RXXXXG105_2S ROWNUM = "1">0415</RXXXXG105_2S>
+      <RXXXXG105_2S ROWNUM = "2">0415</RXXXXG105_2S>
+      <RXXXXG5 ROWNUM = "1">378</RXXXXG5>
+      <RXXXXG5 ROWNUM = "2">21308</RXXXXG5>
+      <RXXXXG6 ROWNUM = "1">1.32275</RXXXXG6>
+      <RXXXXG6 ROWNUM = "2">1.3210991</RXXXXG6>
+      <RXXXXG7 ROWNUM = "1">500</RXXXXG7>
+      <RXXXXG7 ROWNUM = "2">28150</RXXXXG7>
+      <R01G7>28650.00</R01G7>
+      <R01G8 xsi:nil = "true"/>
+      <R01G9 xsi:nil = "true"/>
+      <R01G10 xsi:nil = "true"/>
+      <R01G11>28650.00</R01G11>
+      <R02G11 xsi:nil = "true"/>
+      <R03G7>5730.00</R03G7>
+      <R03G8 xsi:nil = "true"/>
+      <R03G9 xsi:nil = "true"/>
+      <R03G10S xsi:nil = "true"/>
+      <R03G11>5730.00</R03G11>
+      <R04G7>34380.00</R04G7>
+      <R04G8 xsi:nil = "true"/>
+      <R04G9 xsi:nil = "true"/>
+      <R04G10 xsi:nil = "true"/>
+      <R04G11>34380.00</R04G11>
+      <R003G10S xsi:nil = "true"/>
+      <H10G1S>Н.В. Петренко</H10G1S>
+   </DECLARBODY>
+</DECLAR>

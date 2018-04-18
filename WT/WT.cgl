@@ -1,0 +1,165 @@
+Functions called:
+ delete (35 times)
+ vsnprintf (28 times)
+ memset (1 times)
+ SysReallocMem (409 times)
+ SysFreeMem (4905 times)
+ SysGetMem (5831 times)
+ lstrlenA (1 times)
+ lstrcpyA (4 times)
+ realloc (1 times)
+ memcpy (47 times)
+ delete[] (2 times)
+ free (26 times)
+ new[] (14 times)
+ new (40 times)
+ calloc (5 times)
+ malloc (20 times)
+Resource types used:
+ object array (14 allocs, 13 max)
+ object (40 allocs, 28 max)
+ memory block (5857 allocs, 4004 max)
+Modules used:
+ 00400000 11/24/2006 09:59:38 E:\WTools\WT\WT.exe
+ 01220000 10/04/2006 13:26:16 C:\Program Files\Ad Muncher\AdMunch.dll
+ 0CD00000 01/31/2000 04:00:00 C:\Program Files\Borland\CBuilder5\Bin\CG32.DLL
+ 32500000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\CC3250MT.DLL
+ 41000000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\BORLNDMM.DLL
+ 5D5B0000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMCTL32.DLL
+ 71A30000 08/18/2004 14:00:00 C:\WINDOWS\system32\mswsock.dll
+ 71A80000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2HELP.dll
+ 71A90000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2_32.dll
+ 71AB0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WSOCK32.dll
+ 72FC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WINSPOOL.DRV
+ 746E0000 08/18/2004 14:00:00 C:\WINDOWS\system32\MSCTF.dll
+ 75310000 08/18/2004 14:00:00 C:\WINDOWS\system32\msctfime.ime
+ 76360000 08/18/2004 14:00:00 C:\WINDOWS\system32\IMM32.DLL
+ 76380000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMDLG32.DLL
+ 77110000 08/18/2004 14:00:00 C:\WINDOWS\system32\oleaut32.dll
+ 773C0000 08/18/2004 14:00:00
+ C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.
+2600.2180_x-ww_a84f1ff9\comctl32.dll
+ 774D0000 08/18/2004 14:00:00 C:\WINDOWS\system32\ole32.dll
+ 77BF0000 08/18/2004 14:00:00 C:\WINDOWS\system32\VERSION.DLL
+ 77C00000 08/18/2004 14:00:00 C:\WINDOWS\system32\msvcrt.dll
+ 77D30000 08/18/2004 14:00:00 C:\WINDOWS\system32\user32.dll
+ 77DC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\advapi32.dll
+ 77E70000 08/18/2004 14:00:00 C:\WINDOWS\system32\RPCRT4.dll
+ 77F10000 08/18/2004 14:00:00 C:\WINDOWS\system32\GDI32.dll
+ 77F60000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHLWAPI.dll
+ 7C800000 08/18/2004 14:00:00 C:\WINDOWS\system32\kernel32.dll
+ 7C900000 08/18/2004 14:00:00 C:\WINDOWS\system32\ntdll.dll
+ 7C9C0000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHELL32.dll
+==========================================
+Functions called:
+ delete (35 times)
+ vsnprintf (28 times)
+ memset (1 times)
+ SysReallocMem (409 times)
+ SysFreeMem (4905 times)
+ SysGetMem (5831 times)
+ lstrlenA (1 times)
+ lstrcpyA (4 times)
+ realloc (1 times)
+ memcpy (47 times)
+ delete[] (2 times)
+ free (26 times)
+ new[] (14 times)
+ new (40 times)
+ calloc (5 times)
+ malloc (20 times)
+Resource types used:
+ object array (14 allocs, 13 max)
+ object (40 allocs, 28 max)
+ memory block (5857 allocs, 4004 max)
+Modules used:
+ 00400000 02/09/2007 15:49:34 E:\WTools\WT\WT.exe
+ 01220000 12/05/2006 08:20:50 C:\Program Files\Ad Muncher\AdMunch.dll
+ 0CD00000 01/31/2000 04:00:00 C:\Program Files\Borland\CBuilder5\Bin\CG32.DLL
+ 32500000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\CC3250MT.DLL
+ 41000000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\BORLNDMM.DLL
+ 5D5B0000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMCTL32.DLL
+ 71A30000 08/18/2004 14:00:00 C:\WINDOWS\system32\mswsock.dll
+ 71A80000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2HELP.dll
+ 71A90000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2_32.dll
+ 71AB0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WSOCK32.dll
+ 72FC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WINSPOOL.DRV
+ 746E0000 08/18/2004 14:00:00 C:\WINDOWS\system32\MSCTF.dll
+ 75310000 08/18/2004 14:00:00 C:\WINDOWS\system32\msctfime.ime
+ 76360000 08/18/2004 14:00:00 C:\WINDOWS\system32\IMM32.DLL
+ 76380000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMDLG32.DLL
+ 77110000 08/18/2004 14:00:00 C:\WINDOWS\system32\oleaut32.dll
+ 773C0000 08/18/2004 14:00:00
+ C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.
+2600.2180_x-ww_a84f1ff9\comctl32.dll
+ 774D0000 08/18/2004 14:00:00 C:\WINDOWS\system32\ole32.dll
+ 77BF0000 08/18/2004 14:00:00 C:\WINDOWS\system32\VERSION.DLL
+ 77C00000 08/18/2004 14:00:00 C:\WINDOWS\system32\msvcrt.dll
+ 77D30000 08/18/2004 14:00:00 C:\WINDOWS\system32\user32.dll
+ 77DC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\advapi32.dll
+ 77E70000 08/18/2004 14:00:00 C:\WINDOWS\system32\RPCRT4.dll
+ 77F10000 08/18/2004 14:00:00 C:\WINDOWS\system32\GDI32.dll
+ 77F60000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHLWAPI.dll
+ 7C800000 08/18/2004 14:00:00 C:\WINDOWS\system32\kernel32.dll
+ 7C900000 08/18/2004 14:00:00 C:\WINDOWS\system32\ntdll.dll
+ 7C9C0000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHELL32.dll
+==========================================
+Functions called:
+ delete (35 times)
+ vsnprintf (28 times)
+ memset (1 times)
+ SysReallocMem (409 times)
+ SysFreeMem (4905 times)
+ SysGetMem (5831 times)
+ lstrlenA (1 times)
+ lstrcpyA (4 times)
+ realloc (1 times)
+ memcpy (47 times)
+ delete[] (2 times)
+ free (26 times)
+ new[] (14 times)
+ new (40 times)
+ calloc (5 times)
+ malloc (20 times)
+Resource types used:
+ object array (14 allocs, 13 max)
+ object (40 allocs, 28 max)
+ memory block (5857 allocs, 4004 max)
+Modules used:
+ 00400000 02/09/2007 15:49:34 E:\WTools\WT\WT.exe
+ 01220000 12/05/2006 08:20:50 C:\Program Files\Ad Muncher\AdMunch.dll
+ 0CD00000 01/31/2000 04:00:00 C:\Program Files\Borland\CBuilder5\Bin\CG32.DLL
+ 32500000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\CC3250MT.DLL
+ 41000000 01/31/2000 04:00:00 C:\Program
+ Files\Borland\CBuilder5\Bin\BORLNDMM.DLL
+ 5D5B0000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMCTL32.DLL
+ 71A30000 08/18/2004 14:00:00 C:\WINDOWS\system32\mswsock.dll
+ 71A80000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2HELP.dll
+ 71A90000 08/18/2004 14:00:00 C:\WINDOWS\system32\WS2_32.dll
+ 71AB0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WSOCK32.dll
+ 72FC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\WINSPOOL.DRV
+ 746E0000 08/18/2004 14:00:00 C:\WINDOWS\system32\MSCTF.dll
+ 75310000 08/18/2004 14:00:00 C:\WINDOWS\system32\msctfime.ime
+ 76360000 08/18/2004 14:00:00 C:\WINDOWS\system32\IMM32.DLL
+ 76380000 08/18/2004 14:00:00 C:\WINDOWS\system32\COMDLG32.DLL
+ 77110000 08/18/2004 14:00:00 C:\WINDOWS\system32\oleaut32.dll
+ 773C0000 08/18/2004 14:00:00
+ C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.
+2600.2180_x-ww_a84f1ff9\comctl32.dll
+ 774D0000 08/18/2004 14:00:00 C:\WINDOWS\system32\ole32.dll
+ 77BF0000 08/18/2004 14:00:00 C:\WINDOWS\system32\VERSION.DLL
+ 77C00000 08/18/2004 14:00:00 C:\WINDOWS\system32\msvcrt.dll
+ 77D30000 08/18/2004 14:00:00 C:\WINDOWS\system32\user32.dll
+ 77DC0000 08/18/2004 14:00:00 C:\WINDOWS\system32\advapi32.dll
+ 77E70000 08/18/2004 14:00:00 C:\WINDOWS\system32\RPCRT4.dll
+ 77F10000 08/18/2004 14:00:00 C:\WINDOWS\system32\GDI32.dll
+ 77F60000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHLWAPI.dll
+ 7C800000 08/18/2004 14:00:00 C:\WINDOWS\system32\kernel32.dll
+ 7C900000 08/18/2004 14:00:00 C:\WINDOWS\system32\ntdll.dll
+ 7C9C0000 08/18/2004 14:00:00 C:\WINDOWS\system32\SHELL32.dll
+==========================================

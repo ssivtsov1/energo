@@ -1,0 +1,143 @@
+%конечный символ грамматики
+1. <Prog>::= <Body>;
+
+%грамматика тела программы
+2. <Body>::= <StList>;
+3. <Body>::=<FSt>;
+%4. <FSt>::=%; ;
+5. <FSt>::=<FSt>%; ;
+6. <FSt>::=<StList>%; ;
+7. <StList>::= <FSt><St>;
+8. <StList>::= <St>;
+9. <St>::= <WExpr>;
+200.<Begin>::= begin;
+201.<Blok>::= <Begin> end;
+202.<Blok>::= <Begin> <Body> end;
+203.<St>::= <Blok>;
+
+% Грамматика выражений
+25. <SignHP>::=*;
+26. <SignHP>::=/;
+27. <SignHP>::=div;
+28. <SignHP>::=mod;
+29. <SignLP>::=-;
+30. <SignLP>::=+;
+31. <USign>::=<USign><SignLP>;
+32. <USign>::=<SignLP>;
+33. <RSign>::=<USign>;
+34. <ZnVal>::=<RSign><Val>;
+35. <Add>::=<Mulat>;
+36. <Add>::=<Add><Mulat>;
+37. <Expr>::=<BoolExpr>;
+38. <Mulat>::=<Mul>;
+39. <Mul>::=<Val>;
+40. <Mul>::=<ZnVal>;
+41. <Mul>::=<Mul><SignHP><ZnVal>;
+42. <Mul>::=<Mul><SignHP><Val>;
+43. <Muli>::=<Sk><Expr>;
+44. <Mul>::=<Mul><SignHP><MulB>;
+45. <Mul>::=<Mul><SignHP><ZnMulB>;
+46. <Mul>::=<MulB>;
+47. <Mul>::=<ZnMulB>;
+48. <ZnMulB>::=<RSign><MulB>;
+63. <Val>::=<Value>;
+52. <Val>::=<number>;
+53. <Val>::=<char>;
+54. <Val>::=<string>;
+55. <Val>::=true;
+56. <Val>::=false;
+410.<UOp>::=inc;
+411.<UOp>::=dec;
+57. <LL>::=<WVars><BR>;
+65. <LL>::=<Value><BR>;
+62. <Eq>::=<LL><Expr>;
+412.<Eq>::=<UOp><Value>;
+58. <St>::=<Eq>;
+59. <St>::=<WideVars>;
+60. <MulB>::=<Muli>);
+61. <Sk>::=(;
+320.<TypeName>::=int;
+321.<TypeName>::=char;
+322.<TypeName>::=float;
+324.<TypeName>::=string;
+325.<TypeName>::=class <ID>;
+326.<St>::=delete <Value>;
+
+%Грамматика переменных, функций, массивов
+340.<WideVars>::=<WVars>;
+341.<WideVars>::=<TArray>;
+342.<WVars>::=<TypeName><ID>;
+
+330.<Ars>::=<Expr>,;
+331.<Ars>::=<Ars><Expr>,;
+332.<Arw>::=<Ars><Expr>;
+333.<WExpr>::=<Expr>;
+
+390.<Arss>::=<TAr><number>;
+391.<Arst>::=<Arss>,;
+392.<Arss>::=<Arst><number>;
+
+300.<TAr>::=<WideVars>[;
+302.<TArray>::=<Arss>];
+
+308.<WV>::=<ID>;
+360.<OnePart>::=<WV>;
+309.<WV>::=<Array>;
+363.<WV>::=<Func>;
+
+361.<Value>::=<OnePart>;
+362.<Value>::=<MultiPart>;
+
+304.<Ar>::=<WV>[;
+305.<AArgs>::=<Ar><Arw>;
+306.<AArgs>::=<Ar><WExpr>;
+307.<Array>::=<AArgs>];
+
+370.<FF>::=<ID>(;
+371.<FFF>::=<FF><Arw>;
+372.<FFF>::=<FF><WExpr>;
+373.<Func>::=<FFF>);
+374.<Func>::=<FF>);
+
+310.<MP>::=<OnePart>.;
+311.<MP>::=<MP><OnePart>.;
+312.<MultiPart>::=<MP><OnePart>;
+
+% Грамматика булевых выражений
+83. <BSign>::= >;
+84. <BSign>::= %<;
+85. <BSign>::= >=;
+86. <BSign>::= %<=;
+87. <BBSign>::= %<>;
+88. <BOp>::= and;
+89. <BOp>::= or;
+113. <AddAt>::=<Add>;
+114. <BoolExpr>::=<AddAt>;
+90. <BoolExpr>::=<BoolExpr><BBSign><AddAt>;
+107. <BoolExpr>::=<BoolExpr><BSign><AddAt>;
+109. <BoolExpr>::=<BoolExpr><BOp><AddAt>;
+91. <Mul>::=not <Val>;
+92. <Mul>::=not <MulB>;
+93. <BBSign>::==;
+106. <BR>::=:=;
+
+%Грамматика условного оператора
+95. <IfPart>::=if <Expr> then;
+96. <If>::=<IfPart><St>;
+102.<Els>::=<If> else;
+98. <IfElse>::=<Els><St>;
+99. <IfElse>::=<If>;
+117.<St>::=<IfElse>;
+
+% Грамматика While ... Do
+78. <St>::=<While><St>;
+104. <Whl>::=<Wh><Expr>;
+105. <While>::=<Whl>do;
+108. <Wh>::=while;
+115. <St>::=<While>;
+
+% Грамматика Repeat ... Until
+80. <St>::=<Rep><Body> until <Expr>;
+81. <St>::=<Rep> until <Expr>;
+103. <Rep>::=repeat;
+

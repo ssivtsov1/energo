@@ -1,0 +1,208 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+#include "Main.h"
+#include "RepInspect.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma link "xlcClasses"
+#pragma link "xlReport"
+#pragma link "ZPgSqlQuery"          
+#pragma link "ZQuery"
+#pragma resource "*.dfm"
+TfRepInspect *fRepInspect;
+TDateTime cur_mmgg;
+//---------------------------------------------------------------------------
+__fastcall TfRepInspect::TfRepInspect(TComponent* Owner)
+        : TForm(Owner)
+{
+  ZQXLReps->Database=TWTTable::Database;
+}
+//---------------------------------------------------------------------------
+void __fastcall TfRepInspect::Button1Click(TObject *Sender)
+{
+   ZQReps = new TWTQuery(this);
+  ZQReps->MacroCheck=true;
+  ZQReps->Options<< doQuickOpen;
+  ZQReps->RequestLive=false;
+  ZQReps->CachedUpdates=false;
+//  ZQReps->Transaction->AutoCommit=true;
+
+  AnsiString sqlstr="select getsysvar('id_person'::::varchar) as curuser;";
+
+  ZQReps->Sql->Clear();
+  ZQReps->Sql->Add(sqlstr);
+  try
+   {
+    ZQReps->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQReps->Close();
+    return;
+   }
+   if (ZQReps->RecordCount>0)
+   {
+    cur_user=ZQReps->FieldByName("curuser")->AsInteger;
+   }
+  ZQReps->Close();
+
+   sqlstr="select to_date(value_ident,'DD.MM.YYYY') as val from syi_sysvars_tbl where ident='mmgg';";
+   ZQReps->Close();
+   ZQReps->Sql->Clear();
+   ZQReps->Sql->Add(sqlstr);
+   try
+   {
+    ZQReps->Open();
+   }
+   catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    return;
+   }
+   cur_mmgg = ZQReps->FieldByName("val")->AsDateTime;
+   ZQReps->Close();
+
+
+  sqlstr="select res.id,res.kind_dep,res.short_name, \
+  boss.name as bospos,boss.represent_name as bossname, buh.name as buhpos,buh.represent_name as buhname, \
+  users.represent_name as usrname, ip.name as usrpos \
+  from clm_client_tbl as res  \
+   left join ( select * from clm_position_tbl as pos \
+             join cli_position_tbl as p on (p.id = pos.id_position and p.ident ='boss') )as boss  on (boss.id_client = res.id) \
+   left join ( select * from clm_position_tbl as pos \
+             join cli_position_tbl as p on (p.id = pos.id_position and p.ident ='buh') )as buh  on (buh.id_client = res.id) \
+   left join clm_position_tbl as users on (users.id = :user ) \
+   left join cli_position_tbl as ip  on (ip.id = users.id_position) \
+  where res.id = syi_resid_fun();";
+
+  
+
+
+  ZQReps->Sql->Clear();
+  ZQReps->Sql->Add(sqlstr);
+  ZQReps->ParamByName("user")->AsInteger =cur_user ;
+  try
+   {
+    ZQReps->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQReps->Close();
+    return;
+   }
+   if (ZQReps->RecordCount>0)
+   {
+    ZQReps->First();
+    ResId=ZQReps->FieldByName("id")->AsInteger;
+    ResName=ZQReps->FieldByName("short_name")->AsString;
+    res_code=ZQReps->FieldByName("kind_dep")->AsInteger;
+
+   // cur_user=ZQReps->FieldByName("curuser")->AsInteger;
+    CurUserName=ZQReps->FieldByName("usrname")->AsString;
+    CurUserPos=ZQReps->FieldByName("usrpos")->AsString;
+    BossName=ZQReps->FieldByName("bossname")->AsString;
+    BossPos=ZQReps->FieldByName("bospos")->AsString;
+    BuhName=ZQReps->FieldByName("buhname")->AsString;
+    BuhPos=ZQReps->FieldByName("buhpos")->AsString;
+    }
+  ZQReps->Close();
+
+
+     AnsiString  sqlstr1="  \
+    select  i.id,i.id_doc,i.id_client,cl.code,cl.short_name as short_name,\
+       i.id_point,ep.name_eqp as name_eqp, i.id_meter,i.num_eqp, cl.dt_indicat, cl.doc_num,  \
+                i.id_address,ad.adr,                                              \
+             i.type_eqp,i.carry,i.kind_energy as id_energy,ee.name as kind_energy,  m.dt_control,\
+             i.zone as id_zone,ez.name as zone,i.value,i.value_dev,i.dt_insp,i.id_previndic,ii.value as before_indic,ii.dat_ind,ii.value_dem \
+             from acm_inspectstr_tbl i left join  \
+             (select id,adr from adv_address_tbl  order by id) ad  on  i.id_address=ad.id\
+              left  join ( select  i.id,i.value,i.value_dem,i.dat_ind from  acd_indication_tbl i where mmgg>='2007-01-01' order by id) as ii\
+                   on (ii.id=i.id_previndic )                                                                                                \
+                       ,  (select c.id,c.code,c.short_name,s.dt_indicat,s.doc_num from  clm_client_tbl c,clm_statecl_tbl s where c.id=s.id_client) cl,  \
+              (select distinct id,name_eqp from (select h.* from eqm_equipment_h h ,                                                          \
+  (select id,max(coalesce(dt_e,now())) as dt_e from eqm_equipment_h h group by id) as hh \
+   where h.id=hh.id and coalesce(h.dt_e,now())=hh.dt_e ) h                                                                                        \
+                         where (dt_e is null or dt_e=(select max(dt_e) from eqm_equipment_h hh where hh.id=h.id) ) and type_eqp=12 order by id  \
+               ) ep,    eqm_meter_tbl m,eqk_energy_tbl ee,eqk_zone_tbl ez                                                                      \
+                 where  i.id_doc=:head and i.id_point=ep.id and i.id_client=cl.id and  m.code_eqp=i.id_meter and i.kind_energy=ee.id and ez.id=i.zone           \
+                order by i.id_doc,i.id_client,i.num_eqp   ";
+
+       ZQXLReps->Sql->Clear();
+  ZQXLReps->Sql->Add(sqlstr1);
+  ZQXLReps->ParamByName("head")->AsInteger=id_head;
+
+  try
+  {
+    ZQXLReps->Open();
+  }
+  catch(EDatabaseError &e)
+  {
+    ShowMessage("Ошибка : "+e.Message.SubString(8,200));
+    return;
+  }
+
+
+  xlReport->XLSTemplate = "XL\\grafik.xls";
+  TxlDataSource *Dsr;
+  TxlReportParam *Param;                
+  xlReport->DataSources->Clear();
+
+
+  Dsr = xlReport->DataSources->Add();
+  Dsr->DataSet = ZQXLReps;
+  Dsr->Alias = "ZQXLReps";
+  Dsr->Range = "Range";
+//  Dsr->MasterSourceName="ZQXLRepsSum";
+
+    ZQReps->Close();
+   sqlstr="select  id_doc,reg_num,reg_date,h.id_position, \
+    (pn.name||'  '|| p.represent_name)::::varchar as kur, \
+    h.comment,mmgg,flock\
+    from acm_inspecth_tbl h,   clm_position_tbl p, cli_position_tbl pn\
+       where p.id_position=pn.id  and  h.id_position=p.id and id_doc=:head;";
+
+  ZQReps->Sql->Clear();
+  ZQReps->Sql->Add(sqlstr);
+  ZQReps->ParamByName("head")->AsInteger =id_head ;
+  try
+   {
+    ZQReps->Open();
+   }
+  catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZQReps->Close();
+    return;
+   }
+    if (ZQReps->RecordCount>0)
+   {
+  xlReport->Params->Clear();
+  Param=xlReport->Params->Add();
+  Param->Name="lres";
+  Param=xlReport->Params->Add();
+  Param->Name="ldate";
+  Param=xlReport->Params->Add();
+  Param->Name="lnow";
+  Param=xlReport->Params->Add();
+  Param->Name="lkur";
+
+
+  xlReport->ParamByName["lnow"]->Value = FormatDateTime("dd.mm.yy hh:nn",Now());
+   xlReport->ParamByName["ldate"]->Value = FormatDateTime("dd.mm.yy hh:nn",ZQReps->FieldByName("reg_date")->AsDateTime);
+
+  xlReport->ParamByName["lres"]->Value = ResName;
+  Param=xlReport->Params->Add();
+  Param->Name="linsp";
+  xlReport->ParamByName["lkur"]->Value = "Iнспектор "+ZQReps->FieldByName("kur")->AsString;
+  };
+  xlReport->Report();
+
+ ZQXLReps->Close();
+// ZQXLRepsSum->Close();
+
+}
+//---------------------------------------------------------------------------

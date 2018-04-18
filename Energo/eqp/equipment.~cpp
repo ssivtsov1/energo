@@ -1,0 +1,2507 @@
+//---------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+#include "Main.h"
+#include "equipment.h"
+#include "fEqpAirLineDet.h"
+#include "fComp.h"
+#include "fCompI.h"
+#include "fCable.h"
+#include "fMeter.h"
+#include "EqpList.h"
+#include "EqpSpr.h"
+#include "fChange.h"
+#include "AreaList.h"
+#include "AbonConnect.h"
+#include "SysUser.h"
+//---------------------------------------------------------------------
+// функции класса TMainForm
+//---------------------------------------------------------------------
+//TWTWinDBGrid *WEqpGrid;
+TWTWinDBGrid *WCompGrid;
+TWTWinDBGrid *WCompIGrid;
+TWTWinDBGrid *WCableGrid;
+TWTWinDBGrid *WMeterGrid;
+TWTWinDBGrid *WTreeGrid;
+TfMeterSpr *WMeterEdit;
+TfCableSpr *WCableEdit;          
+
+void _fastcall TMainForm::ShowEqpTree(TObject *Sender) {
+     // Показать схемы по кнопке, нажатой на форме списка абонентов
+     TWTPanel *TDoc;
+     TDoc=( TWTPanel *)((TWinControl *)Sender)->Parent;
+     TWTPanel *MPanel= ( TWTPanel *)TDoc->Parent->Parent->Parent->Parent;
+     TWTDBGrid *GrClient= ((TWTDBGrid *)MPanel->ParamByID("Client")->Control);
+
+     Application->CreateForm(__classid(TfTreeForm), &fTreeForm);
+     int abon_id=GrClient->Query->FieldByName("id")->AsInteger;
+     fTreeForm->ShowAs("treeform");
+     //fTreeForm->Caption=GrClient->Table->FieldByName("name")->AsString;
+     fTreeForm->ShowTrees(abon_id);
+}
+//---------------------------------------------------------------------
+void _fastcall TMainForm::ShowLog(TObject *Sender) {
+
+  fLog=new TfLog(this);
+  fLog->ShowAs("Log");
+}
+#define WinName "Материалы"
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiMatBtn(TObject *Sender) {
+  EqiMatSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiMatSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+//   TWinControl *Owner=NULL;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_materals_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+   int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+     Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("Name", "Материал", "Наименование материала");
+ // Field->SetRequired("Наименование  должно быть заполнено");
+
+  Field = WGrid->AddColumn("ro", "r, Ом*мм2/м", "Удельное сопротивление");
+  Field = WGrid->AddColumn("ro_mantis", "*10", "Мантисса удельного сопротивления");
+//  Field->SetOnHelp(EqiMatSpr);
+//  Field->SetRequired("Область должна быть заполнена");
+
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+//  WGrid->DBGrid->OnAccept=WGrid->DBGrid->WinEditMenu;
+  WGrid->ShowAs("eqk_materals_tbl");
+
+};
+#undef WinName
+
+#define WinName "Виды изоляции"
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiCoverBtn(TObject *Sender) {
+  EqiCoverSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiCoverSpr(TWTField *Sender) {
+ EqiCoverGrid(Sender);
+}
+//--------------------------------------------------------------------
+TWTWinDBGrid* TMainForm::EqiCoverGrid(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+//   TWinControl *Owner=NULL;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return NULL;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_cover_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+   int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+   Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("Name", "Наименование", "Вид изоляции");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+//  Field = WGrid->AddColumn("ro", "ro", "ro");
+  Field = WGrid->AddColumn("ro", "r, МОм*м", "Удельное cопротивление изоляции");
+  Field = WGrid->AddColumn("mu", "m", "Магнитная проницаемость изоляции");
+//  Field->SetOnHelp(EqiMatSpr);
+//  Field->SetRequired("Область должна быть заполнена");
+
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+//  WGrid->DBGrid->OnAccept=WGrid->DBGrid->WinEditMenu;
+  WGrid->ShowAs("eqk_cover_tbl");
+  return WGrid;
+
+};
+#undef WinName
+//-------------------------------------------------------------
+#define WinName "Фазность"
+void _fastcall TMainForm::EqiPhaseBtn(TObject *Sender) {
+  EqiPhaseSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiPhaseSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_phase_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+    Table->Open();
+
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+
+//  Field->SetOnHelp(EqiMatSpr);
+//  Field->SetRequired("Область должна быть заполнена");
+
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_phase_tbl");
+
+};
+#undef WinName
+#define WinName "Виды энергии"
+void _fastcall TMainForm::EqiEnergyBtn(TObject *Sender) {
+  EqiEnergySpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiEnergySpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_energy_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+    Table->Open();
+
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_energy_tbl");
+
+};
+#undef WinName
+#define WinName "Классы напряжений"
+void _fastcall TMainForm::EqiVoltageBtn(TObject *Sender) {
+  EqiVoltageSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiVoltageSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_voltage_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+    Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Класс", "Класс напряжения");
+  Field->SetRequired("Код класса должен быть заполнен");
+  Field = WGrid->AddColumn("voltage_min", "Umin, В", "Напражение минимальное");
+  Field = WGrid->AddColumn("voltage_max", "Umax, В", "Напражение максимальное");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_voltage_tbl");
+};
+#undef WinName
+#define WinName "Зоны счетчика"
+//--------------------------------------------------------------------
+
+void _fastcall TMainForm::EqiZoneBtn(TObject *Sender)
+{
+ EqiZoneSpr("Зоны счетчика");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiZoneSpr(AnsiString name) {
+/*
+  // Определяем владельца
+  TWinControl *Owner = NULL;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_zone_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+  Table->Open();
+
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Номер", "Номер зоны");
+  Field->SetRequired("Номер должен быть заполнен");
+  Field = WGrid->AddColumn("time_begin", "Начало", "Время начала зоны");
+  Field = WGrid->AddColumn("time_end", "Окончание", "Время окончания зоны");
+
+  WGrid->DBGrid->Visible = true;
+//  WGrid->ShowAs("eqk_voltage_tbl");
+  WGrid->ShowAs(name);
+  return WGrid;
+  */
+};
+#undef WinName
+
+//------------------------------------------------------------
+#define WinName "Схемы подключения"
+void _fastcall TMainForm::EqiSchemainsBtn(TObject *Sender) {
+  EqiSchemainsSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiSchemainsSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_schemains_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+   Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_schemains_tbl");
+
+};
+#undef WinName
+#define WinName "Способ включения"
+void _fastcall TMainForm::EqiHookupBtn(TObject *Sender) {
+  EqiHookupSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiHookupSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_hookup_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+   Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_hookup_tbl");
+
+};
+#undef WinName
+#define WinName "Типы синхронности"
+void _fastcall TMainForm::EqiSyncBtn(TObject *Sender) {
+  EqiSyncSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiSyncSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_sync_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+     Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_sync_tbl");
+
+};
+#undef WinName
+#define WinName "Группы коммутационного оборудования"
+void _fastcall TMainForm::EqiSwitchsGrBtn(TObject *Sender) {
+  EqiSwitchsGrSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiSwitchsGrSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_switchs_gr_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+
+    int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+   Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("shot_name", "Кр. наименование", "Краткое наименование");
+  Field->SetRequired("Краткое наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_switchs_gr_tbl");
+
+};
+#undef WinName
+#define WinName "Вид счетчиков"
+void _fastcall TMainForm::EqiMeterBtn(TObject *Sender) {
+  EqiMeterSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiMeterSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_meter_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+     int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+  Table->Open();
+
+
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_meter_tbl");
+
+};
+#undef WinName
+#define WinName "Способы учета"
+void _fastcall TMainForm::EqiKindCountBtn(TObject *Sender) {
+  EqiKindCountSpr(NULL);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::EqiKindCountSpr(TWTField *Sender) {
+  // Определяем владельца
+  TWinControl *Owner = Sender == NULL ? this : (TWinControl *)((TControl *)Sender->Field->DataSet->Owner)->Parent;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "eqk_kind_count_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Table->Open();
+
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("id", "Код", "Код вида");
+  Field->SetRequired("Код должен быть заполнен");
+  Field = WGrid->AddColumn("Name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("eqk_kind_count_tbl");
+
+};
+#undef WinName
+//--------------------------------------------------------------------
+#define WinName "Справочник проводов"
+void _fastcall TMainForm::EqiCordeBtn(TObject *Sender)
+{
+ EqiCordeSpr("Провод");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiCordeSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max,materal,calc_diam,cord_diam,cord_qn,S_nom,ro,xo,dpo,show_def " );
+  QueryAdr->Sql->Add("  from eqi_corde_tbl order by type;");
+  TWTWinDBGrid *WGrid = new TfEqpSpr(this, QueryAdr,false,true);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+  Query->AddLookupField("MATNAME", "materal", "eqk_materals_tbl", "name","id");
+
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  //NList->Add("id");
+
+  Query->SetSQLModify("eqi_corde_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetWidth(150);
+  Field = WGrid->AddColumn("S_nom", "S,мм2", "Номинальное сечение");
+  Field = WGrid->AddColumn("MATNAME", "Материал", "Материал");
+  Field->SetOnHelp(EqiMatSpr);
+  Field = WGrid->AddColumn("ro", "Ro,Ом/км", "Активное сопротивление провода");
+  Field = WGrid->AddColumn("xo", "Xo,Ом/км", "Реактивное сопротивление провода");
+  Field = WGrid->AddColumn("dpo", "Po,кВт/км", "Удельные потери мощности");
+
+  Field = WGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field = WGrid->AddColumn("voltage_max", "U max, В", "Максимальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_max", "I max, А", "Максимальный ток (первичный)");
+
+  Field = WGrid->AddColumn("cord_diam", "D,мм", "Диаметр пролок");
+  Field = WGrid->AddColumn("cord_qn", "Проволок", "Количество проволок");
+  Field = WGrid->AddColumn("calc_diam", "D расч.,мм", "Диаметр провода расчетный");
+
+ // Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+ // Field->SetWidth(100);
+  Field = WGrid->AddColumn("show_def", "*", "Часто используемые");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("1");
+
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Провод");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник опор"
+void _fastcall TMainForm::EqiPillarBtn(TObject *Sender)
+{
+ EqiPillarSpr("Опоры");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiPillarSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,materal,name" );
+  QueryAdr->Sql->Add("  from eqi_pillar_tbl order by type;");
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+  Query->AddLookupField("MATNAME", "materal", "eqk_materals_tbl", "name","id");
+
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id");
+
+  Query->SetSQLModify("eqi_pillar_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+  Field = WGrid->AddColumn("MATNAME", "Материал", "Материал");
+  Field->SetOnHelp(EqiMatSpr);
+  Field = WGrid->AddColumn("name", "Описание", "Описание");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+ // WGrid->ShowAs("Опоры");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник заземлений"
+
+void _fastcall TMainForm::EqiEarthBtn(TObject *Sender)
+{
+ EqiEarthSpr("Заземление");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiEarthSpr(AnsiString name) {
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,name" );
+  QueryAdr->Sql->Add("  from eqi_earth_tbl order by type;");
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id");
+
+  Query->SetSQLModify("eqi_earth_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("name", "Описание", "Описание");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Заземление");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник расстояний подвески"
+void _fastcall TMainForm::EqiPendantBtn(TObject *Sender)
+{
+ EqiPendantSpr("Подвеска");
+};
+//==================
+
+TWTWinDBGrid* TMainForm::EqiPendantSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,length" );
+  QueryAdr->Sql->Add("  from eqi_pendant_tbl order by type;");
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id");
+
+  Query->SetSQLModify("eqi_pendant_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+  Field = WGrid->AddColumn("length", "Расстояние, мм", "Рассотяние, мм");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Подвеска");
+    WGrid->ShowAs(name);
+    return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник коммутационного оборудования"
+void _fastcall TMainForm::EqiSwitchBtn(TObject *Sender)
+{
+ EqiSwitchSpr("Справочник коммутационного оборудования");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiSwitchSpr(AnsiString name) {
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max,id_gr,power_nom,lost_nom" );
+  QueryAdr->Sql->Add("  from eqi_switch_tbl order by type;");
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+  Query->AddLookupField("GROUP", "id_gr", "eqk_switchs_gr_tbl", "name","id");
+
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+    return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+
+  Query->SetSQLModify("eqi_switch_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+
+  Field = WGrid->AddColumn("GROUP", "Группа", "Группа коммутационного оборудования");
+  Field->SetOnHelp(EqiSwitchsGrSpr);
+
+  Field = WGrid->AddColumn("power_nom", "Ном.мощность, кВА", "Номинальная мощность, при опережающем токе, ква");
+  Field = WGrid->AddColumn("lost_nom", "Потери, кВт", "Потери при номинальном режиме");
+
+  Field = WGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field = WGrid->AddColumn("voltage_max", "U max, В", "Максимальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_max", "I max, А", "Максимальный ток (первичный)");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Переключатели");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник видов предохранителей"
+void _fastcall TMainForm::EqiFuseBtn(TObject *Sender)
+{
+ EqiFuseSpr("Справочник видов предохранителей");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiFuseSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max,power_nom" );
+  QueryAdr->Sql->Add("  from eqi_fuse_tbl order by type;");
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+
+  Query->SetSQLModify("eqi_fuse_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+
+  Field = WGrid->AddColumn("power_nom", "Ном.мощность", "Номинальная мощность, при опережающем токе, ква");
+
+  Field = WGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field = WGrid->AddColumn("voltage_max", "U max, В", "Максимальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_max", "I max, А", "Максимальный ток (первичный)");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Предохранители");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник компенсаторов"
+void _fastcall TMainForm::EqiJackBtn(TObject *Sender)
+{
+ EqiJackSpr("Справочник компенсаторов");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiJackSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max,sync,power_nom,lost_nom" );
+  QueryAdr->Sql->Add("  from eqi_jack_tbl order by type;");
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+  Query->AddLookupField("SYNCNAME", "sync", "eqk_sync_tbl", "name","id");
+
+       int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+
+  Query->SetSQLModify("eqi_jack_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+
+  Field = WGrid->AddColumn("SYNCNAME", "Синхронность", "Синхронный/асинхронный");
+  Field->SetOnHelp(EqiSyncSpr);
+
+  Field = WGrid->AddColumn("power_nom", "Ном.мощность,кВА", "Номинальная мощность, при опережающем токе");
+  Field = WGrid->AddColumn("lost_nom", "Потери,кВт", "Потери при номинальном режиме");
+
+  Field = WGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field = WGrid->AddColumn("voltage_max", "U max, В", "Максимальное напряжение (первичное)");
+  Field = WGrid->AddColumn("amperage_max", "I max, А", "Максимальный ток (первичный)");
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+ // WGrid->ShowAs("Компенсаторы");
+
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Справочник видов ДЕС"
+
+void _fastcall TMainForm::EqiDESBtn(TObject *Sender)
+{
+ EqiDESSpr("ДЭС");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiDESSpr(AnsiString name) {
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type , normative " );
+  QueryAdr->Sql->Add("  from eqi_des_tbl order by type;");
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+        int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id");
+
+  Query->SetSQLModify("eqi_des_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetWidth(150);
+  Field = WGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+  Field->SetWidth(100);
+
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//----------------------------------------------------------------
+//#define WinName "Оборудование"
+void _fastcall TMainForm::ShowEqpList(int kind,AnsiString AddFilds[],AnsiString AddFildsName[],int FildsCount,AnsiString WinName, bool IsInsert) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this ;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  TZDatasetOptions Options;
+  Options=QueryAdr->Options;
+  Options << doQuickOpen;
+  QueryAdr->Options=Options;
+
+  //------------------------------------------------------------------
+  //   Получить имена таблиц
+
+  AnsiString name_table_ind="";
+  AnsiString name_table="";
+
+  TWTQuery *ZEqpQuery = new TWTQuery(this);
+  ZEqpQuery->MacroCheck=true;
+  Options.Clear();
+  Options << doQuickOpen;
+  ZEqpQuery->Options=Options;
+  ZEqpQuery->RequestLive=false;
+  ZEqpQuery->CachedUpdates=false;
+
+   AnsiString sqlstr=" select syt1.name AS name_table, syt2.name AS name_table_ind,dk.calc_lost  \
+ from (eqi_device_kinds_tbl AS dk LEFT OUTER JOIN syi_table_tbl AS syt1 ON (dk.id_table=syt1.id))\
+ LEFT OUTER JOIN syi_table_tbl AS syt2 ON (dk.id_table_ind=syt2.id)\
+ where (dk.id= :eqp_type);";
+
+   ZEqpQuery->Sql->Clear();
+   ZEqpQuery->Sql->Add(sqlstr);
+
+   ZEqpQuery->ParamByName("eqp_type")->AsInteger=kind;
+   try
+   {
+    ZEqpQuery->Open();
+   }
+   catch(...)
+   {
+    ShowMessage("Ошибка SQL :"+sqlstr);
+    ZEqpQuery->Close();
+    return;
+   }
+   int loss_power;
+   if (ZEqpQuery->RecordCount!=0)
+   {
+     ZEqpQuery->First();
+     name_table_ind=ZEqpQuery->FieldByName("name_table_ind")->AsString;
+     name_table=ZEqpQuery->FieldByName("name_table")->AsString;
+     loss_power=ZEqpQuery->FieldByName("calc_lost")->AsInteger;
+   };
+   ZEqpQuery->Close();
+   delete ZEqpQuery;
+   //----------------------------------------------------------------
+
+
+  QueryAdr->Sql->Clear();
+
+  QueryAdr->Sql->Add("select eq.id, eq.name_eqp,eq.num_eqp,eq.dt_change as dt_install, eq.id_addres,eq.loss_power,tr.id_client, cl1.short_name as NAME_CL, coalesce(cl2.short_name,cl1.short_name) as NAME_USE, cl1.code as CODE_CL, coalesce(cl2.code,cl1.code) as CODE_USE, adr.adr::::varchar as NAME_ADR  ");
+  if (name_table!="")
+     {
+       for (int k=0;k<=FildsCount-1;k++)
+       {
+        QueryAdr->Sql->Add(",eqd."+AddFilds[k]+" ");
+       }
+     }
+  if (name_table_ind!="")
+     {
+        QueryAdr->Sql->Add(",eqk.type ");
+     }
+
+  if (kind==1)
+     {
+        QueryAdr->Sql->Add(",ph.name as meterphase,km.name as metkind,eqd.warm ");
+     }
+
+
+  QueryAdr->Sql->Add("from eqm_equipment_tbl AS eq left join eqm_eqp_use_tbl as use on (use.code_eqp=eq.id) ");
+  QueryAdr->Sql->Add("left join clm_client_tbl as cl2 on (use.id_client=cl2.id) ");
+  QueryAdr->Sql->Add("left join eqm_eqp_tree_tbl as eqt on (eqt.code_eqp =eq.id ) ");
+  QueryAdr->Sql->Add("left join eqm_tree_tbl as tr on (eqt.id_tree = tr.id) ");
+  QueryAdr->Sql->Add("left join clm_client_tbl as cl1 on (cl1.id=tr.id_client) ");
+  QueryAdr->Sql->Add("left join adv_address_tbl as adr on (adr.id=eq.id_addres) ");
+
+  if (name_table!="")
+     {
+      QueryAdr->Sql->Add(" left join "+name_table+" AS eqd on (eqd.code_eqp=eq.id) " );
+     }
+  if (name_table_ind!="")
+     {
+      QueryAdr->Sql->Add(" left join "+name_table_ind+" AS eqk on (eqd.id_type_eqp=eqk.id) " );
+     }
+  if (kind==1)
+     {
+      QueryAdr->Sql->Add(" left join eqk_phase_tbl AS ph on (eqk.phase=ph.id) " );
+      QueryAdr->Sql->Add(" left join eqk_meter_tbl AS km on (eqk.kind_meter=km.id) " );
+     }
+
+  QueryAdr->Sql->Add("where (eq.type_eqp = :type_eqp) and cl1.book = -1 ");
+
+//  if (name_table!="")
+//     {
+//      QueryAdr->Sql->Add(" and (eqd.code_eqp=eq.id) " );
+//     }
+//  if (name_table_ind!="")
+//     {
+//      QueryAdr->Sql->Add(" and (eqd.id_type_eqp=eqk.id) " );
+//     }
+
+  if (kind==1)
+     {
+//      QueryAdr->Sql->Add(" and (eqk.phase=ph.id) " );
+
+      FildsCount=3;
+      AddFilds[0]="meterphase";
+      AddFildsName[0]="Фазность";
+
+      AddFilds[1]="metkind";
+      AddFildsName[1]="Вид";
+
+      AddFilds[2]="warm";
+      AddFildsName[2]="Неотапл.";
+
+     }
+
+  if (loss_power ==1)
+  {
+      AddFilds[FildsCount]="loss_power";
+      AddFildsName[FildsCount]="Считать потери";
+      FildsCount++;
+  }
+
+  QueryAdr->Sql->Add(" order by eq.name_eqp;");
+  QueryAdr->ParamByName("type_eqp")->AsInteger=kind;
+
+
+  TfEqpList *WEqpGrid = new TfEqpList(this, QueryAdr,false,
+        kind,AddFilds,AddFildsName,FildsCount,WinName, IsInsert);
+  WEqpGrid->SetCaption(WinName);
+//  WEqpGrid->name_table_ind=name_table_ind;
+        int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WEqpGrid->DBGrid->ReadOnly=true;
+  WEqpGrid->ShowAs("Оборудование");
+
+};
+#undef WinName
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmMeterBtn(TObject *Sender) {
+
+ AnsiString fields[]={"","",""};
+ AnsiString fieldnames[]={"","",""};
+ ShowEqpList(1,fields,fieldnames,0,"Счетчики");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmCompBtn(TObject *Sender) {
+
+ AnsiString fields[]={""};
+ AnsiString fieldnames[]={""};
+ ShowEqpList(2,fields,fieldnames,0,"Трансформаторы");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmSwitchBtn(TObject *Sender) {
+
+ AnsiString fields[]={"folk"};
+ AnsiString fieldnames[]={"Количество ветвей"};
+ ShowEqpList(3,fields,fieldnames,1,"Коммутационное оборудование");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmJackBtn(TObject *Sender) {
+
+ AnsiString fields[]={"quantity"};
+ AnsiString fieldnames[]={"Количество"};
+ ShowEqpList(4,fields,fieldnames,1,"Компенсаторы");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmFuseBtn(TObject *Sender) {
+
+ AnsiString fields[]={""};
+ AnsiString fieldnames[]={""};
+ ShowEqpList(5,fields,fieldnames,0,"Предохранители");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmLineCBtn(TObject *Sender) {
+
+ AnsiString fields[]={"length",""};
+ AnsiString fieldnames[]={"Протяженность",""};
+ ShowEqpList(6,fields,fieldnames,1,"Линии кабельные");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmLineABtn(TObject *Sender) {
+
+ AnsiString fields[]={"length",""};
+ AnsiString fieldnames[]={"Протяженность",""};
+ ShowEqpList(7,fields,fieldnames,1,"Линии воздушные");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmCompIBtn(TObject *Sender) {
+
+ AnsiString fields[]={""};
+ AnsiString fieldnames[]={""};
+ ShowEqpList(10,fields,fieldnames,0,"Трансформаторы измерительные");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmDESBtn(TObject *Sender) {
+
+ AnsiString fields[]={"power"};
+ AnsiString fieldnames[]={"Мощность"};
+ ShowEqpList(16,fields,fieldnames,1,"Дизельные электростанции");
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmPointBtn(TObject *Sender) {
+
+ AnsiString fields[]={""};
+ AnsiString fieldnames[]={""};
+ ShowEqpList(12,fields,fieldnames,0,"Точки учета");
+}
+//---------------------------------------------------------------------------
+
+void _fastcall TMainForm::EqmCompStBtn(TObject *Sender) {
+
+// AnsiString fields[]={"h_boxes","l_boxes","h_points","l_points"};
+// AnsiString fieldnames[]={"К-во ячеек высокой стороны","К-во ячеек низкой стороны","К-во подключений высокой стороны","К-во подключений низкой стороны"};
+// ShowEqpList(8,fields,fieldnames,4,"Трансформаторные подстанции",true);
+ ShowAreasList(0,8,"Трансформаторные подстанции",false);
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmLandingBtn(TObject *Sender) {
+
+// AnsiString fields[]={""};
+// AnsiString fieldnames[]={""};
+// ShowEqpList(11,fields,fieldnames,0,"Площадки",true);
+ ShowAreasList(0,11,"Площадки",false);
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::EqmConnectBtn(TObject *Sender) {
+
+// AnsiString fields[]={""};
+// AnsiString fieldnames[]={""};
+// ShowEqpList(14,fields,fieldnames,0,"Точки учета",true);
+ ShowAreasList(0,14,"Точки учета",false);
+}
+//---------------------------------------------------------------------------
+#define WinName "Справочник трансформаторов"
+void _fastcall TMainForm::EqiCompBtn(TObject *Sender)
+{
+ EqiCompSpr("Справочник трансформаторов");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiCompSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage2_nom,amperage2_nom,voltage_max,amperage_max,phase,swathe,power_nom,hook_up,amperage_no_load,show_def " );
+  QueryAdr->Sql->Add("from eqi_compensator_tbl order by type;");
+//  WCompGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WCompGrid = new TfEqpSpr(this, QueryAdr,false,true);
+  WCompGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WCompGrid->DBGrid->Query;
+
+  Query->AddLookupField("PHASENAME", "phase", "eqk_phase_tbl", "name","id");
+         int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WCompGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+  NList->Add("type");
+  NList->Add("normative");
+  NList->Add("voltage_nom");
+  NList->Add("amperage_nom");
+  NList->Add("voltage2_nom");
+  NList->Add("amperage2_nom");
+  NList->Add("voltage_max");
+  NList->Add("amperage_max");
+  NList->Add("phase");
+  NList->Add("swathe");
+  NList->Add("power_nom");
+  NList->Add("hook_up");
+  NList->Add("amperage_no_load");
+
+  Query->SetSQLModify("eqi_compensator_tbl",WList,NList,true,false,true);
+  TWTField *Field;
+
+  Field = WCompGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetReadOnly();
+//  Field = WCompGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+//  Field->SetReadOnly();
+
+  Field = WCompGrid->AddColumn("PHASENAME", "Фазность", "Однофазный/трехфазный");
+  Field->SetReadOnly();
+//  Field->SetOnHelp(EqiMatSpr);
+
+  Field = WCompGrid->AddColumn("swathe", "Обмоток", "Количество обмоток");
+  Field->SetReadOnly();
+  Field = WCompGrid->AddColumn("power_nom", "Рn, кВА", "Номинальная мощность");
+  Field->SetReadOnly();
+
+  Field = WCompGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field->SetReadOnly();
+  Field = WCompGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field->SetReadOnly();
+
+  Field = WCompGrid->AddColumn("show_def", "*", "Часто используемые");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("1");
+
+//  WCompGrid->DBGrid->ToolBar->AddButton("InsForm", "Полный список", CmiBankSprA);
+
+  WCompGrid->DBGrid->BeforeInsert=NewCompGr;
+  WCompGrid->DBGrid->OnAccept=CompAccept;
+//  WCompGrid->DBGrid->ReadOnly=true;
+  WCompGrid->DBGrid->Visible = true;
+  WCompGrid->DBGrid->Options>>dgEditing;
+//  WCompGrid->KeyPreview=true;
+//  WCompGrid->OnKeyDown=CompKeyDown;
+
+  TWTToolBar* tb=WCompGrid->DBGrid->ToolBar;
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=CompAccept;
+    if ( btn->ID=="NewRecord")
+       tb->Buttons[i]->OnClick=NewComp;
+   }
+
+//  WCompGrid->ShowAs("Трансформаторы");
+  WCompGrid->ShowAs(name);
+  WCompGrid->OnCloseQuery=CompGridClose;
+  return WCompGrid;
+};
+#undef WinName
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CompAccept (TObject* Sender)
+{
+ TfCompSpr *CompSpr;
+
+ Application->CreateForm(__classid(TfCompSpr), &CompSpr);
+ CompSpr->ParentDataSet=WCompGrid->DBGrid->Query;
+// CompSpr->id=WCompGrid->DBGrid->Query->FieldByName("id")->AsInteger;
+ CompSpr->mode=1;
+ CompSpr->ShowAs("CompSpr");
+ CompSpr->ShowData(WCompGrid->DBGrid->Query->FieldByName("id")->AsInteger);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::NewCompGr(TWTDBGrid *Sender) {
+
+  NewComp(Sender);
+  WCompGrid->DBGrid->Query->Refresh();
+};
+//--------------------------------------------------------------------
+void __fastcall TMainForm::NewComp(TObject* Sender)
+{
+ TfCompSpr *CompSpr;
+
+ Application->CreateForm(__classid(TfCompSpr), &CompSpr);
+ CompSpr->ParentDataSet=WCompGrid->DBGrid->Query;
+// CompSpr->id=WCompGrid->DBGrid->Query->FieldByName("id")->AsInteger;
+ CompSpr->mode=0;
+ CompSpr->ShowAs("CompNewSpr");
+ CompSpr->ShowData(0);
+}
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CompKeyDown(TObject* Sender, Word &Key, TShiftState Shift)
+{
+// if (Key==VK_INSERT) ShowMessage("///");
+}
+//--------------------------------------------------------------------
+#define WinName "Справочник кабелей"
+void _fastcall TMainForm::EqiCableBtn(TObject *Sender)
+{
+ EqiCableSpr("Справочник кабелей");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiCableSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select ca.id,ca.type,ca.normative,ca.voltage_nom,ca.amperage_nom,ca.voltage_max,ca.amperage_max,ca.cords,ca.cover,cv.name as covername,ca.S_nom,ca.ro,ca.dpo,ca.show_def " );
+  QueryAdr->Sql->Add("from eqi_cable_tbl as ca LEFT JOIN eqk_cover_tbl as cv ON (ca.cover = cv.id) order by type;");
+  WCableGrid = new TfEqpSpr(this, QueryAdr,false,true);
+  WCableGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WCableGrid->DBGrid->Query;
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+   if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WCableGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+  NList->Add("type");
+  NList->Add("normative");
+  NList->Add("voltage_nom");
+  NList->Add("amperage_nom");
+  NList->Add("voltage_max");
+  NList->Add("amperage_max");
+  NList->Add("cords");
+  NList->Add("cover");
+  NList->Add("covername");
+  NList->Add("s_nom");
+  NList->Add("ro");
+  NList->Add("dpo");
+
+  Query->SetSQLModify("eqi_cable_tbl",WList,NList,true,false,true);
+  TWTField *Field;
+
+  Field = WCableGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetReadOnly();
+//  Field = WCableGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+//  Field->SetReadOnly();
+//  Field = WCableGrid->AddColumn("cords", "Жил", "Количество жил");
+//  Field->SetReadOnly();
+  Field = WCableGrid->AddColumn("S_nom", "S,мм2", "Номинальное сечение");
+  Field->SetReadOnly();
+
+//  Field = WCableGrid->AddColumn("cover", "Изоляция", "Вид изоляции");
+
+  Field = WCableGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field->SetReadOnly();
+  Field = WCableGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field->SetReadOnly();
+
+  Field = WCableGrid->AddColumn("show_def", "*", "Часто используемые");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("1");
+
+  WCableGrid->DBGrid->OnAccept=CableAccept;
+  WCableGrid->DBGrid->BeforeInsert=NewCableGr;
+//  WCableGrid->DBGrid->ReadOnly=true;
+  WCableGrid->DBGrid->Visible = true;
+  WCableGrid->DBGrid->Options>>dgEditing;
+//  WCableGrid->KeyPreview=true;
+//  WCableGrid->OnKeyDown=CompKeyDown;
+
+  TWTToolBar* tb=WCableGrid->DBGrid->ToolBar;
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=CableAccept;
+    if ( btn->ID=="NewRecord")
+       tb->Buttons[i]->OnClick=NewCable;
+   }
+
+  //WCableGrid->ShowAs("Кабеля");
+  WCableGrid->ShowAs(name);
+  WCableGrid->OnCloseQuery=CableGridClose;
+  return WCableGrid;
+};
+#undef WinName
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CableAccept (TObject* Sender)
+{
+
+  TWinControl *Owner = NULL;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild("Кабель", Owner)) {
+    return;
+  }
+  WCableEdit=new TfCableSpr(this,"");
+  WCableEdit->ShowAs(WCableGrid->DBGrid->Query->FieldByName("Type")->AsString);
+  WCableEdit->SetCaption("Кабель "+WCableGrid->DBGrid->Query->FieldByName("Type")->AsString);
+  WCableEdit->mode=1;
+  WCableEdit->ID="Кабель";
+  WCableEdit->ParentDataSet=WCableGrid->DBGrid->Query;
+  WCableEdit->ShowData(WCableGrid->DBGrid->Query->FieldByName("id")->AsInteger);
+
+ }
+//--------------------------------------------------------------------
+void __fastcall TMainForm::NewCable(TObject* Sender)
+{
+  TWinControl *Owner = NULL;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild("Кабель", Owner)) {
+    return;
+  }
+  WCableEdit=new TfCableSpr(this,"");
+  WCableEdit->ShowAs("Новый кабель");
+  WCableEdit->SetCaption("Новый кабель");
+  WCableEdit->mode=0;
+  WCableEdit->ID="Кабель";
+  WCableEdit->ParentDataSet=WCableGrid->DBGrid->Query;
+  WCableEdit->ShowData(0);
+}
+//--------------------------------------------------------------------
+void _fastcall TMainForm::NewCableGr(TWTDBGrid *Sender) {
+
+  NewCable(Sender);
+  WCableGrid->DBGrid->Query->Refresh();
+};
+//---------------------------------------------------------------------------
+#define WinName "Справочник счетчиков"
+void _fastcall TMainForm::EqiAMeterBtn(TObject *Sender)
+{
+// TWTWinDBGrid* Grid;
+ EqiAMeterSpr("Справочник счетчиков");
+// if(Grid==NULL) return;
+// else WMeterGrid=Grid;
+ };
+//==================
+TWTWinDBGrid* TMainForm::EqiAMeterSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max, " );
+  QueryAdr->Sql->Add("kind_meter,kind_count,phase,carry,schema_inst,hook_up,amperage_nom_s,voltage_nom_s,");
+  QueryAdr->Sql->Add("zones,zone_time_min,term_control,buffle,show_def ");
+  QueryAdr->Sql->Add("from eqi_meter_tbl order by type;");
+  WMeterGrid = new TfEqpSpr(this, QueryAdr,false,true);
+  WMeterGrid->SetCaption(WinName);
+
+     int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+      WMeterGrid->DBGrid->ReadOnly=true;
+
+  TWTQuery* Query = WMeterGrid->DBGrid->Query;
+  Query->AddLookupField("PHASENAME", "phase", "eqk_phase_tbl", "name","id");
+  Query->AddLookupField("KINDMETER", "kind_meter", "eqk_meter_tbl", "name","id");
+
+
+
+     Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+  NList->Add("type");
+  NList->Add("normative");
+  NList->Add("voltage_nom");
+  NList->Add("amperage_nom");
+  NList->Add("voltage_max");
+  NList->Add("amperage_max");
+  NList->Add("kind_meter");
+  NList->Add("kind_count");
+  NList->Add("phase");
+  NList->Add("carry");
+  NList->Add("schema_inst");
+  NList->Add("hook_up");
+  NList->Add("amperage_nom_s");
+  NList->Add("voltage_nom_s");
+  NList->Add("zones");
+  NList->Add("zone_time_min");
+  NList->Add("term_control");
+
+
+    if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    {WMeterGrid->DBGrid->ReadOnly=true;
+       Query->SetSQLModify("eqi_meter_tbl",WList,NList,false,false,false);}
+       
+   else
+   Query->SetSQLModify("eqi_meter_tbl",WList,NList,true,false,true);
+
+  TWTField *Field;
+
+  Field = WMeterGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetReadOnly();
+  Field = WMeterGrid->AddColumn("carry", "Разрядность", "Разрядность");
+  Field->SetReadOnly();
+
+  //  Field = WMeterGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+//  Field->SetReadOnly();
+
+//  Field = WMeterGrid->AddColumn("KINDMETER", "Вид", "Индукционный/электронный");
+//  Field->SetReadOnly();
+  Field = WMeterGrid->AddColumn("PHASENAME", "Фазность", "Однофазный/трехфазный");
+  Field->SetReadOnly();
+  Field = WMeterGrid->AddColumn("zones", "Зоны", "Максимальное количество зон");
+  Field->SetReadOnly();
+//  Field = WMeterGrid->AddColumn("carry", "Разрядность", "Разрядность");
+//  Field->SetReadOnly();
+
+  Field = WMeterGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field->SetReadOnly();
+  Field = WMeterGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field->SetReadOnly();
+
+  Field = WMeterGrid->AddColumn("show_def", "*", "Часто используемые");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("1");
+
+  WMeterGrid->DBGrid->OnAccept=MeterAccept;
+  WMeterGrid->DBGrid->BeforeInsert=NewMeterGr;
+//  WMeterGrid->DBGrid->ReadOnly=true;
+  WMeterGrid->DBGrid->Visible = true;
+ // WMeterGrid->DBGrid->Options>>dgEditing;
+//  WMeterGrid->KeyPreview=true;
+//  WMeterGrid->OnKeyDown=CompKeyDown;
+
+  TWTToolBar* tb=WMeterGrid->DBGrid->ToolBar;
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=MeterAccept;
+    if ( btn->ID=="NewRecord")
+       tb->Buttons[i]->OnClick=NewMeter;
+   }
+  WMeterGrid->ShowAs(name);
+  WMeterGrid->OnCloseQuery=MeterGridClose;
+  return WMeterGrid;
+};
+#undef WinName
+//--------------------------------------------------------------------
+void __fastcall TMainForm::MeterAccept (TObject* Sender)
+{
+  TWinControl *Owner = NULL;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild("Счетчик", Owner)) {
+    return;
+  }
+  WMeterEdit=new TfMeterSpr(this,"");
+  WMeterEdit->ShowAs(WMeterGrid->DBGrid->Query->FieldByName("Type")->AsString);
+  WMeterEdit->SetCaption("Счетчик "+WMeterGrid->DBGrid->Query->FieldByName("Type")->AsString);
+  WMeterEdit->mode=1;
+  WMeterEdit->ID="Счетчик";
+  WMeterEdit->ParentDataSet=WMeterGrid->DBGrid->Query;
+  WMeterEdit->ShowData(WMeterGrid->DBGrid->Query->FieldByName("id")->AsInteger);
+}
+//--------------------------------------------------------------------
+void __fastcall TMainForm::NewMeter(TObject* Sender)
+{
+  TWinControl *Owner = NULL;
+
+  // Если такое окно есть - активизируем и выходим
+  // Можно открывать только одно окно нового
+  if (ShowMDIChild("Счетчик", Owner)) {
+    return;
+  }
+
+  WMeterEdit=new TfMeterSpr(this,"");
+  WMeterEdit->ShowAs("Новый счетчик");
+  WMeterEdit->SetCaption("Новый счетчик");
+  WMeterEdit->mode=0;
+  WMeterEdit->ID="Счетчик";
+  WMeterEdit->ParentDataSet=WMeterGrid->DBGrid->Query;
+  WMeterEdit->ShowData(0);
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::NewMeterGr(TWTDBGrid *Sender) {
+
+  NewMeter(Sender);
+  WMeterGrid->DBGrid->Query->Refresh();
+};
+//--------------------------------------------------------------------
+void __fastcall TMainForm::MeterGridClose(TObject *Sender, bool &CanClose)
+{
+ WMeterGrid=NULL;
+}
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CableGridClose(TObject *Sender, bool &CanClose)
+{
+ WCableGrid=NULL;
+}
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CompGridClose(TObject *Sender, bool &CanClose)
+{
+ WCompGrid=NULL;
+}
+//--------------------------------------------------------------------
+#define WinName "Справочник трансформаторов измерительных"
+void _fastcall TMainForm::EqiCompIBtn(TObject *Sender)
+{
+ EqiCompISpr("Справочник трансформаторов измерительных");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqiCompISpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,type,normative,voltage_nom,amperage_nom,voltage_max,amperage_max,phase,swathe,power_nom,hook_up,amperage_no_load,conversion,voltage2_nom,amperage2_nom,accuracy " );
+  QueryAdr->Sql->Add("from eqi_compensator_i_tbl order by type;");
+  WCompIGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WCompIGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WCompIGrid->DBGrid->Query;
+
+  Query->AddLookupField("PHASENAME", "phase", "eqk_phase_tbl", "name","id");
+  Query->AddLookupField("CONVNAME", "conversion", "eqk_conversion_tbl", "name","id");
+
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WCompIGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("id");
+
+  Query->SetSQLModify("eqi_compensator_i_tbl",WList,NList,false,false,true);
+  TWTField *Field;
+
+  Field = WCompIGrid->AddColumn("type", "Тип", "Тип");
+  Field->SetReadOnly();
+ // Field = WCompIGrid->AddColumn("normative", "ГОСТ", "ГОСТ, ТУ");
+//  Field->SetReadOnly();
+  Field = WCompIGrid->AddColumn("CONVNAME", "I/U", "Ток/напряжение");
+  Field->SetReadOnly();
+  Field = WCompIGrid->AddColumn("PHASENAME", "Фазность", "Однофазный/трехфазный");
+  Field->SetReadOnly();
+//  Field->SetOnHelp(EqiMatSpr);
+
+  Field = WCompIGrid->AddColumn("swathe", "Обмоток", "Количество обмоток");
+  Field->SetReadOnly();
+  Field = WCompIGrid->AddColumn("power_nom", "Рn,кВА", "Номинальная мощность");
+  Field->SetReadOnly();
+
+  Field = WCompIGrid->AddColumn("voltage_nom", "Un, В", "Номинальное напряжение (первичное)");
+  Field->SetReadOnly();
+  Field = WCompIGrid->AddColumn("amperage_nom", "In, А", "Номинальный ток (первичный)");
+  Field->SetReadOnly();
+
+  WCompIGrid->DBGrid->OnAccept=CompIAccept;
+  WCompIGrid->DBGrid->BeforeInsert=NewCompIGr;
+//  WCompGrid->DBGrid->ReadOnly=true;
+  WCompIGrid->DBGrid->Visible = true;
+  WCompIGrid->DBGrid->Options>>dgEditing;
+//  WCompGrid->KeyPreview=true;
+//  WCompGrid->OnKeyDown=CompKeyDown;
+
+  TWTToolBar* tb=WCompIGrid->DBGrid->ToolBar;
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=CompIAccept;
+    if ( btn->ID=="NewRecord")
+       tb->Buttons[i]->OnClick=NewCompI;
+
+   }
+
+  WCompIGrid->ShowAs(name);
+  WCompIGrid->OnCloseQuery=CompIGridClose;
+  return WCompIGrid;
+};
+#undef WinName
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CompIAccept (TObject* Sender)
+{
+ TfCompISpr *CompISpr;
+
+ Application->CreateForm(__classid(TfCompISpr), &CompISpr);
+ CompISpr->ParentDataSet=WCompIGrid->DBGrid->Query;
+// CompSpr->id=WCompGrid->DBGrid->Query->FieldByName("id")->AsInteger;
+ CompISpr->mode=1;
+ CompISpr->ShowAs("CompISpr");
+ CompISpr->ShowData(WCompIGrid->DBGrid->Query->FieldByName("id")->AsInteger);
+}
+//--------------------------------------------------------------------
+void __fastcall TMainForm::NewCompI(TObject* Sender)
+{
+ TfCompISpr *CompISpr;
+
+ Application->CreateForm(__classid(TfCompISpr), &CompISpr);
+ CompISpr->ParentDataSet=WCompIGrid->DBGrid->Query;
+// CompSpr->id=WCompGrid->DBGrid->Query->FieldByName("id")->AsInteger;
+ CompISpr->mode=0;
+ CompISpr->ShowAs("CompINewSpr");
+ CompISpr->ShowData(0);
+}
+//---------------------------------------------------------------------------
+void _fastcall TMainForm::NewCompIGr(TWTDBGrid *Sender) {
+
+  NewCompI(Sender);
+  WCompIGrid->DBGrid->Query->Refresh();
+};
+
+//--------------------------------------------------------------------
+void __fastcall TMainForm::CompIGridClose(TObject *Sender, bool &CanClose)
+{
+ WCompIGrid=NULL;
+}
+//--------------------------------------------------------------------
+#define WinName "Справочник тангенс фи"
+void _fastcall TMainForm::EqkTgBtn(TObject *Sender)
+{
+ EqkTgSpr(" ");
+};
+//==================
+TWTWinDBGrid* TMainForm::EqkTgSpr(AnsiString name) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(name, Owner)) {
+    return NULL;
+  }
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select id,name,value,value_r " );
+  QueryAdr->Sql->Add("from eqk_tg_tbl order by name;");
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+    if  (ChLevel==0) {
+     return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id");
+
+  Query->SetSQLModify("eqk_tg_tbl",WList,NList,true,true,true);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("name", "Наименование", "Наименование");
+  Field->SetRequired("Наименование  должно быть заполнено");
+  Field = WGrid->AddColumn("value", "Значение", "Значение");
+  Field->SetRequired("Значение  должно быть заполнено");
+  Field = WGrid->AddColumn("value_r", "Коєф. реакт", "Значение");
+  Field->SetRequired("Значение  должно быть заполнено");
+
+
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+ // WGrid->ShowAs("Опоры");
+  WGrid->ShowAs(name);
+  return WGrid;
+};
+#undef WinName
+//---------------------------------------------------------------------------
+#define WinName "Список схем подключения"
+//void _fastcall TMainForm::EqmTreesBtn(TObject *Sender) {
+/*
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options << doQuickOpen;
+
+  // Надо будет выбрать еще название клиента и по нему посортировать
+
+  QueryAdr->Sql->Clear();
+  QueryAdr->Sql->Add("select tr.id,tr.name,tr.code_eqp,tr.tranzit,tr.id_client AS client,eq.name_eqp" );
+  QueryAdr->Sql->Add("  from eqm_tree_tbl AS tr, eqm_equipment_tbl AS eq " );
+  QueryAdr->Sql->Add("  where (eq.id=tr.code_eqp) order by client;");
+  WTreeGrid = new TWTWinDBGrid(this, QueryAdr,false);
+  WTreeGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WTreeGrid->DBGrid->Query;
+//  Query->AddLookupField("GROUP", "id_gr", "eqk_switchs_gr_tbl", "name","id");
+
+  Query->Open();
+  TWTField *Field;
+
+  Field = WTreeGrid->AddColumn("client", "Обонент", "Обонент");
+  Field = WTreeGrid->AddColumn("name", "Схема", "Наименование схемы");
+  Field = WTreeGrid->AddColumn("name_eqp", "Корень", "Корневое оборудование");
+
+  WTreeGrid->DBGrid->OnAccept=ShowEqpTree;
+  WTreeGrid->DBGrid->Visible = true;
+  WTreeGrid->DBGrid->ReadOnly=true;
+
+  TWTToolBar* tb=WTreeGrid->DBGrid->ToolBar;
+  TWTToolButton* btn;
+  for (int i=0;i<=tb->ButtonCount-1;i++)
+   {
+    btn=(TWTToolButton*)(tb->Buttons[i]);
+    if ( btn->ID=="Full")
+       tb->Buttons[i]->OnClick=ShowEqpTree;
+    if ( btn->ID=="NewRecord")
+       tb->Buttons[i]->OnClick=NULL;
+    if ( btn->ID=="DelRecord")
+       tb->Buttons[i]->OnClick=NULL;
+   }
+
+  WTreeGrid->ShowAs("Схемы");
+  */
+//};
+#undef WinName
+//-----------------------------------------------------------------------
+//функция для подготовки временной таблици перед заменой оборудования
+int _fastcall TMainForm::PrepareChange(TZPgSqlQuery* Query,int mode, int treeid,int eqpid,int usrid,bool enabled,TDateTime ChangeDate)
+{
+    TDateTime ChDate;
+
+//    if(!enabled) return 0;  //Замена без записи
+   if(enabled)
+   {
+    if (int(ChangeDate)==0)
+    {
+    TfChangeDate* fChangeDate;
+     Application->CreateForm(__classid(TfChangeDate), &fChangeDate);
+    if (fChangeDate->ShowModal()!= mrOk)
+     {
+      delete fChangeDate;
+      return -1; // Отменить замену
+     };
+
+     try
+     {
+      ChDate=StrToDate(fChangeDate->edDt_change->Text);
+     }
+     catch(...)
+     {
+      ShowMessage("Неверная дата");
+      delete fChangeDate;
+      return -1;
+     }
+
+     delete fChangeDate;
+    }
+    else ChDate=ChangeDate;
+   }
+   else ChDate=Now();
+
+    AnsiString sqlstr="select eqt_change_fun( :mode, :tree, :dt, :usr, :eqp, :enable);";
+    Query->Sql->Clear();
+    Query->Sql->Add(sqlstr);
+    Query->ParamByName("mode")->AsInteger=mode;
+    if (treeid!=0)
+      Query->ParamByName("tree")->AsInteger=treeid;
+    if (eqpid!=0)
+      Query->ParamByName("eqp")->AsInteger=eqpid;
+    Query->ParamByName("usr")->AsInteger=usrid;
+    Query->ParamByName("dt")->AsDateTime=ChDate;
+    Query->ParamByName("enable")->AsInteger=(enabled?1:0);
+
+    try
+    {
+     Query->Open();
+    }
+    catch(...)
+    {
+     ShowMessage("Ошибка SQL :"+sqlstr);
+     Query->Close();
+     Query->Transaction->Rollback();                 //<<<<
+     return -1;
+    }
+
+    int id = Query->Fields->Fields[0]->AsInteger;
+    Query->Close();
+    Query->Transaction->Commit();                 //<<<<
+    return id;
+}
+
+//-----------------------------------------------------------------------
+//функция для очистки временной таблици
+void _fastcall TMainForm::AfterChange(TZPgSqlQuery* Query,int operation,bool enabled)
+{
+//    if(!enabled) return;  //Замена без записи
+
+    AnsiString sqlstr="Delete from eqt_change_tbl where  id_operation = :operation;";
+    Query->Sql->Clear();
+    Query->Sql->Add(sqlstr);
+    Query->ParamByName("operation")->AsInteger=operation;
+
+    try
+    {
+     Query->ExecSql();
+    }
+    catch(...)
+    {
+     ShowMessage("Ошибка SQL :"+sqlstr);
+     Query->Transaction->Rollback();                 //<<<<
+    }
+    Query->Close();
+}
+//-----------------------------------------------------------------------
+void _fastcall TMainForm::ShowAreasList(int client, int kind,AnsiString WinName, bool IsInsert) {
+
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+  TWinControl *Owner = this ;
+
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options<< doQuickOpen;
+
+  //------------------------------------------------------------------
+
+  QueryAdr->Sql->Clear();
+
+  QueryAdr->Sql->Add("select eq.id, eq.name_eqp,eq.num_eqp,eq.dt_install, eq.id_addres ,eqa.id_client, a.adr::::varchar ");
+  QueryAdr->Sql->Add("from eqm_equipment_tbl AS eq join  eqm_area_tbl as eqa on (eqa.code_eqp=eq.id) ");
+  QueryAdr->Sql->Add("left join adv_address_tbl as a on (eq.id_addres=a.id) ");
+  QueryAdr->Sql->Add("where (eq.type_eqp = :type_eqp) ");
+  if (client!=0)
+   QueryAdr->Sql->Add(" and (eqa.id_client = :client) ");
+  QueryAdr->Sql->Add(" order by eq.name_eqp;");
+  QueryAdr->ParamByName("type_eqp")->AsInteger=kind;
+  if (client!=0)
+   QueryAdr->ParamByName("client")->AsInteger=client;
+
+  TfAreaList *WEqpGrid = new TfAreaList(this, QueryAdr,false,
+        kind,client,WinName, IsInsert);
+  WEqpGrid->SetCaption(WinName);
+//  WEqpGrid->name_table_ind=name_table_ind;
+  WEqpGrid->ShowAs("WinName");
+
+};
+#undef WinName
+
+//--------------------------------------------------------------------
+#define WinName "Подключение физ. абонентов"
+TWTWinDBGrid*  TMainForm::EqmAbonConnect(int CodeEqp)
+{
+  // Определяем владельца
+  TWTQuery *QueryAdr;
+
+
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options.Clear();
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+
+  QueryAdr->Sql->Add("select * from ( select cl.id ,cl.name,cl.code,cl.book,cl.id_state,cl.dom_gek, cl.address,(t.name||' вул.'||st.name||' '||coalesce(cl.build,'')||' '||coalesce(cl.office,''))::::varchar as adr, cl.id_eqpborder,CASE WHEN cl.id_eqpborder is NULL THEN 0 ELSE 1 END as connected,CASE WHEN cl.id_eqpborder is NULL THEN 0 ELSE 1 END as oldconnected " );
+  QueryAdr->Sql->Add("from clm_pclient_tbl as cl " );
+  QueryAdr->Sql->Add("left join adi_street_tbl as st on (st.id=cl.id_street) " );
+  QueryAdr->Sql->Add("left join adi_town_tbl as t on (st.id_town=t.id) " );
+  QueryAdr->Sql->Add("where id_eqpborder = :eqp or id_eqpborder is NULL order by  cl.book, cl.code ) as s " );
+/*
+  QueryAdr->Sql->Add(" select cl.id ,cl.name,cl.code,cl.book, t.name||' вул.'||st.name||' '||coalesce(cl.build,'')||' '||coalesce(cl.office,'') as adr, cl.id_eqpborder,CASE WHEN cl.id_eqpborder is NULL THEN 0 ELSE 1 END as connected,CASE WHEN cl.id_eqpborder is NULL THEN 0 ELSE 1 END as oldconnected " );
+  QueryAdr->Sql->Add("from clm_pclient_tbl as cl " );
+  QueryAdr->Sql->Add("left join adi_street_tbl as st on (st.id=cl.id_street) " );
+  QueryAdr->Sql->Add("left join adi_town_tbl as t on (st.id_town=t.id) " );
+  QueryAdr->Sql->Add("where id_eqpborder = :eqp or id_eqpborder is NULL order by  cl.book, cl.code " );
+*/
+
+
+
+ //QueryAdr->Sql->Add("where id_eqmborder = :eqp or id_eqmborder is NULL order by connected desc, cl.book, cl.code, cl.name; " );
+
+  QueryAdr->ParamByName("eqp")->AsInteger=CodeEqp;
+
+  TWTWinDBGrid *WGrid = new TfAbonConnect(this, QueryAdr,false,CodeEqp,true);
+  WGrid->SetCaption(WinName);
+  WGrid->DBGrid->Query->AddLookupField("name_dom_gek", "dom_gek", "adi_build_tbl", "name","id");
+  TWTQuery* Query = WGrid->DBGrid->Query;
+
+//  Query->Options << doQuickOpen;
+ int ChLevel =CheckLevelRead("Форма подключения физ.лиц");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+//  NList->Add("id_client");
+  NList->Add("id_eqpborder");
+  NList->Add("connected");
+  NList->Add("oldconnected");
+  NList->Add("id_state");
+  NList->Add("book");
+  NList->Add("code");
+  NList->Add("adr");
+
+  Query->SetSQLModify("clm_pclient_tbl",WList,NList,true,false,false);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("connected", "*", "Подключен");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("0");
+
+  Field = WGrid->AddColumn("book", "Книга", "Книга");
+  Field->SetReadOnly();
+  Field = WGrid->AddColumn("code", "Счет", "Лицевой счет");
+  Field->SetReadOnly();
+  Field = WGrid->AddColumn("name", "Абонент", "Абонент");
+  Field->SetWidth(250);
+  Field = WGrid->AddColumn("adr", "Адрес", "Адрес");
+  Field->SetReadOnly();
+  Field = WGrid->AddColumn("address", "Адрес строкой", "Адрес строкой");
+  Field->SetWidth(300);
+  Field->SetReadOnly();
+  Field = WGrid->AddColumn("name_dom_gek", "Дом  Жека", "Дом  Жека");
+  Field->SetWidth(200);
+  Field->SetReadOnly();
+  Field = WGrid->AddColumn("id_state", "Статус", "Статус");
+  Field->SetReadOnly();  
+  Field->AddFixedVariable(50, "Архив");
+  Field->AddFixedVariable(0," ");
+
+
+  Query->IndexFieldNames="book;code";
+  WGrid->DBGrid->Visible = true;
+ /// WCordeGrid->DBGrid->ReadOnly=true;
+//  WGrid->ShowAs("Провод");
+
+  //WGrid->OnClose=&(TfAbonConnect::GridClose);
+  WGrid->ShowAs(WinName);
+  return WGrid;
+};
+#undef WinName
+
+
+//--------------------------------------------------------------------
+#define WinName "Подключение внутридомового потребления  жеков"
+TWTWinDBGrid*  TMainForm::EqmGekConnect(int CodeEqp)
+{
+  TWTQuery *QueryAdr;
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return NULL;
+  }
+
+  QueryAdr = new  TWTQuery(this);
+  QueryAdr->Options.Clear();
+  QueryAdr->Options << doQuickOpen;
+
+  QueryAdr->Sql->Clear();
+
+  QueryAdr->Sql->Add("select a.*, \
+   CASE WHEN a.code_eqp is NULL THEN 0 ELSE 1 END as connected, \
+   CASE WHEN a.code_eqp is NULL THEN 0 ELSE 1 END as oldconnected  \
+    from adi_build_tbl as a  \
+    where code_eqp = :eqp or code_eqp is NULL order by  a.num_gek  " );
+  QueryAdr->ParamByName("eqp")->AsInteger=CodeEqp;
+
+  TWTWinDBGrid *WGrid = new TfGekConnect(this, QueryAdr,false,CodeEqp,true);
+  WGrid->SetCaption(WinName);
+
+  TWTQuery* Query = WGrid->DBGrid->Query;
+//  Query->Options << doQuickOpen;
+int ChLevel =CheckLevelRead("Форма подключения домов");
+  if  (ChLevel==0) {
+      return NULL;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+  Query->Open();
+
+  TStringList *WList=new TStringList();
+  WList->Add("id");
+
+  TStringList *NList=new TStringList();
+  NList->Add("code_eqp");
+  NList->Add("connected");
+  NList->Add("oldconnected");
+
+  Query->SetSQLModify("adi_build_tbl",WList,NList,true,false,false);
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("connected", "*", "Подключен");
+  Field->AddFixedVariable("1", "*");
+  Field->AddFixedVariable("0"," ");
+  Field->SetDefValue("0");
+    Field = WGrid->AddColumn("num_gek", "Номер ЖЕК", "Номер ЖЕК");
+      Field->SetReadOnly();
+  Field = WGrid->AddColumn("Name", "Адрес дома", "Адрес дома");
+    Field->SetReadOnly();
+    Query->IndexFieldNames="num_gek,name";
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs(WinName);
+  return WGrid;
+};
+#undef WinName
+//--------------------------------------------------------------------
+#define WinName "Плановые показатели"
+void _fastcall TMainForm::EqmPrognozBasiks(TObject *Sender)
+{
+  TWTQuery *QueryAdr;
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return ;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "bal_prognoz_basics_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+/*
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+*/
+
+  Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("mmgg", "Период", "Период");
+ // Field->SetRequired("Наименование  должно быть заполнено");
+
+  Field = WGrid->AddColumn("res_demand", "Поступление, кВт.ч", "Поступление план");
+  Field = WGrid->AddColumn("losts_1kl", "НЗТВЕ 1кл, кВт.ч", "НЗТВЕ 1 класс план");
+  Field = WGrid->AddColumn("losts_2kl", "НЗТВЕ 2кл, кВт.ч", "НЗТВЕ 2 класс план");
+
+  Field = WGrid->AddColumn("res_demand_fact", "Факт поступление, кВт.ч", "Поступление факт");
+  Field = WGrid->AddColumn("losts_1kl_fact", " Факт НЗТВЕ 1кл, кВт.ч", "НЗТВЕ 1 класс факт");
+  Field = WGrid->AddColumn("losts_2kl_fact", "Факт НЗТВЕ 2кл, кВт.ч", "НЗТВЕ 2 класс факт");
+
+  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+//  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("bal_prognoz_basics_tbl");
+
+  };
+#undef WinName
+//------------------------------------------------------------
+#define WinName "Население до 1 апреля 2011 для Формы 1 по НДС"
+void _fastcall TMainForm::RepNDSFizManual(TObject *Sender)
+{
+  TWTQuery *QueryAdr;
+  TWinControl *Owner = this;
+  // Если такое окно есть - активизируем и выходим
+  if (ShowMDIChild(WinName, Owner)) {
+    return ;
+  }
+
+  TWTWinDBGrid *WGrid = new TWTWinDBGrid(this, "rep_nds2011_fiz_tbl",false);
+  WGrid->SetCaption(WinName);
+
+  TWTTable* Table = WGrid->DBGrid->Table;
+  // Добавляем поля для просмотра и для ограничения на наличие поля в справочнике
+
+/*
+  int ChLevel =CheckLevelRead("Справочник оборудование");
+  if  (ChLevel==0) {
+     return;
+   };
+   if (ChLevel==1)
+    WGrid->DBGrid->ReadOnly=true;
+*/
+
+  Table->Open();
+  TWTField *Field;
+
+  Field = WGrid->AddColumn("mmgg", "Месяц", "Месяц");
+  Field = WGrid->AddColumn("id_grp", "Група", "Група");
+  Field->AddFixedVariable("2", "Льготы");
+  Field->AddFixedVariable("3","Субсидии");
+  Field->AddFixedVariable("4","Население");
+  Field->SetRequired("Група должна быть заполнена");
+
+//  Field = WGrid->AddColumn("deb_b_01", "Дт. нач.", "Дебет на начало");
+//  Field = WGrid->AddColumn("dpdv_b_01", "Дт. нач. НДС", "Дебет на начало НДС");
+//  Field = WGrid->AddColumn("kr_b_01", "Кт. нач.", "Кредит на начало");
+//  Field = WGrid->AddColumn("kpdv_b_01", "Кт. нач. НДС", "Кредит на начало НДС");
+
+  Field = WGrid->AddColumn("kvt_01", "Потребление, кВтч", "Потребление, кВтч");
+  Field = WGrid->AddColumn("dem_01", "Потребление, грн", "Потребление, грн");
+  Field = WGrid->AddColumn("dempdv_01", "Потребление НДС, грн", "Потребление НДС, грн");
+
+  Field = WGrid->AddColumn("opl_01", "Оплата", "Оплата");
+  Field = WGrid->AddColumn("oplpdv_01", "Оплата НДС", "Оплата НДС");
+
+  Field = WGrid->AddColumn("sp1_01", "Спис. реш.прав.", "Списано решением правления");
+  Field = WGrid->AddColumn("sp1pdv_01", "Спис. реш.прав. НДС", "Списано решением правления НДС");
+
+  Field = WGrid->AddColumn("sp2_01", "Спис. кол.дог.", "Списано по колдоговору");
+  Field = WGrid->AddColumn("sp2pdv_01", "Спис. кол.дог. НДС", "Списано по колдоговору НДС");
+
+  Field = WGrid->AddColumn("deb_e_01", "Дт. кон.", "Дебет на конец");
+  Field = WGrid->AddColumn("dpdv_e_01", "Дт. кон. НДС", "Дебет на конец НДС");
+  Field = WGrid->AddColumn("kr_e_01", "Кт. кон.", "Кредит на конец");
+  Field = WGrid->AddColumn("kpdv_e_01", "Кт. кон. НДС", "Кредит на конец НДС");
+
+
+
+//  WGrid->DBGrid->FieldSource = WGrid->DBGrid->Table->GetTField("id");
+//  WGrid->DBGrid->FieldDest = Sender;
+  WGrid->DBGrid->Visible = true;
+  WGrid->ShowAs("rep_nds2011_fiz_tbl");
+
+  };
+#undef WinName
+

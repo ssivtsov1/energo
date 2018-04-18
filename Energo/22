@@ -1,0 +1,11 @@
+Сравнение файлов Energo_1.bpr и ENERGO.BPR
+***** Energo_1.bpr
+      OBJ\fmonFiderWorkEdit.obj OBJ\fmonFiderWorks.obj OBJ\FWorkPlan.obj 
+      OBJ\point_blank.obj OBJ\fMailToConfig.obj OBJ\fGroundDet.obj OBJ\fSSMet.obj"/>
+    <RESFILES value="Energo.res tools.res"/>
+***** ENERGO.BPR
+      OBJ\fmonFiderWorkEdit.obj OBJ\fmonFiderWorks.obj OBJ\FWorkPlan.obj 
+      OBJ\point_blank.obj OBJ\fMailToConfig.obj OBJ\fGroundDet.obj"/>
+    <RESFILES value="Energo.res tools.res"/>
+*****
+

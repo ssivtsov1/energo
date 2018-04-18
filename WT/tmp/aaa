@@ -1,0 +1,600 @@
+‘à ¢­¥­¨¥ ä ©«®¢ db.cpp ¨ DBGRID.CPP
+***** db.cpp
+  SearchParams=new TWTSearchParams();
+   CreateMenu();
+***** DBGRID.CPP
+  SearchParams=new TWTSearchParams();
+  SearchFParams=new TWTSearchParams();
+
+   CreateMenu();
+*****
+
+***** db.cpp
+  Items[11]->ShortCut = TextToShortCut("Alt+F5");
+  Items[13]->ShortCut = TextToShortCut("Alt+Enter");
+  Items[14]->ShortCut = TextToShortCut("Esc");
+***** DBGRID.CPP
+  Items[11]->ShortCut = TextToShortCut("Alt+F5");
+  Items[13]->ShortCut = TextToShortCut("Ctrl+S");
+  Items[14]->ShortCut = TextToShortCut("Esc");
+*****
+
+***** db.cpp
+  if (Table) CurrField=Table->GetTField((Fields[SelectedIndex]->FieldName));
+  else CurrField=Query->GetTField((Fields[SelectedIndex]->FieldName));
+
+  //CurrField=(TWTField *)((Fields[SelectedIndex]));
+
+  if ( CurrField->IsFixedVariables)
+***** DBGRID.CPP
+  if (Table) CurrField=Table->GetTField((Fields[SelectedIndex]->FieldName));
+    else CurrField=Query->GetTField((Fields[SelectedIndex]->FieldName));
+  if ( CurrField->IsFixedVariables)
+*****
+
+***** db.cpp
+      if(A.IsEmpty()) A=" ";
+
+      int y=0;
+***** DBGRID.CPP
+      if(A.IsEmpty()) A=" ";
+      int y=0;
+*****
+
+***** db.cpp
+          EnterString=EnterString.UpperCase();
+             if (EnterString==A.UpperCase()) {
+        ATabl=CurrField->FixedVariables->GetVariable(y)->DBValue;
+        break;
+***** DBGRID.CPP
+          EnterString=EnterString.UpperCase();
+         if (EnterString==A.UpperCase()) {
+          ATabl=CurrField->FixedVariables->GetVariable(y)->DBValue;
+        break;
+*****
+
+***** db.cpp
+      };
+          S="select * from ";
+      S+= Table->TableName+ " where ";
+***** DBGRID.CPP
+      };
+     if (Table){
+      S="select * from ";
+      S+= Table->TableName+ " where ";
+*****
+
+***** db.cpp
+      S+= Fields[SelectedIndex]->FieldName+" = "+ATabl;
+      // Fields->Fields[SelectedIndex]->Value
+      //S+= Columns->Items[SelIndex]->FieldName+ ") like '%" +UpperCase(Value)+ "%'";
+     // SQL->Add(S);
+  }
+***** DBGRID.CPP
+      S+= Fields[SelectedIndex]->FieldName+" = "+ATabl;
+     };
+  }
+*****
+
+***** db.cpp
+       A=LT->FieldByName(CurrField->Field->LookupKeyFields)->AsString;
+      S="select * from ";
+      S+= Table->TableName+ " where ";
+      // Fields->Fields[SelectedIndex]->Value
+      S+= FilterField+ " =" +A ;
+   //   SQL->Add(S);
+
+    }
+    else
+    {
+     if (Table)
+    {  S="select * from ";
+      S+= Table->TableName+ " where w_upper(";
+      // Fields->Fields[SelectedIndex]->Value
+      S+= Fields[SelectedIndex]->FieldName+ ") like '" +Value.UpperCase()+ "%'";
+   //   SQL->Add(S);
+    }
+    else {
+      TWTQuery *QuerTabl=Query;
+
+      //S="select * from ";
+      //S+= Table->TableName+ " where w_upper(";
+      // Fields->Fields[SelectedIndex]->Value
+     // S+= Fields[SelectedIndex]->FieldName+ ") like '" +Value.UpperCase()+ "%'";
+
+    };
+     };
+***** DBGRID.CPP
+       A=LT->FieldByName(CurrField->Field->LookupKeyFields)->AsString;
+       if (Table) {
+         S="select * from ";
+         S+= Table->TableName+ " where ";
+         S+= FilterField+ " =" +A ;
+       };
+     }
+     else
+     { if (Table)
+      {  S="select * from ";
+         S+= Table->TableName+ " where w_upper(";
+         S+= Fields[SelectedIndex]->FieldName+ ") like '";
+         if (SearchFParams->Part)
+          S+="%";
+          if (SearchFParams->Case)
+              S+=Value+ "%'";
+          else
+           S+=Value.UpperCase()+ "%'";
+
+         if (!(Table->Filter.IsEmpty()))
+               S+=" and "+Table->Filter;
+         {
+          int posnull;
+
+          while ((posnull=S.Pos("=NULL"))!=0  )
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull+5,S.Length());
+           S=S1;
+          };
+           while ((posnull=S.Pos("=null"))!=0 )
+          {
+           AnsiString S1=S.SubString(1,posnull-1)+" is NULL "+S.SubString(posnull+5,S.Length());
+           S=S1;
+          };
+         };
+      }
+      else {
+       TWTQuery *QuerTabl=Query;
+       //S="select * from ";
+       //S+= Table->TableName+ " where w_upper(";
+       // Fields->Fields[SelectedIndex]->Value
+      // S+= Fields[SelectedIndex]->FieldName+ ") like '" +Value.UpperCase()+ "%'";
+
+      };
+     };
+*****
+
+***** db.cpp
+
+        /*
+
+  TWTField *Field;
+  AnsiString A=SGDest->Cells[0][SGDest->Row];
+  if (DBGrid->Table) Field=DBGrid->Table->GetTField(DBGrid->Columns->Items[x]->FieldName);
+  else Field=DBGrid->Query->GetTField(DBGrid->Columns->Items[x]->FieldName);
+  if (Field->IsFixedVariables) {
+    int y=0;
+    while (y<Field->FixedVariables->Count) {
+      if (Field->FixedVariables->GetVariable(y)->RealValue==A) {
+        A=Field->FixedVariables->GetVariable(y)->DBValue;
+        break;
+      }
+      y++;
+    }
+  }
+  TZDataset* LT;
+  bool Flag=true;
+  AnsiString FilterField=DBGrid->Columns->Items[x]->FieldName;
+
+  if (Field->Field->FieldKind==fkLookup && Filter) {
+    LT=(TZDataset *)Field->Field->LookupDataSet;
+    TLocateOptions Opts;
+    Opts.Clear();
+    Opts=Opts << loPartialKey;
+    Variant Value=Variant(SGDest->Cells[0][SGDest->Row]);
+    Flag=LT->Locate(Field->Field->LookupResultField,Value,Opts);
+    FilterField=Field->Field->KeyFields;
+    A=LT->FieldByName(Field->Field->LookupKeyFields)->AsString;
+  }
+  if (Flag) {
+    if (Memo1->Lines->Capacity==0)
+       Memo1->Lines->Add(FilterField + " " + Str + " '"+A+"'");
+    else
+       Memo1->Lines->Add(Cond+" "+FilterField + " " + Str + " '"+A+"'");
+  } else {
+    ShowMessage("Äîáàâëÿåìîå çíà÷åíèå îòñóòñòâóåò â ñïðàâî÷íîé òàáëèöå");
+  }
+
+  SearchParams->AddLine(DBGrid->Columns->Items[x]->FieldName,Str,SGDest->Cells[0][SGDest->Row]);
+
+***** DBGRID.CPP
+
+
+void __fastcall TWTDBGrid::SearchQuery(AnsiString Value, int Num) {
+  TBookmark SavePlace;
+  TDataSet* DataSet;
+  if(Table)
+  {     SavePlace = Table->GetBookmark();
+        DataSet=Table;
+  }
+  else
+  {   SavePlace = Query->GetBookmark();
+      DataSet=Query;
+  }
+   Variant TableValue;
+   Variant FindValue;
+
+*****
+
+***** db.cpp
+
+
+void _fastcall TWTDBGrid::FastSearchMenu(TObject *Sender) {
+
+
+  Application->MainForm->Enabled=false;
+
+  TZDataset *DataSet;
+  if (Table) DataSet=Table;
+  else DataSet=Query;
+
+  Visible=false;
+  TField *Field;
+
+  Variant TableValue;
+  Variant FindValue;
+
+  void* BM=DataSet->GetBookmark();
+
+  bool Find=false;
+  while ((!DataSet->Eof) && (!Find) && (!DataSet->Bof)) {
+    Find=true;
+    for (int x=0;x<SearchParams->Fields->Count;x++) {
+      Field=DataSet->FieldByName(SearchParams->Fields->Strings[x]);
+      try {
+      switch (Field->DataType) {
+        case ftSmallint :
+        case ftInteger :
+        case ftWord : {
+          TableValue=StrToInt(Field->Text);
+          FindValue=StrToInt(SearchParams->Values->Strings[x]);
+          break;
+        }
+        case ftFloat : {
+          TableValue=float(StrToFloat(Field->Text));
+          FindValue=float(StrToFloat(SearchParams->Values->Strings[x]));
+          break;
+        }
+        case ftCurrency : {
+          TableValue=StrToCurr(Field->Text);
+          FindValue=StrToCurr(SearchParams->Values->Strings[x]);
+          break;
+        }
+        case ftDate : {
+          TableValue=StrToDate(Field->Text);
+          FindValue=StrToDate(SearchParams->Values->Strings[x]);
+          break;
+        }
+        case ftTime : {
+          TableValue=StrToTime(Field->Text);
+          FindValue=StrToTime(SearchParams->Values->Strings[x]);
+          break;
+        }
+        default : {
+          TableValue=Field->Text;
+          FindValue=SearchParams->Values->Strings[x];
+          break;
+        }
+      };
+      } catch (...) {
+        TableValue=Field->Text;
+        FindValue=SearchParams->Values->Strings[x];
+      }
+      if (SearchParams->Relations->Strings[x]=="=") {
+        if (SearchParams->Part && (Field->DataType==ftMemo || Field->DataType==ftFmtMemo || Field->DataType==ftWideString || Fi
+ld->DataType==ftString)) {
+          if (!SearchParams->Case) {
+            if (!AnsiUpperCase(TableValue).AnsiPos(AnsiString(FindValue).UpperCase())) {
+              Find=false;
+              break;
+            }
+          } else {
+            if (!AnsiString(TableValue).AnsiPos(FindValue)) {
+              Find=false;
+              break;
+            }
+          }
+        } else {
+          if (Field->DataType==ftMemo || Field->DataType==ftFmtMemo || Field->DataType==ftWideString || Field->DataType==ftStri
+g) {
+            if (!SearchParams->Case) {
+              if (AnsiString(TableValue).UpperCase()!=AnsiString(FindValue).UpperCase()) {
+                Find=false;
+                break;
+              }
+            } else {
+              if (AnsiString(TableValue)!=AnsiString(FindValue)) {
+                Find=false;
+                break;
+              }
+            }
+          } else {
+            if (TableValue!=FindValue) {
+              Find=false;
+              break;
+            }
+          }
+        }
+      }
+
+***** DBGRID.CPP
+
+  Visible= false;
+  Screen->Cursor= crHourGlass   ;
+  TStringList *SQL= new TStringList();
+  AnsiString S;
+  TWTField *CurrField;
+  AnsiString A;
+  Variant ATabl;
+
+*****
+
+***** db.cpp
+
+
+      if (SearchParams->Relations->Strings[x]==">") {
+        if (TableValue<=FindValue) {
+          Find=false;
+          break;
+        }
+      }
+
+
+      if (SearchParams->Relations->Strings[x]=="<") {
+        if (TableValue>=FindValue) {
+          Find=false;
+          break;
+        }
+      }
+
+
+      if (SearchParams->Relations->Strings[x]==">=") {
+        if (TableValue<FindValue) {
+          Find=false;
+          break;
+        }
+      }
+
+
+      if (SearchParams->Relations->Strings[x]=="<=") {
+        if (TableValue>FindValue) {
+          Find=false;
+          break;
+        }
+      }
+
+
+      if (SearchParams->Relations->Strings[x]=="<>") {
+        if (TableValue==FindValue) {
+          Find=false;
+          break;
+        }
+      }
+
+    }
+    if (!Find) {
+      if (SearchParams->Down) DataSet->Next();
+      else DataSet->Prior();
+    }
+    Application->ProcessMessages();
+  }
+***** DBGRID.CPP
+
+  if (Table) CurrField=Table->GetTField((Fields[SelectedIndex]->FieldName));
+    else CurrField=Query->GetTField((Fields[SelectedIndex]->FieldName));
+  if ( CurrField->IsFixedVariables)
+  {   A=Value;
+      if(A.IsEmpty()) A=" ";
+      int y=0;
+      if ( (CurrField->Field->DataType==ftInteger) || (CurrField->Field->DataType==ftFloat))
+      ATabl=0;
+      if ((CurrField->Field->DataType==ftBoolean))
+      ATabl="False";
+      if ((CurrField->Field->DataType==ftString)||(CurrField->Field->DataType==ftUnknown)||
+       (CurrField->Field->DataType==ftWideString))
+      ATabl=" ";
+      int len=A.Length();
+      //SubString
+      while (y<CurrField->FixedVariables->Count) {
+        AnsiString EnterString=CurrField->FixedVariables->GetVariable(y)->RealValue.SubString(1,len);
+          EnterString=EnterString.UpperCase();
+         if (EnterString==A.UpperCase()) {
+          ATabl=CurrField->FixedVariables->GetVariable(y)->DBValue;
+        break;
+       };
+       y++;
+      };
+    if (Table){
+      S="select * from ";
+      S+= Table->TableName+ " where ";
+      S+= Fields[SelectedIndex]->FieldName+" = "+ATabl;
+     };
+  }
+  else
+  {
+     TZDataset* LT;
+     bool Flag=true;
+     AnsiString FilterField=Fields[SelectedIndex]->FieldName;
+     if (CurrField->Field->FieldKind==fkLookup ) {
+       LT=(TZDataset *)CurrField->Field->LookupDataSet;
+       TLocateOptions Opts;
+       Opts.Clear();
+       Opts=Opts << loPartialKey;
+       Opts=Opts << loCaseInsensitive;
+       //Variant Val=Variant(SGDest->Cells[0][SGDest->Row]);
+       Flag=LT->Locate(CurrField->Field->LookupResultField,Value,Opts);
+       FilterField=CurrField->Field->KeyFields;
+       A=LT->FieldByName(CurrField->Field->LookupKeyFields)->AsString;
+       if (Table) {
+         S="select * from ";
+         S+= Table->TableName+ " where ";
+         S+= FilterField+ " =" +A ;
+       };
+     }
+     else
+     { if (Table)
+      {  S="select * from ";
+         S+= Table->TableName+ " where w_upper(";
+         S+= Fields[SelectedIndex]->FieldName+ ") like '" +Value.UpperCase()+ "%'";
+         if (!(Table->Filter.IsEmpty()))
+            S+=" and "+Table->Filter;
+      }
+      else {
+       TWTQuery *QuerTabl=Query;
+       //S="select * from ";
+       //S+= Table->TableName+ " where w_upper(";
+       // Fields->Fields[SelectedIndex]->Value
+      // S+= Fields[SelectedIndex]->FieldName+ ") like '" +Value.UpperCase()+ "%'";
+
+      };
+     };
+  }
+*****
+
+***** db.cpp
+
+  if (!Find) DataSet->GotoBookmark(BM);
+
+  delete WF;
+  Visible=true;
+  SetFocus();
+//  LockWindowUpdate(NULL);
+  Application->MainForm->Enabled=true;
+  if (!Find) ShowMessage("Çàïèñü íå íàéäåíà");
+  else {
+    Field=DataSet->FieldByName(SearchParams->Fields->Strings[0]);
+    int x=0;
+    while (Field!=Fields[x]) x++;
+    SelectedIndex=x;
+  }
+***** DBGRID.CPP
+
+ if (Table)
+ {
+  SQL->Add(S);
+  QSearch= new TWTQuery(this, SQL);
+  QSearch->Open();
+    // íåò çàïèñåé
+  if (!QSearch->RecordCount) {
+    Table->GotoBookmark(SavePlace);
+    Visible= true;
+    if (Num!=0)
+     Application->MessageBox("Çàïèñü íå íàéäåíà", "Ñîîáùåíèå", MB_OK);
+  }
+  else {
+    QSearch->First();
+    TLocateOptions SearchOptions;
+    SearchOptions = SearchOptions << loPartialKey;
+    Table->Locate(Table->Fields->Fields[SelIndex]->FieldName, QSearch->Fields->Fields[SelIndex]->AsString, SearchOptions);
+  }
+*****
+
+¥ ã¤ ¥âáï ¢ë¯®«­¨âì á¨­åà®­¨§ æ¨î áâà®ª. ‘«¨èª®¬ ¬­®£® à §«¨ç¨© ¬¥¦¤ã ä ©« ¬¨.
+***** db.cpp
+
+}
+
+          */
+
+
+***** DBGRID.CPP
+
+  if (!QSearch->Eof) QSearch->Next();
+  Table->FreeBookmark(SavePlace);
+ }
+ else{
+  bool Find=false;
+  DataSet->First();
+  TField *Field;                     //&& (!DataSet->Bof)
+  while ((!DataSet->Eof) && (!Find) ) {
+    Find=true;
+    for (int x=0;x<SearchFParams->Fields->Count;x++) {
+      Field=DataSet->FieldByName(SearchFParams->Fields->Strings[x]);
+      try {
+      switch (Field->DataType) {
+        case ftSmallint :
+        case ftInteger :
+        case ftWord : {
+          TableValue=StrToInt(Field->Text);
+          FindValue=StrToInt(SearchFParams->Values->Strings[x]);
+          break;
+        }
+        case ftFloat : {
+          TableValue=float(StrToFloat(Field->Text));
+          FindValue=float(StrToFloat(SearchFParams->Values->Strings[x]));
+          break;
+        }
+        case ftCurrency : {
+          TableValue=StrToCurr(Field->Text);
+          FindValue=StrToCurr(SearchFParams->Values->Strings[x]);
+          break;
+        }
+        case ftDate : {
+          TableValue=StrToDate(Field->Text);
+          FindValue=StrToDate(SearchFParams->Values->Strings[x]);
+          break;
+        }
+        case ftTime : {
+          TableValue=StrToTime(Field->Text);
+          FindValue=StrToTime(SearchFParams->Values->Strings[x]);
+          break;
+        }
+        default : {
+          TableValue=Field->Text;
+          FindValue=SearchFParams->Values->Strings[x];
+          break;
+        }
+      };
+      } catch (...) {
+        TableValue=Field->Text;
+        FindValue=SearchFParams->Values->Strings[x];
+      }
+
+
+      if (SearchFParams->Relations->Strings[x]=="=") {
+        if (SearchFParams->Part && (Field->DataType==ftMemo || Field->DataType==ftFmtMemo || Field->DataType==ftWideString || F
+eld->DataType==ftString)) {
+          if (!SearchFParams->Case) {
+            if (!AnsiUpperCase(TableValue).AnsiPos(AnsiString(FindValue).UpperCase())) {
+              Find=false;
+              break;
+            }
+          } else {
+            if (!AnsiString(TableValue).AnsiPos(FindValue)) {
+              Find=false;
+              break;
+            }
+          }
+        } else {
+          if (Field->DataType==ftMemo || Field->DataType==ftFmtMemo || Field->DataType==ftWideString || Field->DataType==ftStri
+g) {
+            if (!SearchFParams->Case) {
+              if (AnsiString(TableValue).UpperCase()!=AnsiString(FindValue).UpperCase()) {
+                Find=false;
+                break;
+              }
+            } else {
+              if (AnsiString(TableValue)!=AnsiString(FindValue)) {
+                Find=false;
+                break;
+              }
+            }
+          } else {
+            if (TableValue!=FindValue) {
+              Find=false;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (!Find) {
+      if (SearchFParams->Down) DataSet->Next();
+       else DataSet->Prior();
+    }
+    Application->ProcessMessages();
+  }
+
+  if (!Find) DataSet->GotoBookmark(SavePlace);
+
+  //delete WF;
+*****
+

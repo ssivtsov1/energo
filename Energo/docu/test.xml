@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+ <page pagetype="A4" orientation="portrait" width="210" height="297">
+  <paragraph nextline="true">
+   <img src="" width="11" height="12" stream="true"/>
+   <line>
+    <phrase> 	
+     <word>Document</word>
+     <spase/>
+     <word>name</word>
+     <spase/>
+     <input length="15"/>
+    </phrase>
+   </line>
+   <line>
+    <phrase> 	
+     <word>Document</word>
+     <spase/>
+     <word>number</word>
+     <spase/>
+     <input length="15"/>
+    </phrase> 	
+   </line>
+   <line>
+    <phrase> 	
+     <word>Date</word>
+     <spase/>
+     <input length="2"/>
+     <word>.</word>
+     <input length="2"/>
+     <word>.</word>
+     <input length="2"/>
+    </phrase> 	
+   </line>
+  </paragraph> 
+  <paragraph nextline="last">
+   <table>
+    <line>
+     <td>Tovar</td> 
+     <td>Number</td> 
+     <td>Sum</td> 
+    </line>
+    <line>
+     <td>Value</td> 
+     <td>value</td> 
+     <td>value</td> 
+    </line>
+   </table>
+  </paragraph>
+ </page>	
+    

@@ -1,0 +1,22 @@
+Сравнение файлов Energo.~bpr и ENERGO.BPR
+***** Energo.~bpr
+      OBJ\fTaxPrint2014_12.obj OBJ\fTaxCorPrint2015.obj OBJ\fTaxPrint2015.obj 
+      OBJ\AddrMain.obj OBJ\fTaxPrint2016.obj OBJ\fTaxCorPrint2016.obj 
+      OBJ\Func.obj OBJ\MainForm.obj"/>
+    <RESFILES value="Energo.res tools.res"/>
+***** ENERGO.BPR
+      OBJ\fTaxPrint2014_12.obj OBJ\fTaxCorPrint2015.obj OBJ\fTaxPrint2015.obj 
+      OBJ\AddrMain.obj OBJ\fTaxPrint2016.obj OBJ\fTaxCorPrint2016.obj OBJ\Func.obj"/>
+    <RESFILES value="Energo.res tools.res"/>
+*****
+
+***** Energo.~bpr
+      ZPgSqlCB5.bpi tsypcb50.bpi tdbecb50.bpi B5XLR4_R.bpi"/>
+    <PATHCPP value=".;eqp;bill;balans;tax;report;rep;OSA;monitor;D:\WTools\WT\"/>
+    <PATHPAS value=".;"/>
+***** ENERGO.BPR
+      ZPgSqlCB5.bpi tsypcb50.bpi tdbecb50.bpi B5XLR4_R.bpi"/>
+    <PATHCPP value=".;eqp;bill;balans;tax;report;rep;OSA;monitor"/>
+    <PATHPAS value=".;"/>
+*****
+

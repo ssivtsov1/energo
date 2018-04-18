@@ -1,0 +1,75 @@
+<?xml version = "1.0" encoding = "windows-1251"?>
+
+<DECLAR xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation = "J1201207.xsd">
+   <DECLARHEAD>
+      <TIN>22815333</TIN>
+      <C_DOC>J12</C_DOC>
+      <C_DOC_SUB>012</C_DOC_SUB>
+      <C_DOC_VER>7</C_DOC_VER>
+      <C_DOC_TYPE>0</C_DOC_TYPE>
+      <C_DOC_CNT>1</C_DOC_CNT>
+      <C_REG>25</C_REG>
+      <C_RAJ>26</C_RAJ>
+      <PERIOD_MONTH>1</PERIOD_MONTH>
+      <PERIOD_TYPE>1</PERIOD_TYPE>
+      <PERIOD_YEAR>2015</PERIOD_YEAR>
+      <C_STI_ORIG>2526</C_STI_ORIG>
+      <C_DOC_STAN>1</C_DOC_STAN>
+      <LINKED_DOCS xsi:nil = "true"/>
+      <D_FILL>06022015</D_FILL>
+      <SOFTWARE>Energo</SOFTWARE>
+   </DECLARHEAD>
+   <DECLARBODY>
+      <HERPN>1</HERPN>
+      <H01 xsi:nil = "true"/>
+      <HORIG1 xsi:nil = "true"/>
+      <HTYPR xsi:nil = "true"/>
+      <HNUM>150</HNUM>
+      <HNUM1 xsi:nil = "true"/>
+      <HNUM2>10</HNUM2>
+      <HFILL>31012015</HFILL>
+      <HPODFILL>20012015</HPODFILL>
+      <HPODNUM>34</HPODNUM>
+      <HPODNUM1 xsi:nil = "true"/>
+      <HPODNUM2>10</HPODNUM2>
+      <H01G1D>15082006</H01G1D>
+      <H01G2S>1</H01G2S>
+      <HNAMESEL>ПУБЛІЧНЕ   АКЦІОНЕРНЕ  ТОВАРИСТВО  " ЧЕРНІГІВОБЛЕНЕРГО "  Варвинський Район  Електричних  Мереж</HNAMESEL>
+      <HNAMEBUY>Товариство з обмеженою  відповідальністю " ЖУРАВКА"</HNAMEBUY>
+      <HKSEL>228153325261</HKSEL>
+      <HKBUY>316763525059</HKBUY>
+      <HLOCSEL>14000 Україна Чернiгiвська обл. м. Чернігів  вул. Горького   буд. 40 / 
+17600 Чернiгiвська обл.Варвинський р-н   смт.Варва  вул.  Миру     11</HLOCSEL>
+      <HLOCBUY>17620 Україна Чернiгiвська обл. Варвинський р-н  с.Журавка   пл.  Центральний Майдан  буд.  3</HLOCBUY>
+      <HTELSEL>0463621282</HTELSEL>
+      <HTELBUY>0463626413</HTELBUY>
+      <H02G1S>договір про постачання електричної енергії</H02G1S>
+      <H02G2D>15082006</H02G2D>
+      <H02G3S>1</H02G3S>
+      <RXXXXG1D ROWNUM = "1">31012015</RXXXXG1D>
+      <RXXXXG1D ROWNUM = "2">31012015</RXXXXG1D>
+      <RXXXXG2S ROWNUM = "1">Змiна вартiсних показникiв</RXXXXG2S>
+      <RXXXXG2S ROWNUM = "2">Змiна вартiсних показникiв</RXXXXG2S>
+      <RXXXXG3S ROWNUM = "1">е/ен.</RXXXXG3S>
+      <RXXXXG3S ROWNUM = "2">е/ен.</RXXXXG3S>
+      <RXXXXG4 ROWNUM = "1">2716000000</RXXXXG4>
+      <RXXXXG4 ROWNUM = "2">2716000000</RXXXXG4>
+      <RXXXXG4S ROWNUM = "1">кВт.год</RXXXXG4S>
+      <RXXXXG4S ROWNUM = "2">кВт.год</RXXXXG4S>
+      <RXXXXG105_2S ROWNUM = "1">0415</RXXXXG105_2S>
+      <RXXXXG105_2S ROWNUM = "2">0415</RXXXXG105_2S>
+      <RXXXXG5 ROWNUM = "1">21353</RXXXXG5>
+      <RXXXXG5 ROWNUM = "2">-20336</RXXXXG5>
+      <RXXXXG6 ROWNUM = "1">1.2582</RXXXXG6>
+      <RXXXXG6 ROWNUM = "2">1.3211</RXXXXG6>
+      <RXXXXG9 ROWNUM = "1">26866.45</RXXXXG9>
+      <RXXXXG9 ROWNUM = "2">-26866.45</RXXXXG9>
+      <R01G9 xsi:nil = "true"/>
+      <R01G10 xsi:nil = "true"/>
+      <R01G11 xsi:nil = "true"/>
+      <R01G111 xsi:nil = "true"/>
+      <R02G9>0.00</R02G9>
+      <R02G111>0.00</R02G111>
+      <H10G2S/>
+   </DECLARBODY>
+</DECLAR>

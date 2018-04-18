@@ -1,0 +1,130 @@
+%конечный символ грамматики
+1. <Prog>::= <Body>;
+
+%грамматика тела программы
+2. <Body>::= <StList>;
+3. <Body>::=<FSt>;
+%4. <FSt>::=%; ;
+5. <FSt>::=<FSt>%; ;
+6. <FSt>::=<StList>%; ;
+7. <StList>::= <FSt><St>;
+8. <StList>::= <St>;
+9. <St>::= <Expr>;
+200.<Begin>::= begin;
+201.<Blok>::= <Begin> end;
+202.<Blok>::= <Begin> <Body> end;
+203.<St>::= <Blok>;
+
+%грамматика стандартных функций
+11. <Func>::=<NameE>);
+12. <Name>::=<ID>(;
+13. <NameE>::=<Name><Expr>;
+15. <NameE>::=<Name>;
+16. <Nm>::=<NameE>,;
+17. <NameE>::=<Nm><Expr>;
+318.<Name>::=<IDs><ID>(;
+
+% Грамматика выражений
+25. <SignHP>::=*;
+26. <SignHP>::=/;
+27. <SignHP>::=div;
+28. <SignHP>::=mod;
+29. <SignLP>::=-;
+30. <SignLP>::=+;
+31. <USign>::=<USign><SignLP>;
+32. <USign>::=<SignLP>;
+33. <RSign>::=<USign>;
+34. <ZnVal>::=<RSign><Val>;
+35. <Add>::=<Mulat>;
+36. <Add>::=<Add><Mulat>;
+37. <Expr>::=<BoolExpr>;
+38. <Mulat>::=<Mul>;
+39. <Mul>::=<Val>;
+40. <Mul>::=<ZnVal>;
+310.<IDs>::=<ID>.;
+311.<IDs>::=<IDs><ID>.;
+312.<IDw>::=<IDs><ID>;
+41. <Mul>::=<Mul><SignHP><ZnVal>;
+42. <Mul>::=<Mul><SignHP><Val>;
+43. <Muli>::=<Sk><Expr>;
+44. <Mul>::=<Mul><SignHP><MulB>;
+45. <Mul>::=<Mul><SignHP><ZnMulB>;
+46. <Mul>::=<MulB>;
+47. <Mul>::=<ZnMulB>;
+48. <ZnMulB>::=<RSign><MulB>;
+316.<Val>::=<IDw>;
+51. <Val>::=<ID>;
+63. <Val>::=<Array>;
+64. <Val>::=<Func>;
+52. <Val>::=<number>;
+53. <Val>::=<char>;
+54. <Val>::=<string>;
+55. <Val>::=true;
+56. <Val>::=false;
+%318.<Val>::=<IDs><Func>;
+57. <LL>::=<ID><BR>;
+317.<LL>::=<IDs><ID><BR>;
+65. <LL>::=<Array><BR>;
+62. <Eq>::=<LL><Expr>;
+58. <St>::=<Eq>;
+60. <MulB>::=<Muli>);
+61. <Sk>::=(;
+
+%Грамматика массивов
+300.<Ar>::=<ID>[;
+301.<Array>::=<Ar><Expr>];
+302.<DArray>::=<Ar><Expr>|;
+303.<Array>::=<DArray><Expr>];
+
+%Грамматика обращения к элементам реестра (классам)
+%310.<IDp>::=<ID>.;
+%311.<IDw>::=<IDp><ID>.;
+%312.<IDh>::=<IDp><ID>;
+%313.<IDh>::=<IDw><ID>;
+
+%310.<IDp>::=(<ID>.;
+
+%11. <Func>::=<NameE>);
+%12. <Name>::=<ID>(;
+%13. <NameE>::=<Name><Expr>;
+%15. <NameE>::=<Name>;
+%16. <Nm>::=<NameE>,;
+%17. <NameE>::=<Nm><Expr>;
+
+% Грамматика булевых выражений
+83. <BSign>::= >;
+84. <BSign>::= %<;
+85. <BSign>::= >=;
+86. <BSign>::= %<=;
+87. <BBSign>::= %<>;
+88. <BOp>::= and;
+89. <BOp>::= or;
+113. <AddAt>::=<Add>;
+114. <BoolExpr>::=<AddAt>;
+90. <BoolExpr>::=<BoolExpr><BBSign><AddAt>;
+107. <BoolExpr>::=<BoolExpr><BSign><AddAt>;
+109. <BoolExpr>::=<BoolExpr><BOp><AddAt>;
+91. <Mul>::=not <Val>;
+92. <Mul>::=not <MulB>;
+93. <BBSign>::==;
+106. <BR>::=:=;
+
+%Грамматика условного оператора
+95. <IfPart>::=if <Expr> then;
+96. <If>::=<IfPart><St>;
+102.<Els>::=<If> else;
+98. <IfElse>::=<Els><St>;
+99. <IfElse>::=<If>;
+117.<St>::=<IfElse>;
+
+% Грамматика While ... Do
+78. <St>::=<While><St>;
+104. <While>::=<Wh><Expr> do;
+108. <Wh>::=while;
+115. <St>::=<While>;
+
+% Грамматика Repeat ... Until
+80. <St>::=<Rep><Body> until <Expr>;
+81. <St>::=<Rep> until <Expr>;
+103. <Rep>::=repeat;
+

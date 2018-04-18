@@ -1,0 +1,21 @@
+‘а ў­Ґ­ЁҐ д ©«®ў Func.cpp Ё FUNC.~CPP
+***** Func.cpp
+}
+/*
+int Ask(AnsiString Label)             //Организация меню с вопросом "Да" / "Нет"
+***** FUNC.~CPP
+}
+
+int Ask(AnsiString Label)             //Организация меню с вопросом "Да" / "Нет"
+*****
+
+***** Func.cpp
+  else return 0;
+} */
+  /*
+***** FUNC.~CPP
+  else return 0;
+}
+  /*
+*****
+

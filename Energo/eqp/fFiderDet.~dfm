@@ -1,0 +1,260 @@
+object fFiderDet: TfFiderDet
+  Left = 213
+  Top = 343
+  Width = 541
+  Height = 261
+  Align = alClient
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  FormStyle = fsStayOnTop
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 533
+    Height = 234
+    Align = alClient
+    BorderStyle = bsSingle
+    TabOrder = 0
+    object Label3: TLabel
+      Left = 14
+      Top = 12
+      Width = 109
+      Height = 13
+      Caption = 'Уровень напряжения'
+    end
+    object Label15: TLabel
+      Left = 128
+      Top = 12
+      Width = 5
+      Height = 16
+      Caption = '*'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lClassVal: TLabel
+      Left = 64
+      Top = 32
+      Width = 3
+      Height = 13
+      Alignment = taCenter
+      Caption = '-'
+    end
+    object sbClassSel: TSpeedButton
+      Left = 148
+      Top = 26
+      Width = 23
+      Height = 22
+      Hint = 'Открыть справочник'
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        5555555555555555555555555555555555555555555555555555555555555555
+        555555555555555555555555555555555555555FFFFFFFFFF555550000000000
+        55555577777777775F55500B8B8B8B8B05555775F555555575F550F0B8B8B8B8
+        B05557F75F555555575F50BF0B8B8B8B8B0557F575FFFFFFFF7F50FBF0000000
+        000557F557777777777550BFBFBFBFB0555557F555555557F55550FBFBFBFBF0
+        555557F555555FF7555550BFBFBF00055555575F555577755555550BFBF05555
+        55555575FFF75555555555700007555555555557777555555555555555555555
+        5555555555555555555555555555555555555555555555555555}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sbClassSelClick
+    end
+    object lLengthCaption: TLabel
+      Left = 8
+      Top = 212
+      Width = 149
+      Height = 13
+      Caption = 'Суммарная длина фидера (м)'
+      Visible = False
+    end
+    object lLength: TLabel
+      Left = 164
+      Top = 212
+      Width = 43
+      Height = 13
+      Caption = 'lLength'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Label2: TLabel
+      Left = 198
+      Top = 12
+      Width = 58
+      Height = 13
+      Caption = 'Инспектор:'
+    end
+    object sbPosition: TSpeedButton
+      Left = 456
+      Top = 26
+      Width = 23
+      Height = 22
+      Hint = 'Открыть справочник'
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        5555555555555555555555555555555555555555555555555555555555555555
+        555555555555555555555555555555555555555FFFFFFFFFF555550000000000
+        55555577777777775F55500B8B8B8B8B05555775F555555575F550F0B8B8B8B8
+        B05557F75F555555575F50BF0B8B8B8B8B0557F575FFFFFFFF7F50FBF0000000
+        000557F557777777777550BFBFBFBFB0555557F555555557F55550FBFBFBFBF0
+        555557F555555FF7555550BFBFBF00055555575F555577755555550BFBF05555
+        55555575FFF75555555555700007555555555557777555555555555555555555
+        5555555555555555555555555555555555555555555555555555}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sbPositionClick
+    end
+    object spPositionClear: TSpeedButton
+      Left = 481
+      Top = 26
+      Width = 23
+      Height = 22
+      Hint = 'Удалить вид энергии'
+      Caption = 'X'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = spPositionClearClick
+    end
+    object edClassId: TEdit
+      Left = 12
+      Top = 26
+      Width = 41
+      Height = 21
+      ReadOnly = True
+      TabOrder = 0
+    end
+    object EdPosition: TEdit
+      Left = 196
+      Top = 26
+      Width = 261
+      Height = 21
+      TabOrder = 1
+    end
+    object GroupBox1: TGroupBox
+      Left = 8
+      Top = 56
+      Width = 516
+      Height = 153
+      Anchors = [akLeft, akTop, akRight]
+      Caption = ' Расчет потерь в линиях 0.4 кВ '
+      TabOrder = 2
+      object Label4: TLabel
+        Left = 6
+        Top = 20
+        Width = 204
+        Height = 13
+        Caption = 'Коеффициент потерь (старая методика)'
+      end
+      object Bevel1: TBevel
+        Left = 8
+        Top = 40
+        Width = 500
+        Height = 4
+        Anchors = [akLeft, akTop, akRight]
+        Shape = bsBottomLine
+      end
+      object Label1: TLabel
+        Left = 8
+        Top = 50
+        Width = 126
+        Height = 13
+        Caption = 'Количество линий 0.4 кВ'
+      end
+      object Label5: TLabel
+        Left = 8
+        Top = 76
+        Width = 172
+        Height = 13
+        Caption = 'Суммарная длина линий 0.4 кВ, м'
+      end
+      object Label6: TLabel
+        Left = 8
+        Top = 100
+        Width = 180
+        Height = 13
+        Caption = 'Длина однофазных ответвлений, м'
+      end
+      object Label7: TLabel
+        Left = 280
+        Top = 100
+        Width = 136
+        Height = 13
+        Caption = '2 и 3 -фазных ответвлений'
+      end
+      object Label8: TLabel
+        Left = 8
+        Top = 128
+        Width = 243
+        Height = 13
+        Caption = 'Среднее сечение головных участков F гср, мм2'
+      end
+      object edLostsCoef: TEdit
+        Left = 224
+        Top = 18
+        Width = 129
+        Height = 21
+        TabOrder = 0
+      end
+      object edL04_count: TEdit
+        Left = 144
+        Top = 48
+        Width = 97
+        Height = 21
+        TabOrder = 1
+      end
+      object edL04_length: TEdit
+        Left = 192
+        Top = 72
+        Width = 80
+        Height = 21
+        TabOrder = 2
+      end
+      object edL04f1_length: TEdit
+        Left = 192
+        Top = 96
+        Width = 80
+        Height = 21
+        TabOrder = 3
+      end
+      object edL04f3_length: TEdit
+        Left = 424
+        Top = 96
+        Width = 80
+        Height = 21
+        TabOrder = 4
+      end
+      object edFgcp: TEdit
+        Left = 272
+        Top = 124
+        Width = 97
+        Height = 21
+        TabOrder = 5
+      end
+    end
+  end
+end

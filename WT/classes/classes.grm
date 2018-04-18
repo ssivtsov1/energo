@@ -1,0 +1,61 @@
+%конечный символ грамматики
+1. <Prog>::= <BodyAll>;
+
+2.<BodyAll>::=<ClassB>;
+3.<BodyAll>::=<BodyAll><ClassB>;
+4.<BodyAll>::=<Body>;
+
+10.<ClassP>::=class <ID>;
+12.<ClassB>::=<ClassW><Body>;
+13.<ClassB>::=<ClassW>;
+14.<Body>::=<StList>;
+15.<StList>::=<St>%;;
+16.<StList>::=<StList><St>%;;
+18.<ClassW>::=<ClassP><AllKeysF>;
+19.<ClassW>::=<ClassP>;
+
+20.<St>::=<Field><AllKeys>;
+21.<St>::=<Method><AllKeys>;
+22.<St>::=<Property><AllKeys>;
+23.<St>::=<Field>;
+24.<St>::=<Method>;
+25.<St>::=<Property>;
+
+29.<AllKeys>::=<KeyList>;
+30.<KeyList>::=<Key>;
+31.<KeyList>::=<KeyList><Key>;
+32.<Key>::=<Delim>offset<number>;
+33.<Key>::=<Delim>type<number>;
+34.<Key>::=<Delim>setoffs<number>;
+35.<Key>::=<Delim>settype<number>;
+36.<Key>::=<Delim>getoffs<number>;
+37.<Key>::=<Delim>gettype<number>;
+38.<Key>::=<Delim>classpoint<number>;
+39.<Delim>::=:;
+
+40.<FieldT>::=field <ID>;
+41.<MethodT>::=method <ID>;
+42.<PropertyT>::=property <ID>;
+43.<Field>::=<FieldT><ID>;
+44.<Property>::=<PropertyT><ID>;
+45.<MethodW>::=<MethodT><ID>;
+46.<Method>::=<MethodW><Params>;
+47.<FieldT>::=field <ID>*;
+48.<MethodT>::=method <ID>*;
+49.<PropertyT>::=property <ID>*;
+
+
+50.<AllP>::=<StartP><ID>;
+51.<AllP>::=<StartP><ID>*;
+52.<DelimP>::=<AllP>,;
+53.<AllP>::=<DelimP><ID>;
+54.<AllP>::=<DelimP><ID>*;
+55.<StartP>::=(;
+56.<Params>::=<AllP>);
+57.<Params>::=<StartP>);
+
+60.<AllKeysF>::=<KeyListF>;
+61.<KeyListF>::=<KeyF>;
+62.<KeyListF>::=<KeyListF><KeyF>;
+63.<KeyF>::=<Delim>ftable<number>;
+64.<KeyF>::=<Delim>from<ID>;

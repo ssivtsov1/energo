@@ -1,0 +1,102 @@
+//---------------------------------------------------------------------------
+
+#ifndef SysUserH
+#define SysUserH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <ToolWin.hpp>
+#include "ZPgSqlQuery.hpp"
+#include "ZQuery.hpp"
+#include <DBGrids.hpp>
+#include <WinGrid.h>
+#include "TWTCompatable.h"
+#include "ParamsForm.h"
+#include "Query.h"
+#include <Grids.hpp>
+
+
+class TfUser : public TWTDoc
+{
+__published:	// IDE-managed Components
+  void __fastcall  FormClose(TObject *Sender,      TCloseAction &Action);
+protected:
+
+
+public:
+          _fastcall virtual TfUser(TWinControl* Owner);
+
+       
+        _fastcall ~TfUser();
+
+       TSpeedButton* SBPasswd;
+        TSpeedButton* SBLockU;
+         TSpeedButton* SBLockUG;
+         TSpeedButton* SBLockG;
+       TWTQuery * QuerA;
+       TWTDBGrid* DBGrA;
+       TWTQuery * QuerU;
+       TWTDBGrid* DBGrU;
+       TWTQuery * QEnv;
+       TWTDBGrid* DBGrEnv;
+
+       bool def_mode;
+       bool ReadOnly;
+           void _fastcall AfterInsGroup(TWTDBGrid *Sender);
+       void _fastcall AfterInsGrParam(TWTDBGrid *Sender);
+       void _fastcall ClPassWD(TObject *Sender);
+       void _fastcall ClUserAccess(TObject *Sender);
+       void _fastcall ClGroupAccess(TObject *Sender);
+       void _fastcall ClUserAddGoupAccess  (TObject *Sender);
+};
+
+class TfEnviroment : public TWTDoc
+{
+__published:	// IDE-managed Components
+  void __fastcall  FormClose(TObject *Sender,      TCloseAction &Action);
+protected:
+
+
+public:
+         _fastcall virtual TfEnviroment(TWinControl* Owner);
+         _fastcall ~TfEnviroment();
+         TWTDBGrid* DBGrEnv;
+
+       bool def_mode;
+       bool ReadOnly;
+
+
+};
+//-----------------------------
+
+class TfUserAccess : public TWTDoc
+{
+__published:	// IDE-managed Components
+  void __fastcall  FormClose(TObject *Sender,      TCloseAction &Action);
+protected:
+
+
+public:
+ TWTQuery * QEnv;
+          _fastcall virtual TfUserAccess(TWinControl* Owner);
+
+
+        _fastcall ~TfUserAccess();
+
+       TSpeedButton* SBPasswd;
+        TSpeedButton* SBLock;
+       TWTQuery * QuerA;
+       TWTDBGrid* DBGrA;
+       //TWTQuery * QuerU;
+       //TWTDBGrid* DBGrU;
+       bool def_mode;
+       bool ReadOnly;
+        int fid_user;
+       void _fastcall AfterInsGrParam(TWTDBGrid *Sender);
+       void _fastcall ClPassWD(TObject *Sender);
+         void __fastcall Show(TObject *Sender,int id_user);
+};
+#endif
+int CheckLevel(AnsiString ClassName,int silent=1);
+int CheckLevelStrong(AnsiString ClassName,int silent=1);
+int CheckLevelRead(AnsiString ClassName,int silent=1);
+void UpdLevelStrong(AnsiString ClassName);

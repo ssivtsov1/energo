@@ -1,0 +1,1 @@
+edit startup.ini

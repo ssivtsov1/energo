@@ -1,0 +1,77 @@
+Сравнение файлов ZConnect.hpp и ZCO
+***** ZConnect.hpp
+protected:
+        System::ShortString FDatabase;
+        System::ShortString FLogin;
+        System::ShortString FPasswd;
+        System::ShortString FHost;
+        System::ShortString FPort;
+        Classes::TList* FDatasets;
+***** ZCO
+protected:
+        AnsiString FDatabase;
+        AnsiString FLogin;
+        AnsiString FPasswd;
+        AnsiString FHost;
+        AnsiString FPort;
+        Classes::TList* FDatasets;
+*****
+
+***** ZConnect.hpp
+        void __fastcall SetConnected(bool Value);
+        void __fastcall SetHost( System::ShortString &Value);
+        void __fastcall SetDatabase( System::ShortString &Value);
+        System::TObject* __fastcall GetTransacts(int Index);
+***** ZCO
+        void __fastcall SetConnected(bool Value);
+        void __fastcall SetHost(AnsiString Value);
+        void __fastcall SetDatabase(AnsiString Value);
+        System::TObject* __fastcall GetTransacts(int Index);
+*****
+
+***** ZConnect.hpp
+        virtual void __fastcall DoAfterDrop(void);
+        __property System::ShortString Port = {read=FPort, write=FPort};
+        
+***** ZCO
+        virtual void __fastcall DoAfterDrop(void);
+        __property AnsiString Port = {read=FPort, write=FPort};
+        
+*****
+
+***** ZConnect.hpp
+        __property Zdirsql::TDirConnect* Handle = {read=FHandle};
+        __property System::ShortString Host = {read=FHost, write=SetHost};
+        __property System::ShortString Database = {read=FDatabase, write=SetDatabase};
+        __property System::ShortString Login = {read=FLogin, write=FLogin};
+        __property System::ShortString Password = {read=FPasswd, write=FPasswd};
+        __property bool LoginPrompt = {read=FLoginPrompt, write=FLoginPrompt, nodefault};
+***** ZCO
+        __property Zdirsql::TDirConnect* Handle = {read=FHandle};
+        __property AnsiString Host = {read=FHost, write=SetHost};
+        __property AnsiString Database = {read=FDatabase, write=SetDatabase};
+        __property AnsiString Login = {read=FLogin, write=FLogin};
+        __property AnsiString Password = {read=FPasswd, write=FPasswd};
+        __property bool LoginPrompt = {read=FLoginPrompt, write=FLoginPrompt, nodefault};
+*****
+
+***** ZConnect.hpp
+static const Shortint MAX_INDEX_FIELDS = 0x19;
+static const Shortint DEFAULT_STRING_SIZE = 0x32;
+static const Word MAX_STRING_SIZE = 0x200;
+***** ZCO
+static const Shortint MAX_INDEX_FIELDS = 0x19;
+static const Byte DEFAULT_STRING_SIZE = 0xfe;
+static const Word MAX_STRING_SIZE = 0x200;
+*****
+
+***** ZConnect.hpp
+#define ZEOS_DB_PALETTE "Zeos Access"
+static const Word ZDBO_VERSION = 0xc47c;
+
+***** ZCO
+#define ZEOS_DB_PALETTE "Zeos Access"
+static const Word ZDBO_VERSION = 0xc4e0;
+
+*****
+
